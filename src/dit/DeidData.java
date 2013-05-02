@@ -112,4 +112,47 @@ public class DeidData {
         "FrameOfReferenceUid",
         "ImageRows",
         "ImageColumns",};
+    
+    public static void addInputFile(Vector<File> files)
+    {
+        for(int i =0;i<files.size();i++)
+        {
+            File currentFile=files.get(i);
+            if(!isExistInputFile(currentFile))
+            {
+                inputFiles.add(currentFile);
+            }            
+        }
+    }
+    
+    public static void addInputFile(File file)
+    {
+       if(!isExistInputFile(file))
+            {
+                inputFiles.add(file);
+            }            
+    }
+
+    private static boolean isExistInputFile(File file)
+    {
+        String fileName=file.getName();
+        if(fileName.endsWith("nii.gz"))
+        {
+            fileName=fileName.replace("nii.gz", "");
+        }
+        else
+        {
+            fileName=fileName.substring(0,fileName.lastIndexOf("."));
+        }
+        
+        for(int i=0;i<inputFiles.size();i++)
+        {
+            String existFileName=inputFiles.get(i).getName();
+            if(existFileName.contains(fileName))
+                return true;
+        }
+        
+        return false;
+    }
+    
 }

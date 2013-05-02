@@ -2,14 +2,14 @@ package dit.panels;
 
 import dit.*;
 import java.io.File;
-import java.io.*; 
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import java.util.Vector;
-import java.util.List; 
+import java.util.List;
 import java.util.ArrayList;
 import java.lang.String;
 import javax.swing.event.ListSelectionEvent;
@@ -20,7 +20,7 @@ import javax.swing.event.ListSelectionListener;
  * @author christianprescott
  */
 public class LoadImagesPanel extends JPanel implements WizardPanel {
-
+    
     /**
      * Creates new form LoadImagesPanel
      */
@@ -28,23 +28,24 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         initComponents();
         DEIDGUI.title = "Load Images";
         DEIDGUI.helpButton.setEnabled(true);
+        
+        jLabel3.setText(DeidData.inputFiles.size()+" images loaded");
+        jListImages.setListData(DeidData.inputFiles);
+        
+        
         jButton2.setVisible(false);
-        if (DeidData.inputFiles != null) {
-           // jListImages.setListData(DeidData.inputFiles);
-            DeidData.inputFiles.removeAllElements();
-            //DEIDGUI.log("Loaded existing input file list: " + DeidData.inputFiles.toString());
+        
+        jListImages.addListSelectionListener(new ListSelectionListener(){
+            @Override  public void valueChanged(ListSelectionEvent e){
+                jLabel2.setText(jListImages.getSelectedValues().length+" line(s) selected");
+                
+            }
         }
-         jListImages.addListSelectionListener(new ListSelectionListener(){
-           @Override  public void valueChanged(ListSelectionEvent e){
-                 jLabel2.setText(jListImages.getSelectedValues().length+" line(s) selected");
-             
-             }
-         }
-                 
-                 );
+                
+                );
         DEIDGUI.log("LoadImagesPanel initialized");
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -159,108 +160,31 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void ReadAllFile(Vector<File> list, String filePath) {  
-        File f = null;  
-        f = new File(filePath);  
-        File[] files = f.listFiles(); // get all files           
-        for (File file : files) {  
-            if(file.isDirectory()) {  
-                  
-                ReadAllFile(list, file.getAbsolutePath());  
-            } else { 
+    
+    private void ReadAllFile(Vector<File> list, String filePath) {
+        File f = null;
+        f = new File(filePath);
+        File[] files = f.listFiles(); // get all files
+        for (File file : files) {
+            if(file.isDirectory()) {
+                
+                ReadAllFile(list, file.getAbsolutePath());
+            } else {
                 if (file.getName().endsWith(".nii")||file.getName().endsWith(".nii.gz")||file.getName().endsWith(".dcm")||file.getName().endsWith(".img")||file.getName().endsWith(".hdr"))
-                list.add(file);  
-            }  
-        } 
-        //for(int i=0; i< list.size(); i++) {  
-          //  System.out.println(list.get(i).getAbsolutePath());  
-        //}  
+                    list.add(file);
+            }
+        }
+        //for(int i=0; i< list.size(); i++) {
+        //  System.out.println(list.get(i).getAbsolutePath());
+        //}
         
-    }  
+    }
     //private Vector<File> displayedFiles = new Vector<File>();
     private void jButtonLoadImagesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoadImagesActionPerformed
         final javax.swing.JFileChooser fc = new JFileChooser();
-        fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        fc.setMultiSelectionEnabled(true);
-        
-       
-        fc.setAcceptAllFileFilterUsed(false);
-        fc.addChoosableFileFilter(new ImageFilter());
-        String dirrec;
-        //angelo added
-        File filename = new File("/tmp/imagepath.txt");
-        try{
-            FileReader fr = new FileReader(filename);
-            BufferedReader br = new BufferedReader(fr);
-            dirrec = br.readLine();
-            System.out.println(dirrec);
-            if (dirrec!= null)
-            {
-                fc.setCurrentDirectory(new File(dirrec));
-            }
-            
-        }catch(IOException e)
-        {
-            fc.setCurrentDirectory(null);
-        }
-            
-        int returnVal = fc.showOpenDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File[] selectedFiles = fc.getSelectedFiles();
-           //angelo added
-            for (int idx = 0; idx < selectedFiles.length; idx ++)
-            {
-                if(selectedFiles[idx].isDirectory())            
-                {
-                    Vector<File> imgfiles = new Vector<File>();
-                    ReadAllFile(imgfiles, selectedFiles[idx].getAbsolutePath());
-                    DeidData.parentPath = selectedFiles[idx].getAbsolutePath();
-                   System.out.println("haha"+ DeidData.parentPath);
-                    DeidData.inputFiles.addAll(imgfiles);
-                }
-                //for(int i=0; i< imgfiles.size(); i++) {  
-                //System.out.println(imgfiles.get(i).getAbsolutePath());  
-
-
-                else{DeidData.inputFiles.add(selectedFiles[idx]);}
-                //System.out.println("haha:"+ idx + selectedFiles.length);
-            
-            }
-            //DeidData.inputFiles.addAll(Arrays.asList(selectedFiles));            
-            //for(int i=0; i< DeidData.inputFiles.size(); i++) {  
-            //System.out.println(DeidData.inputFiles.get(i).getAbsolutePath());  
-            //} 
-            jListImages.setListData(DeidData.inputFiles);
-           
-            String dir = fc.getSelectedFile().getParent();
-            System.out.println(dir);
-            
-                
-            if (!filename.exists()){
-                try{
-                    filename.createNewFile();
-                }
-                catch (IOException e) {
-                DEIDGUI.log("Fail to create file!" );
-                }
-                
-                }
-            try 
-            {
-                
-                RandomAccessFile  pathfile = new RandomAccessFile (filename,"rw");
-                pathfile.writeBytes(dir);                
-            }catch(IOException e)
-            {
-                DEIDGUI.log("No Parent Directory Found!" );
-            } 
-            DEIDGUI.log("Added " + selectedFiles.length + " input images");
-           jLabel3.setText(selectedFiles.length +" image(s) loaded.");
-        }
-        
+        LoadImage(fc);   
     }//GEN-LAST:event_jButtonLoadImagesActionPerformed
-
+    
     private void jButtonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoveActionPerformed
         Object[] selection = jListImages.getSelectedValues();
         DeidData.inputFiles.removeAll(Arrays.asList(selection));
@@ -268,90 +192,32 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         DEIDGUI.log("Removed " + selection.length + " input images");
         jLabel2.setText("No line is selected.");
     }//GEN-LAST:event_jButtonRemoveActionPerformed
-
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-       int ind[];
-       ind = new int[DeidData.inputFiles.size()];
+        int ind[];
+        ind = new int[DeidData.inputFiles.size()];
         for(int i = 0; i< DeidData.inputFiles.size();i++ )
-       {
-           ind[i] = i;           
-           
-       }
-       jListImages.setSelectedIndices(ind);
-       jLabel2.setText(DeidData.inputFiles.size()+" line(s) selected.");
+        {
+            ind[i] = i;
+            
+        }
+        jListImages.setSelectedIndices(ind);
+        jLabel2.setText(DeidData.inputFiles.size()+" line(s) selected.");
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         jListImages.clearSelection();
         jLabel2.setText("No line is selected.");
     }//GEN-LAST:event_jButton2ActionPerformed
-
+    
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-         final javax.swing.JFileChooser fc = new JFileChooser();
-        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        fc.setMultiSelectionEnabled(true);        
-       
-        fc.setAcceptAllFileFilterUsed(false);
-       // fc.addChoosableFileFilter(new ImageFilter());
-        //String dirrec;
-        //angelo added
-       // File filename = new File("/tmp/imagepath.txt");
-       /* try{
-            FileReader fr = new FileReader(filename);
-            BufferedReader br = new BufferedReader(fr);
-            dirrec = br.readLine();
-            System.out.println(dirrec);
-            if (dirrec!= null)
-            {
-                fc.setCurrentDirectory(new File(dirrec));
-            }
-            
-        }catch(IOException e)
-        {
-            fc.setCurrentDirectory(null);
-        }*/
-            
-        int returnVal = fc.showOpenDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File[] selectedFiles = fc.getSelectedFiles();
-           //angelo added
-            for (int idx = 0; idx < selectedFiles.length; idx ++)
-            {
-                if(selectedFiles[idx].isDirectory())            
-                {
-                    Vector<File> imgfiles = new Vector<File>();
-                    ReadAllFile(imgfiles, selectedFiles[idx].getAbsolutePath());
-                    DeidData.parentPath = selectedFiles[idx].getAbsolutePath();
-                   System.out.println("haha"+ DeidData.parentPath);
-                    DeidData.inputFiles.addAll(imgfiles);
-                }
-                //for(int i=0; i< imgfiles.size(); i++) {  
-                //System.out.println(imgfiles.get(i).getAbsolutePath());  
-
-
-                else{DeidData.inputFiles.add(selectedFiles[idx]);}
-                System.out.println("haha:"+ idx + selectedFiles.length);
-            
-            }
-            //DeidData.inputFiles.addAll(Arrays.asList(selectedFiles));            
-            //for(int i=0; i< DeidData.inputFiles.size(); i++) {  
-            //System.out.println(DeidData.inputFiles.get(i).getAbsolutePath());  
-            //} 
-            jListImages.setListData(DeidData.inputFiles);
-           
-            String dir = fc.getSelectedFile().getParent();
-            System.out.println(dir);
-            
-                
-         
-            DEIDGUI.log("Added " + selectedFiles.length + " input images");
-           jLabel3.setText(selectedFiles.length +" image(s) loaded.");
-        }
+        final javax.swing.JFileChooser fc = new JFileChooser();
+        LoadImage(fc);
     }//GEN-LAST:event_jButton3ActionPerformed
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -364,11 +230,11 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
     private javax.swing.JList jListImages;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
-
+    
     @Override
     public WizardPanel getNextPanel() {
         final WizardPanel nextPanel;
-
+        
         DeidData.niftiFiles.clear();
         // Determine if conversions of the selected images are necessary
         HashSet<File> dicomDirs = new HashSet<File>(),
@@ -389,7 +255,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                 DeidData.niftiFiles.add(curImage);
             }
         }
-
+        
         if (dicomDirs.size() > 0 || analyzePairs.size() > 0) {
             nextPanel = new ConvertingProgressPanel(dicomDirs, analyzePairs);
         } else {
@@ -397,9 +263,79 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         }
         return nextPanel;
     }
-
+    
     @Override
     public WizardPanel getPreviousPanel() {
         return new UserPanel();
+    }
+    
+    private void LoadImage(JFileChooser fc)
+    {
+        fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        fc.setMultiSelectionEnabled(true);
+        
+        
+        fc.setAcceptAllFileFilterUsed(false);
+        fc.addChoosableFileFilter(new ImageFilter());
+        String dirrec;
+        
+        File filename = new File("/tmp/imagepath.txt");
+        try{
+            FileReader fr = new FileReader(filename);
+            BufferedReader br = new BufferedReader(fr);
+            dirrec = br.readLine();
+            System.out.println(dirrec);
+            if (dirrec!= null)
+            {
+                fc.setCurrentDirectory(new File(dirrec));
+            }
+            
+        }catch(IOException e)
+        {
+            fc.setCurrentDirectory(null);
+        }
+        
+        int returnVal = fc.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File[] selectedFiles = fc.getSelectedFiles();
+            //angelo added
+            for (int idx = 0; idx < selectedFiles.length; idx ++)
+            {
+                if(selectedFiles[idx].isDirectory())
+                {
+                    Vector<File> imgfiles = new Vector<File>();
+                    ReadAllFile(imgfiles, selectedFiles[idx].getAbsolutePath());
+                    DeidData.parentPath = selectedFiles[idx].getAbsolutePath();
+                    DeidData.addInputFile(imgfiles);
+                }
+                else{DeidData.addInputFile(selectedFiles[idx]);}
+            }
+            jListImages.setListData(DeidData.inputFiles);
+            
+            String dir = fc.getSelectedFile().getParent();
+            System.out.println(dir);
+            
+            
+            if (!filename.exists()){
+                try{
+                    filename.createNewFile();
+                }
+                catch (IOException e) {
+                    DEIDGUI.log("Fail to create file!" );
+                }
+                
+            }
+            try
+            {
+                
+                RandomAccessFile  pathfile = new RandomAccessFile (filename,"rw");
+                pathfile.writeBytes(dir);
+            }catch(IOException e)
+            {
+                DEIDGUI.log("No Parent Directory Found!" );
+            }
+            DEIDGUI.log("Added " + selectedFiles.length + " input images");
+            jLabel3.setText(DeidData.inputFiles.size() +" image(s) loaded.");
+        }
     }
 }
