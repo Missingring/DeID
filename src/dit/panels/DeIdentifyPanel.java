@@ -2,6 +2,7 @@ package dit.panels;
 
 import dit.DEIDGUI;
 import dit.DeidData;
+import dit.DemographicTableModel;
 import java.util.Arrays;
 import javax.swing.DefaultListModel;
 import javax.swing.event.ListSelectionEvent;
@@ -21,7 +22,13 @@ public class DeIdentifyPanel extends javax.swing.JPanel implements WizardPanel {
     public DeIdentifyPanel() {
         DEIDGUI.title = "Deidentification Options";
         DEIDGUI.helpButton.setEnabled(true);
-        // Populate fields box with data from demographic file        
+        // Populate fields box with data from demographic file   
+        initComponents();
+        if(DeidData.demographicData== DemographicTableModel.dummyModel)
+            return;
+        
+        if(DeidData.demographicData!= DemographicTableModel.dummyModel)
+        {
         selectedModel = new DefaultListModel();
         deselectedModel = new DefaultListModel();
         String[] fields = DeidData.demographicData.getDataFieldNames();
@@ -60,8 +67,8 @@ public class DeIdentifyPanel extends javax.swing.JPanel implements WizardPanel {
         DEIDGUI.log("User selected \""
                 + DeidData.demographicData.getColumnName(DeidData.IdColumn)
                 + "\" as the ID column");
+        }
 
-        initComponents();
         jListDeselectedFields.setModel(deselectedModel);
         jListSelectedFields.setModel(selectedModel);
 

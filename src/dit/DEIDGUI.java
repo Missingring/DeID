@@ -470,6 +470,7 @@ public class DEIDGUI extends javax.swing.JFrame {
             pagePanel.revalidate();            
             log(">>> Advanced to " + nextPanel.getClass().getSimpleName());
         } catch (Exception e){
+            e.printStackTrace();
             log("Failed to advance: " + e.getMessage(), LOG_LEVEL.ERROR);
         }
     }

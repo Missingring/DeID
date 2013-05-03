@@ -11,6 +11,8 @@ import javax.swing.table.AbstractTableModel;
 public class DemographicTableModel extends AbstractTableModel{
     private String[] columnNames;
     private Object[][] data;
+    
+    public static DemographicTableModel dummyModel=new DemographicTableModel(null, null);
 
     public DemographicTableModel(String[] columns, Object[][] rows) {
         columnNames = columns;

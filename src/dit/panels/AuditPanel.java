@@ -3,6 +3,7 @@ package dit.panels;
 import dit.AuditJTable;
 import dit.DEIDGUI;
 import dit.DeidData;
+import dit.DemographicTableModel;
 import dit.FileUtils;
 import dit.NiftiDisplayPanel;
 import dit.OpenImagewithMRIcron;
@@ -35,7 +36,8 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     private ReSkullStrippingFrame redo;
     public AuditPanel() {
         initComponents();
-        createFakenames();
+       // if(DeidData.demographicData != DemographicTableModel.dummyModel)
+            createFakenames();
         jButtonViewMontage.setVisible(false);
         DEIDGUI.title = "Auditing";
         DEIDGUI.helpButton.setEnabled(true);
@@ -317,14 +319,17 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     private void createFakenames(){
       Iterator curFile = DeidData.deidentifiedFiles.iterator();  
       while (curFile.hasNext()){
-          
           String x = FileUtils.getName((File)curFile.next());
-          String y = DeidData.IdTable.get(DeidData.IdFilename.get(x));
-         /*  if(!multiImages(DeidData.IdFilename,y)){
-               DeidData.multinameSolFile.put(x, y + ".nii");
+          String y="";
+          if(DeidData.demographicData== DemographicTableModel.dummyModel)
+              y=DeidData.IdTable.get(x);
+          else
+              y = DeidData.IdTable.get(DeidData.IdFilename.get(x));
+          /*  if(!multiImages(DeidData.IdFilename,y)){
+           * DeidData.multinameSolFile.put(x, y + ".nii");
            }
            else {   */     
-        
+          System.out.println("y"+y);
              if (!DeidData.multinameSol.containsKey(y)){                 
               DeidData.multinameSol.put(y,1);
               DeidData.multinameSolFile.put(x, y + "_1"+".nii");

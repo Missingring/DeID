@@ -108,8 +108,6 @@ public class ErrorFrame extends javax.swing.JFrame {
                     icon.setIcon(warningIcon);
                     break;
             }
-                        System.out.println("pHeight " + this.getHeight());
-            System.out.println("tHeight " + text.getBounds().height);
 
             if(isSelected){
                 setBackground(new Color(237,237,237));
