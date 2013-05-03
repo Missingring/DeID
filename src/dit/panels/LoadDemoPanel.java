@@ -18,6 +18,8 @@ import java.util.regex.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -35,7 +37,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         initComponents();
         DEIDGUI.title = "Load Demographic Data";
         DEIDGUI.helpButton.setEnabled(true);
-        jButton1.setVisible(false);
+       
         jButton2.setVisible(false);
         // TODO: remove this auto-load line
         //        ReadDemographicFile(new File("/Users/christianprescott/Desktop/dataset/my_demo_data.txt"));
@@ -157,7 +159,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         jTable1.setModel(new DemographicTableModel(new String[]{"No data"}, new Object[1][1]));
         jScrollPane1.setViewportView(jTable1);
 
-        jButton1.setText("Edit...");
+        jButton1.setText("Dummy File");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -277,17 +279,23 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
     }//GEN-LAST:event_jButton2ActionPerformed
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        if (DeidData.demographicData != null){
-            Editdemo = new EditDemoDataFrame();
-            Editdemo.pack();
-            Editdemo.setVisible(true);
+        File dummyDemographic=new File(DeidData.outputPath+"/dummy.txt");
+        if(!dummyDemographic.exists())
+        {
+            try {
+                dummyDemographic.createNewFile();
+                FileWriter fw=new FileWriter(dummyDemographic.getAbsoluteFile());
+                BufferedWriter bw=new BufferedWriter(fw);
+                String content="TID\n1";
+                bw.write(content);
+                bw.close();
+            } catch (IOException ex) {
+                Logger.getLogger(LoadDemoPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        else {
-            JOptionPane.showMessageDialog(this, "No Demographic File selected.Please Select Demographic File first. "
-                    , "Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
+            ReadDemographicFile(dummyDemographic);
+        
+       
     }//GEN-LAST:event_jButton1ActionPerformed
     
     private void ReadDemographicFile(File demoFile) {
