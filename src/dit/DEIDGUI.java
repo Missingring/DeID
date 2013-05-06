@@ -309,10 +309,11 @@ public class DEIDGUI extends javax.swing.JFrame {
         }
         String gzfiles[] = new String[]{"/tmp/dit_tools/libnewmat.so.10", "/tmp/dit_tools/libniftiio.so.2","/tmp/dit_tools/libstdc++.so.6", "/tmp/dit_tools/libz.so.1",
             "/tmp/dit_tools/libznz.so.2"};
-        String zipfiles[]= new String[]{DeidData.unpackedFileLocation.get("robex.zip").getParentFile().getAbsolutePath()+"\\robex"};
+        String zipfiles[]= new String[]{};
         if(FileUtils.OS.isWindows())
         {
             gzfiles=new String[]{};
+           zipfiles= new String[]{DeidData.unpackedFileLocation.get("robex.zip").getParentFile().getAbsolutePath()+"\\robex"};
         }
         else
         {
