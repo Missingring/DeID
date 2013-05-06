@@ -42,7 +42,7 @@ public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
         
         inputImages = new ArrayList<>();        
         command = new String[]{
-            DeidData.unpackedFileLocation.get("robex.exe").getAbsolutePath(),
+            DeidData.unpackedFileLocation.get("robex.zip").getParentFile().getAbsoluteFile()+"\\ROBEX.exe",
             // Depends on imtest and 
             // Requires fsl config file, change default output to NIFTI
             //Usage: 
@@ -121,13 +121,13 @@ public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
             // Capture output of the bet process
             java.lang.ProcessBuilder pb = new ProcessBuilder(command);
             pb.redirectErrorStream(true);
-            pb.directory(DeidData.unpackedFileLocation.get("robex.exe").getParentFile());
+            pb.directory(DeidData.unpackedFileLocation.get("robex.zip").getParentFile());
             
             Process defaceProc = null;
             boolean fileValid = true;
             try {
                 defaceProc = pb.start();
-                detailText.setText(detailText.getText()+"Begin defacing #"+ndx+ " image:\n");
+                detailText.setText(detailText.getText()+"\r\n"+"Begin defacing #"+ndx+ " image:\r\n");
             } catch (IOException ex) {
                 DEIDGUI.log("Robex couldn't be started: " + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
             }
@@ -136,7 +136,7 @@ public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
             int lineNumber=0;
             try {
                 while ((line = br.readLine()) != null && !line.isEmpty()) {
-                    detailText.setText(detailText.getText()+"\t"+line+"\n");
+                    detailText.setText(detailText.getText()+"\t"+line+"\r\n");
                     lineNumber++;
                     float processProgress = (float) (ndx*9+lineNumber) / (float) (inputImages.size()*9);
                     if (progressBar != null) {

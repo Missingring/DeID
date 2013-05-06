@@ -166,7 +166,7 @@ public class DEIDGUI extends javax.swing.JFrame {
     private void unpackTools() {
         
          String[] toolNames = new String[]{
-            "robex.exe",
+        
             "bet",
             "bet2",
             "dcm2nii",
@@ -222,7 +222,7 @@ public class DEIDGUI extends javax.swing.JFrame {
         } else if(FileUtils.OS.isWindows()){
             outputPath = "E:\\Temp\\";
             osPrefix = "win";
-            toolNames = new String[]{"robex.exe"};
+            toolNames = new String[]{"robex.zip"};
             // Windows executables work fine without the .exe extension, no
             // need to concatenate it to unpacked files.
         } else if(FileUtils.OS.isUnix()){
@@ -309,22 +309,77 @@ public class DEIDGUI extends javax.swing.JFrame {
         }
         String gzfiles[] = new String[]{"/tmp/dit_tools/libnewmat.so.10", "/tmp/dit_tools/libniftiio.so.2","/tmp/dit_tools/libstdc++.so.6", "/tmp/dit_tools/libz.so.1",
             "/tmp/dit_tools/libznz.so.2"};
+        String zipfiles[]= new String[]{DeidData.unpackedFileLocation.get("robex.zip").getParentFile().getAbsolutePath()+"\\robex"};
+        if(FileUtils.OS.isWindows())
+        {
+            gzfiles=new String[]{};
+        }
+        else
+        {
+            zipfiles=new String[]{};
+        }
         for(String gzfile:gzfiles){
             try{
                 FileInputStream instream= new FileInputStream(gzfile+".gz");
-                GZIPInputStream ginstream =new GZIPInputStream(instream);
-                FileOutputStream outstream = new FileOutputStream(gzfile);
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = ginstream.read(buf)) > 0)
-                {
-                    outstream.write(buf, 0, len);
+                FileOutputStream outstream;
+                try (GZIPInputStream ginstream = new GZIPInputStream(instream)) {
+                    outstream = new FileOutputStream(gzfile);
+                    byte[] buf = new byte[1024];
+                    int len;
+                    while ((len = ginstream.read(buf)) > 0)
+                    {
+                        outstream.write(buf, 0, len);
+                    }
                 }
-                ginstream.close();
                 outstream.close();
             } catch(IOException e){
                 
                 System.out.println("failed:"+e);
+            }
+        }
+        
+        for(String gzfile:zipfiles){
+            try {
+                 String destinationname = DeidData.unpackedFileLocation.get("robex.zip").getParentFile().getAbsolutePath()+"\\";
+                byte[] buf = new byte[1024];
+                ZipInputStream zipinputstream = null;
+                ZipEntry zipentry;
+                zipinputstream = new ZipInputStream(
+                        new FileInputStream(gzfile+".zip"));
+                
+                zipentry = zipinputstream.getNextEntry();
+                while (zipentry != null) {
+                    //for each entry to be extracted
+                    String entryName = destinationname + zipentry.getName();
+                    entryName = entryName.replace('/', File.separatorChar);
+                    entryName = entryName.replace('\\', File.separatorChar);
+                    System.out.println("entryname " + entryName);
+                    int n;
+                    FileOutputStream fileoutputstream;
+                    File newFile = new File(entryName);
+                    if (zipentry.isDirectory()) {
+                        if (!newFile.mkdirs()) {
+                            break;
+                        }
+                        zipentry = zipinputstream.getNextEntry();
+                        continue;
+                    }
+                    
+                    fileoutputstream = new FileOutputStream(entryName);
+                    
+                    while ((n = zipinputstream.read(buf, 0, 1024)) > -1) {
+                        fileoutputstream.write(buf, 0, n);
+                    }
+                    
+                    fileoutputstream.close();
+                    zipinputstream.closeEntry();
+                    zipentry = zipinputstream.getNextEntry();
+                    
+                }//while
+                
+                zipinputstream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         
