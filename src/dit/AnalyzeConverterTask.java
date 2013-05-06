@@ -47,6 +47,7 @@ public class AnalyzeConverterTask implements Runnable {
             //Valid values of filetype are ANALYZE, NIFTI, NIFTI_PAIR,
             //                             ANALYZE_GZ, NIFTI_GZ, NIFTI_PAIR_GZ
             "NIFTI", "input", "outputdir + filename"};
+        //System.out.println(command.toString());
     }
 
     /**
@@ -83,6 +84,13 @@ public class AnalyzeConverterTask implements Runnable {
             String outFilename = inputPairs.get(ndx).getParent()+"/" + FileUtils.getName(inputPairs.get(ndx)) + ".nii";
             command[3] = outFilename;
 
+            System.out.print("Command: ");;
+            for(int i=0;i<command.length;i++)
+            {
+                System.out.print(command[i]+"  ");
+            }
+            System.out.println();
+            
             // Capture output of the fslchfiletype process
             java.lang.ProcessBuilder pb = new ProcessBuilder(command);
             pb.redirectErrorStream(true);

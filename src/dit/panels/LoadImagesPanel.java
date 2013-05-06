@@ -257,6 +257,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         }
         
         if (dicomDirs.size() > 0 || analyzePairs.size() > 0) {
+            System.out.println("Size:"+dicomDirs.size() + "  "+ analyzePairs.size());
             nextPanel = new ConvertingProgressPanel(dicomDirs, analyzePairs);
         } else {
             nextPanel = new LoadDemoPanel();
