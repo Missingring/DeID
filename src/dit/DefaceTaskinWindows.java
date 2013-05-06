@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JProgressBar;
@@ -14,16 +16,16 @@ import javax.swing.JTextField;
  *
  * @author Christian Prescott
  */
-public class DefaceTask implements Runnable, IDefaceTask {
+public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
 
     private String outputDir = DeidData.outputPath + "betOut/";
-    private JProgressBar progressBar = null;
     private JTextField detailText=null;
+    private JProgressBar progressBar = null;
     private ArrayList<File> inputImages;
     private String[] command;
 
-    public DefaceTask() throws RuntimeException{
-        super();
+    public DefaceTaskinWindows() throws RuntimeException{
+      //  super();
         
         // Establish OS dependent paths
         /*if(FileUtils.OS.isMac()){
@@ -40,7 +42,7 @@ public class DefaceTask implements Runnable, IDefaceTask {
         
         inputImages = new ArrayList<>();        
         command = new String[]{
-            DeidData.unpackedFileLocation.get("bet").getAbsolutePath(),
+            DeidData.unpackedFileLocation.get("robex.exe").getAbsolutePath(),
             // Depends on imtest and 
             // Requires fsl config file, change default output to NIFTI
             //Usage: 
@@ -59,7 +61,7 @@ public class DefaceTask implements Runnable, IDefaceTask {
             //-e,--mesh	generates brain surface as mesh in vtk format
             //-v,--verbose	switch on diagnostic messages
             //-h,--help	displays this help, then exits
-            "input", outputDir + "filename", "-f", DeidData.defaceThreshold};
+            "input", outputDir + "filename"};
     }
 
     /**
@@ -69,11 +71,6 @@ public class DefaceTask implements Runnable, IDefaceTask {
      */
     public void setProgressBar(JProgressBar bar) {
         progressBar = bar;
-    }
-    
-    public void setTextfield(JTextField field)
-    {
-        detailText=field;
     }
 
     /**
@@ -86,10 +83,15 @@ public class DefaceTask implements Runnable, IDefaceTask {
         inputImages.add(file);
     }
 
+     public void setTextfield(JTextField field)
+    {
+        detailText=field;
+    }
+    
     @Override
     public void run() {
         ArrayList<File> newFiles = new ArrayList<>();
-        String errorPatternStr = "ERROR";
+        String errorPatternStr = "Error";
         Pattern errorPattern = Pattern.compile(errorPatternStr);
 
         for (int ndx = 0; ndx < inputImages.size(); ndx++) {
@@ -106,40 +108,41 @@ public class DefaceTask implements Runnable, IDefaceTask {
             outFilename = outputDir + abParent.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "").replaceAll("/", "") + outFilename + ".nii" ;
             else outFilename = outputDir + outFilename + ".nii";
             System.out.println(outFilename);
-            command[2] = outFilename;
+            command[2] = outFilename.replace("/", "\\"); //windows use \ as path seperator
             // Overwrites existing files
+            
+             System.out.println("Command:");
+            for(String string:command)
+            {
+                 System.out.print(string+" ");
+            }
+             System.out.println();
             
             // Capture output of the bet process
             java.lang.ProcessBuilder pb = new ProcessBuilder(command);
             pb.redirectErrorStream(true);
+            pb.directory(DeidData.unpackedFileLocation.get("robex.exe").getParentFile());
+            
             Process defaceProc = null;
             boolean fileValid = true;
             try {
                 defaceProc = pb.start();
+                detailText.setText(detailText.getText()+"Begin defacing #"+ndx+ " image:\n");
             } catch (IOException ex) {
-                DEIDGUI.log("bet couldn't be started: " + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
+                DEIDGUI.log("Robex couldn't be started: " + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(defaceProc.getInputStream()));
             String line;
+            int lineNumber=0;
             try {
                 while ((line = br.readLine()) != null && !line.isEmpty()) {
-                    //System.out.println(line); // Print bet output
-                    Matcher errorMatcher = errorPattern.matcher(line);
-                    if (errorMatcher.find()) {
-                        // Sample bet errors:
-                        // ** ERROR (nifti_image_read): failed to find header file for './input2'
-                        //** ERROR: nifti_image_open(./input2): bad header info
-                        //ERROR: failed to open file ./input2
-                        //ERROR: Could not open image ./input2
-                        //Image Exception : #22 :: Failed to read volume ./input2.nii
-                        //terminate called after throwing an instance of 'RBD_COMMON::BaseException'
-                        //Abort trap
-
-                        DEIDGUI.log("BET error occurred: " + line, DEIDGUI.LOG_LEVEL.ERROR);
-                        fileValid = false;
-                    } else {
-                        DEIDGUI.log("unexpected bet output: " + line, DEIDGUI.LOG_LEVEL.WARNING);
+                    detailText.setText(detailText.getText()+"\t"+line+"\n");
+                    lineNumber++;
+                    float processProgress = (float) (ndx*9+lineNumber) / (float) (inputImages.size()*9);
+                    if (progressBar != null) {
+                        progressBar.setValue((int) (100 * processProgress));
                     }
+                    
                 }
             } catch (IOException ex) {}
             
@@ -150,7 +153,7 @@ public class DefaceTask implements Runnable, IDefaceTask {
                 // If the image was associated with a dicom, pair the 
                 // new file with that source.
                 if(DeidData.NiftiConversionSourceTable.containsKey(defaceSource)){
-                    DeidData.NiftiConversionSourceTable.put(newFile, 
+                    DeidData.NiftiConversionSourceTable.put(newFile,
                             DeidData.NiftiConversionSourceTable.get(defaceSource));
                     DeidData.NiftiConversionSourceTable.remove(defaceSource);
                 }
@@ -158,10 +161,7 @@ public class DefaceTask implements Runnable, IDefaceTask {
                 // Add the image to deientified files list.
                 DeidData.deidentifiedFiles.add(newFile);
             }
-            float processProgress = (float) ndx / (float) inputImages.size();
-            if (progressBar != null) {
-                progressBar.setValue((int) (100 * processProgress));
-            }
+           
         }
 
         // Advance to next panel

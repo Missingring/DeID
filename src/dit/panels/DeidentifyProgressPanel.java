@@ -2,9 +2,11 @@ package dit.panels;
 
 import dit.DEIDGUI;
 import dit.DefaceTask;
+import dit.DefaceTaskinWindows;
 import dit.DeidData;
 import dit.DemographicTableModel;
 import dit.FileUtils;
+import dit.IDefaceTask;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -187,15 +189,25 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
         Iterator<File> it = DeidData.niftiFiles.iterator();
         
         try {
-            DefaceTask defaceTask = new DefaceTask();
+            IDefaceTask defaceTask = null;
+            if(FileUtils.OS.isWindows())
+            {
+                System.out.println("Windows Deface:");
+                defaceTask=new DefaceTaskinWindows();
+            }
+            else
+            {
+                defaceTask=new DefaceTask();
+            }
             defaceTask.setProgressBar(jProgressBar1);
+            defaceTask.setTextfield(txtDetail);
             while (it.hasNext()) {
                 File curImage = it.next();
                 defaceTask.addInputImage(curImage);
             }
             
             synchronized (defaceTask) {
-                new Thread(defaceTask).start();
+                new Thread((Runnable) defaceTask).start();
                 try {
                     defaceTask.wait();
                 } catch (InterruptedException ex) {
@@ -206,6 +218,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
             
             DEIDGUI.log("Defaced images");
         } catch (RuntimeException e) {
+            e.printStackTrace();
             DEIDGUI.log("Defacing couldn't be started: " + e.getMessage(),
                     DEIDGUI.LOG_LEVEL.ERROR);
         }
@@ -549,18 +562,22 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
 
         jLabel2 = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
+        txtDetail = new javax.swing.JTextField();
 
         jLabel2.setText("<html><p>Deidentifying image IDs...</p><p>&nbsp;</p></html>");
+
+        txtDetail.setText("This process may takes several minutes.");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jProgressBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
-                    .add(layout.createSequentialGroup()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(txtDetail)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jProgressBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -572,12 +589,15 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                 .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jProgressBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(236, Short.MAX_VALUE))
+                .add(18, 18, 18)
+                .add(txtDetail, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 188, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(30, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JLabel jLabel2;
     private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JTextField txtDetail;
     // End of variables declaration//GEN-END:variables
 
     @Override

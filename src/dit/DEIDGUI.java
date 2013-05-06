@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
-import java.util.zip.*; 
+import java.util.zip.*;
 import java.util.Iterator;
 /**
  *
@@ -28,32 +28,32 @@ public class DEIDGUI extends javax.swing.JFrame {
      */
     public DEIDGUI() {
         initComponents();
-      //  this.setTitle("Deidentification Tool- " + title);
-        // Set DeID's platform-dependent output location 
+        //  this.setTitle("Deidentification Tool- " + title);
+        // Set DeID's platform-dependent output location
         jButtonMisHelp.setVisible(false);
         if(FileUtils.OS.isMac() || FileUtils.OS.isUnix()){
             DeidData.outputPath = "/tmp/deid_output/";
         } else if(FileUtils.OS.isWindows()){
-            DeidData.outputPath = "/Temp/deid_output/";
+            DeidData.outputPath = "E:\\Temp\\deid_output\\";
         } else if(FileUtils.OS.isUnix()){
             DeidData.outputPath = "/tmp/deid_output/";
         } else {
-            DEIDGUI.log("Couldn't identify platform in \"" + FileUtils.OS.getOS() 
+            DEIDGUI.log("Couldn't identify platform in \"" + FileUtils.OS.getOS()
                     + "\", local output directory will be used.", LOG_LEVEL.WARNING);
             DeidData.outputPath = "deid_output/";
         }
         
         //TODO: remove these
-//        DeidData.UserFullName = "Christian james precott";
-//        DeidData.UserInstitution = "Clemson U";
-//        DeidData.inputFiles = new Vector<File>(Arrays.asList(new File[]{new File("/Users/christianprescott/Desktop/dataset/152T1.nii")}));
-
+        //        DeidData.UserFullName = "Christian james precott";
+        //        DeidData.UserInstitution = "Clemson U";
+        //        DeidData.inputFiles = new Vector<File>(Arrays.asList(new File[]{new File("/Users/christianprescott/Desktop/dataset/152T1.nii")}));
+        
         File logFile = new File(DeidData.outputPath + "deid.log");
         errWindow = new ErrorFrame(logFile);
         InitLogFile(logFile);
-
+        
         this.addWindowListener(new WindowAdapter() {
-
+            
             @Override
             public void windowClosing(WindowEvent e) {
                 DEIDGUI.log("Exiting");
@@ -70,10 +70,10 @@ public class DEIDGUI extends javax.swing.JFrame {
         
         // Copy tools to the tmp directory
         unpackTools();
-
+        
         pagePanel.setLayout(new java.awt.BorderLayout());
         pagePanel.add(new UserPanel());
-
+        
         log("Deidentification tool GUI initialized");
         // TODO: File move does not work on linux
         // TODO: Mac, linux, windows(.bat) shell scripts
@@ -81,7 +81,7 @@ public class DEIDGUI extends javax.swing.JFrame {
         // TODO: Linux compatibility
         // TODO: Manual image-ID matching
         // TODO: Update progress bar for image montage and tar creation
-        // TODO: VM option -Xdock:name=DeID sets the name displayed in the Apple menu bar. 
+        // TODO: VM option -Xdock:name=DeID sets the name displayed in the Apple menu bar.
         // TODO: use -Xmx256m VM option to ensure DeID is allowed the memory
         //    it needs to display images. Even more memory needed in some cases.
         // TODO: Link to help page with overview of functions and errors
@@ -93,10 +93,10 @@ public class DEIDGUI extends javax.swing.JFrame {
         // TODO: default FTP server credentials for MUSC's server
         // TODO: Ability to cancel deface and tar and FTP procedures
         //    (See conversion tasks for example implementation)
-        // TODO: file cleanup on start or exit/completion? The temp folder is cleared 
-        //    on shutdown anyway, but it could grow to be very large. Simply 
+        // TODO: file cleanup on start or exit/completion? The temp folder is cleared
+        //    on shutdown anyway, but it could grow to be very large. Simply
         //    delete all files in /tmp/deid_output except log file
-        // TODO: fslchfiletype and bet will have to have Windows/Unix specific 
+        // TODO: fslchfiletype and bet will have to have Windows/Unix specific
         //    builds because they need to know the absolute path of the tools
         // TODO: It would be nice to refactor the fields in DeidData into a nice
         //    DeidImage class, with data about each image's source and result of
@@ -104,10 +104,10 @@ public class DEIDGUI extends javax.swing.JFrame {
         // TODO: Error frame sometimes displays blank list panel, possible thread-related error?
     }
     
-  /* public static void settheTitle(){
-       this.setTitle("Deidentification Tool- " + title); 
-       
-    }*/
+    /* public static void settheTitle(){
+     * this.setTitle("Deidentification Tool- " + title);
+     * 
+     * }*/
     private static String newline = "\n";
     private void InitLogFile(File logFile) {
         newline = System.getProperty("line.separator");
@@ -133,7 +133,7 @@ public class DEIDGUI extends javax.swing.JFrame {
         log(dateLine + "#");
         log("########################################");
     }
-
+    
     public static void log(String line){
         log(line, LOG_LEVEL.INFO);
     }
@@ -160,33 +160,13 @@ public class DEIDGUI extends javax.swing.JFrame {
                 Logger.getLogger(DEIDGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-    }
-
-    private void unpackTools() {
-        // Extract only the tools for this platform
-        File outputDir; 
-        String osPrefix, outputPath;
-        if(FileUtils.OS.isMac()){
-            outputPath = "/tmp/";
-            osPrefix = "osx";
-        } else if(FileUtils.OS.isWindows()){
-            outputPath = "/Temp/";
-            osPrefix = "win";
-            // Windows executables work fine without the .exe extension, no
-            // need to concatenate it to unpacked files.
-        } else if(FileUtils.OS.isUnix()){
-            outputPath = "/tmp/";
-            osPrefix = "nix";
-        } else {
-            DEIDGUI.log("Couldn't identify platform in \"" + FileUtils.OS.getOS() 
-                    + "\", unix tools will be used.", LOG_LEVEL.WARNING);
-            outputPath = "/tmp/";
-            osPrefix = "nix";
-        }
-        outputDir = new File(outputPath + "dit_tools");
         
-            String[] toolNames = new String[]{
+    }
+    
+    private void unpackTools() {
+        
+         String[] toolNames = new String[]{
+            "robex.exe",
             "bet",
             "bet2",
             "dcm2nii",
@@ -216,29 +196,54 @@ public class DEIDGUI extends javax.swing.JFrame {
             "libstdc++.so.6.0.14",
             "libz.so.1.2.3.4",
             "libznz.so.2.0.0",
-            "libnewmat.so.10.gz", 
+            "libnewmat.so.10.gz",
             "libniftiio.so.2.gz",
             "libstdc++.so.6.gz",
             "libz.so.1.gz",
-            "libznz.so.2.gz", 
+            "libznz.so.2.gz",
             "default.ini"
-            };
-       
-       /* String[] toolNames = new String[]{
-            "bet",
-            "bet2",
-            "dcm2nii",
-            "fslchfiletype",
-            "fslchfiletype_exe",
-            "imtest",
-            "remove_ext",};*/
+        };
         
-        log("Unpacking " + toolNames.length + " " + osPrefix + 
+        /* String[] toolNames = new String[]{
+         * "bet",
+         * "bet2",
+         * "dcm2nii",
+         * "fslchfiletype",
+         * "fslchfiletype_exe",
+         * "imtest",
+         * "remove_ext",};*/
+        
+        // Extract only the tools for this platform
+        File outputDir;
+        String osPrefix, outputPath;
+        if(FileUtils.OS.isMac()){
+            outputPath = "/tmp/";
+            osPrefix = "osx";
+        } else if(FileUtils.OS.isWindows()){
+            outputPath = "E:\\Temp\\";
+            osPrefix = "win";
+            toolNames = new String[]{"robex.exe"};
+            // Windows executables work fine without the .exe extension, no
+            // need to concatenate it to unpacked files.
+        } else if(FileUtils.OS.isUnix()){
+            outputPath = "/tmp/";
+            osPrefix = "nix";
+        } else {
+            DEIDGUI.log("Couldn't identify platform in \"" + FileUtils.OS.getOS()
+                    + "\", unix tools will be used.", LOG_LEVEL.WARNING);
+            outputPath = "/tmp/";
+            osPrefix = "nix";
+        }
+        outputDir = new File(outputPath + "dit_tools");
+        
+       
+        
+        log("Unpacking " + toolNames.length + " " + osPrefix +
                 " tools to " + outputDir);
         if (!outputDir.exists()) {
             outputDir.mkdirs();
         }
-
+        
         int unpackCount = 0, existCount = 0;
         for (String toolName : toolNames) {
             File oFile = new File(outputDir.getAbsolutePath() + File.separator + toolName);
@@ -249,7 +254,7 @@ public class DEIDGUI extends javax.swing.JFrame {
                         "tools/" + osPrefix + "_" + toolName);
                 FileOutputStream oStream = null;
                 if (rStream == null) {
-                    DEIDGUI.log("Unable to get ResourceStream for " + "tools/" + 
+                    DEIDGUI.log("Unable to get ResourceStream for " + "tools/" +
                             osPrefix + "_" + toolName + ", some deidentificati"
                             + "on tasks may fail", DEIDGUI.LOG_LEVEL.ERROR);
                 } else {
@@ -274,7 +279,7 @@ public class DEIDGUI extends javax.swing.JFrame {
                                 + "may fail: " + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
                     } catch (IOException ex) {
                         DEIDGUI.log("Unpacking " + toolName + " failed, some "
-                                + "deidentification tasks may fail: " + 
+                                + "deidentification tasks may fail: " +
                                 ex.getMessage(), DEIDGUI.LOG_LEVEL.WARNING);
                     } finally {
                         if (oStream != null) {
@@ -302,31 +307,31 @@ public class DEIDGUI extends javax.swing.JFrame {
         if(existCount > 0){
             log(existCount + " tools were already in place");
         }
-       String gzfiles[] = new String[]{"/tmp/dit_tools/libnewmat.so.10", "/tmp/dit_tools/libniftiio.so.2","/tmp/dit_tools/libstdc++.so.6", "/tmp/dit_tools/libz.so.1",
+        String gzfiles[] = new String[]{"/tmp/dit_tools/libnewmat.so.10", "/tmp/dit_tools/libniftiio.so.2","/tmp/dit_tools/libstdc++.so.6", "/tmp/dit_tools/libz.so.1",
             "/tmp/dit_tools/libznz.so.2"};
-       for(String gzfile:gzfiles){
+        for(String gzfile:gzfiles){
             try{
-            FileInputStream instream= new FileInputStream(gzfile+".gz");
-            GZIPInputStream ginstream =new GZIPInputStream(instream);
-            FileOutputStream outstream = new FileOutputStream(gzfile);
-            byte[] buf = new byte[1024]; 
-            int len;
-            while ((len = ginstream.read(buf)) > 0) 
-            {
-                outstream.write(buf, 0, len);
-            }
-             ginstream.close();
-             outstream.close();
+                FileInputStream instream= new FileInputStream(gzfile+".gz");
+                GZIPInputStream ginstream =new GZIPInputStream(instream);
+                FileOutputStream outstream = new FileOutputStream(gzfile);
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = ginstream.read(buf)) > 0)
+                {
+                    outstream.write(buf, 0, len);
+                }
+                ginstream.close();
+                outstream.close();
             } catch(IOException e){
-            
-            System.out.println("failed:"+e);
+                
+                System.out.println("failed:"+e);
             }
-       }
-    
-            
-    
+        }
+        
+        
+        
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -458,70 +463,70 @@ public class DEIDGUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     public static void advance() {
         continueButton.setEnabled(true);
         backButton.setEnabled(true);
-
+        
         try{
             WizardPanel nextPanel = ((WizardPanel) pagePanel.getComponent(0)).getNextPanel();
             pagePanel.remove(0);
             pagePanel.add((JPanel) nextPanel);
-            pagePanel.revalidate();            
+            pagePanel.revalidate();
             log(">>> Advanced to " + nextPanel.getClass().getSimpleName());
         } catch (Exception e){
             e.printStackTrace();
             log("Failed to advance: " + e.getMessage(), LOG_LEVEL.ERROR);
         }
     }
-
+    
     public static void previous() {
         continueButton.setEnabled(true);
         backButton.setEnabled(true);
-
+        
         try{
             WizardPanel prevPanel = ((WizardPanel) pagePanel.getComponent(0)).getPreviousPanel();
             pagePanel.remove(0);
             pagePanel.add((JPanel) prevPanel);
             pagePanel.revalidate();
-        log("<<< Back to " + prevPanel.getClass().getSimpleName());
+            log("<<< Back to " + prevPanel.getClass().getSimpleName());
         } catch (Exception e){
             log("Failed to go back: " + e.getMessage(), LOG_LEVEL.ERROR);
         }
-
+        
     }
-
+    
     private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
         advance();
     }//GEN-LAST:event_continueButtonActionPerformed
-
+    
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         previous();
     }//GEN-LAST:event_backButtonActionPerformed
-
+    
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
                 new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }//GEN-LAST:event_cancelButtonActionPerformed
-
+    
     private void helpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpButtonActionPerformed
         // TODO add your handling code here:
         help = new HelpManualFrame(title);
         help.pack();
         help.setVisible(true);
     }//GEN-LAST:event_helpButtonActionPerformed
-
+    
     private void errlogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_errlogButtonActionPerformed
         // TODO add your handling code here:
         if (!DeidData.errorlog.isEmpty()){
-        Iterator vItr = DeidData.errorlog.iterator();
-        while(vItr.hasNext())
-        {
-            log(vItr.next().toString(), LOG_LEVEL.WARNING);
-        }
+            Iterator vItr = DeidData.errorlog.iterator();
+            while(vItr.hasNext())
+            {
+                log(vItr.next().toString(), LOG_LEVEL.WARNING);
+            }
         }
     }//GEN-LAST:event_errlogButtonActionPerformed
-
+    
     private void jButtonMisHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonMisHelpActionPerformed
         // TODO add your handling code here:
         mhf = new misHelpFrame();
@@ -529,18 +534,18 @@ public class DEIDGUI extends javax.swing.JFrame {
         
         mhf.setVisible(true);
     }//GEN-LAST:event_jButtonMisHelpActionPerformed
-
+    
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {        
+    public static void main(String args[]) {
         if(FileUtils.OS.isMac()){
             // Use the Mac OS X Menu bar instead of the JFrame one
             System.setProperty("apple.laf.useScreenMenuBar", "true");
             // This name setting does not work
             System.setProperty("com.apple.mrj.application.apple.menu.about.name", "DeID");
         }
-
+        
         /*
          * Set the OS look and feel
          */
@@ -558,24 +563,24 @@ public class DEIDGUI extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(DEIDGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        
         /*
          * Create and display the form
          */
         
         java.awt.EventQueue.invokeLater(new Runnable() {
-
+            
             @Override
             public void run() {
                 new DEIDGUI().setVisible(true);
                 
-//                DEIDGUI.log("This is a super long warning, it's just so warnful"
-//                        + " file /Users/christian/Desktop/image.jpeg", 
-//                        LOG_LEVEL.WARNING);
-//                DEIDGUI.log("This is a super long error, it is similar in its "
-//                        + "longfulness to the previous warning file "
-//                        + "/Users/christian/Desktop/image.jpeg", 
-//                        LOG_LEVEL.ERROR);
+                //                DEIDGUI.log("This is a super long warning, it's just so warnful"
+                //                        + " file /Users/christian/Desktop/image.jpeg",
+                //                        LOG_LEVEL.WARNING);
+                //                DEIDGUI.log("This is a super long error, it is similar in its "
+                //                        + "longfulness to the previous warning file "
+                //                        + "/Users/christian/Desktop/image.jpeg",
+                //                        LOG_LEVEL.ERROR);
             }
         });
     }

@@ -256,7 +256,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
             }
         }
         
-        if (dicomDirs.size() > 0 || analyzePairs.size() > 0) {
+        if ((dicomDirs.size() > 0 || analyzePairs.size() > 0)&& !FileUtils.OS.isWindows()) { // library on windows can handle img/hdr without converting.
             nextPanel = new ConvertingProgressPanel(dicomDirs, analyzePairs);
         } else {
             nextPanel = new LoadDemoPanel();
