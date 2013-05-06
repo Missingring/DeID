@@ -8,15 +8,17 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JProgressBar;
+import javax.swing.JTextField;
 
 /**
  *
  * @author Christian Prescott
  */
-public class DefaceTask implements Runnable {
+public class DefaceTask implements Runnable, IDefaceTask {
 
     private String outputDir = DeidData.outputPath + "betOut/";
     private JProgressBar progressBar = null;
+    private JTextField detailText=null;
     private ArrayList<File> inputImages;
     private String[] command;
 
@@ -36,7 +38,7 @@ public class DefaceTask implements Runnable {
             outDir.mkdirs();
         }
         
-        inputImages = new ArrayList<File>();        
+        inputImages = new ArrayList<>();        
         command = new String[]{
             DeidData.unpackedFileLocation.get("bet").getAbsolutePath(),
             // Depends on imtest and 
@@ -68,6 +70,11 @@ public class DefaceTask implements Runnable {
     public void setProgressBar(JProgressBar bar) {
         progressBar = bar;
     }
+    
+    public void setTextfield(JTextField field)
+    {
+        detailText=field;
+    }
 
     /**
      * Add directories with DICOM images to be converted by this task.
@@ -81,7 +88,7 @@ public class DefaceTask implements Runnable {
 
     @Override
     public void run() {
-        ArrayList<File> newFiles = new ArrayList<File>();
+        ArrayList<File> newFiles = new ArrayList<>();
         String errorPatternStr = "ERROR";
         Pattern errorPattern = Pattern.compile(errorPatternStr);
 
