@@ -109,8 +109,16 @@ public class DefaceTask implements Runnable, IDefaceTask {
             command[2] = outFilename;
             // Overwrites existing files
             
+            System.out.print("Command "+ndx+" :");
+            for(int i=0;i<command.length;i++)
+            {
+                 System.out.print(command[i]+" ");
+            }
+            System.out.println();
+            
             // Capture output of the bet process
             java.lang.ProcessBuilder pb = new ProcessBuilder(command);
+            pb.directory(DeidData.unpackedFileLocation.get("bet").getParentFile());
             pb.redirectErrorStream(true);
             Process defaceProc = null;
             boolean fileValid = true;

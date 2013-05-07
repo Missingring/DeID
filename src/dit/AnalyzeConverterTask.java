@@ -84,16 +84,18 @@ public class AnalyzeConverterTask implements Runnable {
             String outFilename = inputPairs.get(ndx).getParent()+"/" + FileUtils.getName(inputPairs.get(ndx)) + ".nii";
             command[3] = outFilename;
 
-            System.out.print("Command: ");;
+            DEIDGUI.log("fslchfiletype command: ", DEIDGUI.LOG_LEVEL.INFO);
             for(int i=0;i<command.length;i++)
             {
-                System.out.print(command[i]+"  ");
+                DEIDGUI.log(command[i]+" ", DEIDGUI.LOG_LEVEL.INFO);
+                System.out.print(command[i]+" ");
             }
             System.out.println();
             
             // Capture output of the fslchfiletype process
             java.lang.ProcessBuilder pb = new ProcessBuilder(command);
             pb.redirectErrorStream(true);
+            pb.directory(DeidData.unpackedFileLocation.get("fslchfiletype").getParentFile());
             Process analyzeConProc = null;
             boolean fileValid = true;
             try {

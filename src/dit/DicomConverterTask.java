@@ -128,6 +128,7 @@ public class DicomConverterTask implements Runnable {
             // Capture output of the dcm2nii process
             java.lang.ProcessBuilder pb = new ProcessBuilder(command);
             pb.redirectErrorStream(true);
+            pb.directory(DeidData.unpackedFileLocation.get("dcm2nii").getParentFile());
             Process dicomConProc = null;
             try {
                 dicomConProc = pb.start();
