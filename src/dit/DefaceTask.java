@@ -164,6 +164,7 @@ public class DefaceTask implements Runnable, IDefaceTask {
                 }
                 
                 // Add the image to deientified files list.
+                System.out.println("Deface File:"+newFile.getAbsolutePath());
                 DeidData.deidentifiedFiles.add(newFile);
             }
             float processProgress = (float) ndx / (float) inputImages.size();

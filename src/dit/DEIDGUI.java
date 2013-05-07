@@ -219,6 +219,18 @@ public class DEIDGUI extends javax.swing.JFrame {
         if(FileUtils.OS.isMac()){
             outputPath = "/tmp/";
             osPrefix = "osx";
+            toolNames=new String[]{
+        
+            "bet",
+            "bet2",
+            "dcm2nii",
+            "mricron",
+            "mricron_64",
+            "fslchfiletype",
+            "fslchfiletype_exe",
+            "imtest",
+            "remove_ext",
+        }; 
         } else if(FileUtils.OS.isWindows()){
             outputPath = "\\Temp\\";
             osPrefix = "win";
