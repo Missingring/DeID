@@ -34,7 +34,7 @@ public class DEIDGUI extends javax.swing.JFrame {
         if(FileUtils.OS.isMac() || FileUtils.OS.isUnix()){
             DeidData.outputPath = "/tmp/deid_output/";
         } else if(FileUtils.OS.isWindows()){
-            DeidData.outputPath = "E:\\Temp\\deid_output\\";
+            DeidData.outputPath = "\\Temp\\deid_output\\";
         } else if(FileUtils.OS.isUnix()){
             DeidData.outputPath = "/tmp/deid_output/";
         } else {
@@ -220,7 +220,7 @@ public class DEIDGUI extends javax.swing.JFrame {
             outputPath = "/tmp/";
             osPrefix = "osx";
         } else if(FileUtils.OS.isWindows()){
-            outputPath = "E:\\Temp\\";
+            outputPath = "\\Temp\\";
             osPrefix = "win";
             toolNames = new String[]{"robex.zip"};
             // Windows executables work fine without the .exe extension, no
