@@ -104,6 +104,7 @@ public class ReDefaceTask implements Runnable{
             // Capture output of the bet process
             java.lang.ProcessBuilder pb = new ProcessBuilder(command);
             pb.redirectErrorStream(true);
+            pb.directory(DeidData.unpackedFileLocation.get("bet").getParentFile());
             Process defaceProc = null;
             boolean fileValid = true;
             try {

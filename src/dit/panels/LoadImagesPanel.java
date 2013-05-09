@@ -248,15 +248,14 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                 // Use the parent directory of the file because dcm2nii will do
                 // so anyway. Specifying each file is redundant.
                 dicomDirs.add(curImage.getParentFile());
-            } else if (extension.equals(FileUtils.Extensions.analyzehdr)
-                    || extension.equals(FileUtils.Extensions.analyzeimg)) {
-                analyzePairs.add(FileUtils.stripExtension(curImage));
-            } else if (extension.equals(FileUtils.Extensions.nifti)||extension.equals(FileUtils.Extensions.niftigz)) {
+            } else   // bet can handle hdr/img/nii files
+                     //Conversion will never be used.
+            {
                 DeidData.niftiFiles.add(curImage);
             }
         }
         
-        if ((dicomDirs.size() > 0 || analyzePairs.size() > 0)&& !FileUtils.OS.isWindows()) { // library on windows can handle img/hdr without converting.
+        if (dicomDirs.size() > 0 && !FileUtils.OS.isWindows()) { // library on windows can handle img/hdr without converting.
             nextPanel = new ConvertingProgressPanel(dicomDirs, analyzePairs);
         } else {
             nextPanel = new LoadDemoPanel();
