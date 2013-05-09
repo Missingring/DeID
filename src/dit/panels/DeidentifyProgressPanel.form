@@ -57,7 +57,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtDetail">
       <Properties>
-        <Property name="text" type="java.lang.String" value="This process may takes several minutes."/>
+        <Property name="text" type="java.lang.String" value="This process may take several minutes."/>
       </Properties>
     </Component>
   </SubComponents>

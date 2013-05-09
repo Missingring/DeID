@@ -566,7 +566,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
 
         jLabel2.setText("<html><p>Deidentifying image IDs...</p><p>&nbsp;</p></html>");
 
-        txtDetail.setText("This process may takes several minutes.");
+        txtDetail.setText("This process may take several minutes.");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
