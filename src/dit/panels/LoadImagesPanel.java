@@ -199,8 +199,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         ind = new int[DeidData.inputFiles.size()];
         for(int i = 0; i< DeidData.inputFiles.size();i++ )
         {
-            ind[i] = i;
-            
+            ind[i] = i;            
         }
         jListImages.setSelectedIndices(ind);
         jLabel2.setText(DeidData.inputFiles.size()+" line(s) selected.");
