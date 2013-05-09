@@ -1,6 +1,10 @@
 package dit.panels;
 
 import dit.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.*;
 import java.util.Arrays;
@@ -12,6 +16,8 @@ import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
 import java.lang.String;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -33,7 +39,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         jListImages.setListData(DeidData.inputFiles);
         
         
-        jButton2.setVisible(false);
+        btnRemovedAll.setVisible(false);
         
         jListImages.addListSelectionListener(new ListSelectionListener(){
             @Override  public void valueChanged(ListSelectionEvent e){
@@ -56,22 +62,22 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jButtonLoadImages = new javax.swing.JButton();
+        btnAddFiles = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jListImages = new javax.swing.JList();
         jButtonRemove = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnSelectAll = new javax.swing.JButton();
+        btnRemovedAll = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        btnAddDir = new javax.swing.JButton();
 
         jLabel1.setText("<html><p>Select images or directories of images to de-identify. Images may be in DICOM, Analyze, or NIfTI format. DICOM and Analyze files will be converted to NIfTI.</p><p>&nbsp;</p></html>");
 
-        jButtonLoadImages.setText("Add images...");
-        jButtonLoadImages.addActionListener(new java.awt.event.ActionListener() {
+        btnAddFiles.setText("Add images...");
+        btnAddFiles.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonLoadImagesActionPerformed(evt);
+                btnAddFilesActionPerformed(evt);
             }
         });
 
@@ -84,17 +90,17 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
             }
         });
 
-        jButton1.setText("Select All");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSelectAll.setText("Select All");
+        btnSelectAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSelectAllActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Clear All");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnRemovedAll.setText("Clear All");
+        btnRemovedAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnRemovedAllActionPerformed(evt);
             }
         });
 
@@ -102,10 +108,10 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
 
         jLabel3.setText("0 images loaded");
 
-        jButton3.setText("Add directories...");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnAddDir.setText("Add directories...");
+        btnAddDir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnAddDirActionPerformed(evt);
             }
         });
 
@@ -121,9 +127,9 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
-                                .add(jButtonLoadImages)
+                                .add(btnAddFiles)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 123, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .add(btnAddDir, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 123, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                             .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 207, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
@@ -133,9 +139,9 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                                 .add(0, 4, Short.MAX_VALUE)
                                 .add(jButtonRemove)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jButton1)
+                                .add(btnSelectAll)
                                 .add(12, 12, 12)
-                                .add(jButton2)
+                                .add(btnRemovedAll)
                                 .add(12, 12, 12)))))
                 .addContainerGap())
         );
@@ -146,17 +152,17 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                 .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jButtonLoadImages)
+                    .add(btnAddFiles)
                     .add(jButtonRemove)
-                    .add(jButton1)
-                    .add(jButton2)
-                    .add(jButton3))
+                    .add(btnSelectAll)
+                    .add(btnRemovedAll)
+                    .add(btnAddDir))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel2)
                     .add(jLabel3))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -180,10 +186,11 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         
     }
     //private Vector<File> displayedFiles = new Vector<File>();
-    private void jButtonLoadImagesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoadImagesActionPerformed
+    private void btnAddFilesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFilesActionPerformed
         final javax.swing.JFileChooser fc = new JFileChooser();
+         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         LoadImage(fc);   
-    }//GEN-LAST:event_jButtonLoadImagesActionPerformed
+    }//GEN-LAST:event_btnAddFilesActionPerformed
     
     private void jButtonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoveActionPerformed
         Object[] selection = jListImages.getSelectedValues();
@@ -193,7 +200,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         jLabel2.setText("No line is selected.");
     }//GEN-LAST:event_jButtonRemoveActionPerformed
     
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnSelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectAllActionPerformed
         // TODO add your handling code here:
         int ind[];
         ind = new int[DeidData.inputFiles.size()];
@@ -203,25 +210,34 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         }
         jListImages.setSelectedIndices(ind);
         jLabel2.setText(DeidData.inputFiles.size()+" line(s) selected.");
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnSelectAllActionPerformed
     
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnRemovedAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemovedAllActionPerformed
         // TODO add your handling code here:
         jListImages.clearSelection();
         jLabel2.setText("No line is selected.");
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnRemovedAllActionPerformed
     
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnAddDirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDirActionPerformed
         // TODO add your handling code here:
-        final javax.swing.JFileChooser fc = new JFileChooser();
+        final javax.swing.JFileChooser fc = new JFileChooser(){
+            public void approveSelection(){
+                if(getSelectedFile().isFile())
+                    return;
+                else
+                    super.approveSelection();
+            }
+        };
+        hideTextfield(fc.getComponents());
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         LoadImage(fc);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnAddDirActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButtonLoadImages;
+    private javax.swing.JButton btnAddDir;
+    private javax.swing.JButton btnAddFiles;
+    private javax.swing.JButton btnRemovedAll;
+    private javax.swing.JButton btnSelectAll;
     private javax.swing.JButton jButtonRemove;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -267,16 +283,36 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         return new UserPanel();
     }
     
+    
+    //this function make file selection textfield and label do not display
+    private void hideTextfield(Component[] jc){
+        for(int i=0;i<jc.length;i++)
+        {
+            Component c=jc[i];
+            if(c instanceof JTextField)
+            {
+                 c.setVisible(false);
+            }
+            
+            if(c instanceof JLabel)
+            {
+                String text=((JLabel)c).getText();
+                if(text.startsWith("Selection:"))
+                  c.getParent().setVisible(false);
+            }
+            if(c instanceof Container)
+                hideTextfield(((Container)c).getComponents());
+        }
+    }
+    
     private void LoadImage(JFileChooser fc)
     {
-        fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        
         fc.setMultiSelectionEnabled(true);
-        
-        
+       
         fc.setAcceptAllFileFilterUsed(false);
         fc.addChoosableFileFilter(new ImageFilter());
         String dirrec;
-        
         File filename = new File("/tmp/imagepath.txt");
         try{
             FileReader fr = new FileReader(filename);

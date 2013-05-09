@@ -24,9 +24,9 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jButtonLoadImages" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnAddFiles" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jButton3" min="-2" pref="123" max="-2" attributes="0"/>
+                              <Component id="btnAddDir" min="-2" pref="123" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jLabel2" alignment="0" min="-2" pref="207" max="-2" attributes="0"/>
                       </Group>
@@ -39,9 +39,9 @@
                               <EmptySpace min="0" pref="4" max="32767" attributes="0"/>
                               <Component id="jButtonRemove" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnSelectAll" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                              <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnRemovedAll" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -58,11 +58,11 @@
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jButtonLoadImages" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnAddFiles" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jButtonRemove" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnSelectAll" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnRemovedAll" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnAddDir" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -82,12 +82,12 @@
         <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;p&gt;Select images or directories of images to de-identify. Images may be in DICOM, Analyze, or NIfTI format. DICOM and Analyze files will be converted to NIfTI.&lt;/p&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;&lt;/html&gt;"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButtonLoadImages">
+    <Component class="javax.swing.JButton" name="btnAddFiles">
       <Properties>
         <Property name="text" type="java.lang.String" value="Add images..."/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonLoadImagesActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddFilesActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane2">
@@ -114,20 +114,20 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonRemoveActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="btnSelectAll">
       <Properties>
         <Property name="text" type="java.lang.String" value="Select All"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSelectAllActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton2">
+    <Component class="javax.swing.JButton" name="btnRemovedAll">
       <Properties>
         <Property name="text" type="java.lang.String" value="Clear All"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRemovedAllActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
@@ -140,12 +140,12 @@
         <Property name="text" type="java.lang.String" value="0 images loaded"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton3">
+    <Component class="javax.swing.JButton" name="btnAddDir">
       <Properties>
         <Property name="text" type="java.lang.String" value="Add directories..."/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddDirActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
