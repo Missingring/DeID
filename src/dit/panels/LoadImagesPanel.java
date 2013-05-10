@@ -339,7 +339,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                 {
                     Vector<File> imgfiles = new Vector<File>();
                     ReadAllFile(imgfiles, selectedFiles[idx].getAbsolutePath());
-                    DeidData.parentPath = selectedFiles[idx].getAbsolutePath();
+                    DeidData.parentPath = selectedFiles[idx].getParentFile().getAbsolutePath();
                     DeidData.addInputFile(imgfiles);
                 }
                 else{DeidData.addInputFile(selectedFiles[idx]);}
@@ -347,7 +347,6 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
             jListImages.setListData(DeidData.inputFiles);
             
             String dir = fc.getSelectedFile().getParent();
-            System.out.println(dir);
             
             
             if (!filename.exists()){

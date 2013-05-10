@@ -96,7 +96,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                 DeidData.demographicData.setValueAt(textField.getText(), i, j);
                 //correctDemoModel.setValueAt(textField.getText(), i, j);
                 jTable1.setValueAt(textField.getText(), i, j);
-                System.out.println("hit one"+i+" and " + j+textField.getText());
+              //  System.out.println("hit one"+i+" and " + j+textField.getText());
                 jTable1.clearSelection();
                 
             }
@@ -218,7 +218,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
             FileReader fr = new FileReader(filename);
             BufferedReader br = new BufferedReader(fr);
             dirrec = br.readLine();
-            System.out.println(dirrec);
+           // System.out.println(dirrec);
             if (dirrec!= null)
             {
                 fc.setCurrentDirectory(new File(dirrec));
@@ -240,7 +240,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                         JOptionPane.ERROR_MESSAGE);
             }
             String dir = fc.getSelectedFile().getParent();
-            System.out.println(dir);
+            //System.out.println(dir);
             
             
             if (!filename.exists()){
@@ -446,7 +446,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                 DeidData.demographicData.setValueAt(textField.getText(), i, j);
                 //correctDemoModel.setValueAt(textField.getText(), i, j);
                 jTable1.setValueAt(textField.getText(), i, j);
-                System.out.println("hit one"+i+" and " + j+textField.getText());
+               // System.out.println("hit one"+i+" and " + j+textField.getText());
                 jTable1.setDefaultRenderer(Object.class, new missingValueRenderer());
                 jTable1.clearSelection();
                 

@@ -135,7 +135,7 @@ public class DeidData {
 
     private static boolean isExistInputFile(File file)
     {
-        String fileName=file.getName();
+        String fileName=file.getAbsolutePath();
         if(fileName.endsWith("nii.gz"))
         {
             fileName=fileName.replace("nii.gz", "");

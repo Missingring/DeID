@@ -321,6 +321,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
       while (curFile.hasNext()){
           String x = FileUtils.getName((File)curFile.next());
           String y="";
+          System.out.println(x);
           if(DeidData.demographicData== DemographicTableModel.dummyModel)
               y=DeidData.IdTable.get(x);
           else

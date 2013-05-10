@@ -175,7 +175,7 @@ public class MatchTableModel extends AbstractTableModel {
        
        out = abParent.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "").replaceAll("/", "") + out;
     }
-    System.out.println(out);
+    System.out.println("out"+out);
     return out;
 
 } 
