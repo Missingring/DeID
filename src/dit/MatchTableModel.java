@@ -51,7 +51,7 @@ public class MatchTableModel extends AbstractTableModel {
             String filename = FileUtils.getName(curFile);
                         
             if (filename.equals(demoIDs[demoIDNdx])) {
-                dataList.add(new Object[]{fileintoTable(curFile), demoIDs[demoIDNdx], new Boolean(true)});
+                dataList.add(new Object[]{ManualMatchTableModel.displayIntoTable(curFile), demoIDs[demoIDNdx], new Boolean(true)});
                 DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[demoIDNdx] );
                 //System.out.println("Found ID "+ demoIDs[searchResult] +" "+dataList.size());
                 try {
@@ -64,7 +64,7 @@ public class MatchTableModel extends AbstractTableModel {
                 }
                 matchCount++;
             } else if (filename.compareTo((String) demoIDs[demoIDNdx]) < 0) {
-                dataList.add(new Object[]{fileintoTable(curFile), null, new Boolean(false)});
+                dataList.add(new Object[]{ManualMatchTableModel.displayIntoTable(curFile), null, new Boolean(false)});
                 //System.out.println("Did not find " + FileUtils.getName(curFile));
                 mismatchCount++;
                 try {

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 package dit;
-import com.sun.org.apache.bcel.internal.generic.LASTORE;
+
 import java.io.File;
 import java.util.*;
 import javax.swing.table.AbstractTableModel;
@@ -72,7 +72,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                     if (filename.indexOf(convertedID) >= 0) {
                         int properidx = getProperindex(filename.toString(),demoIDs, key);
                         if(ismulti){
-                            dataList.add(new Object[]{fileintoTable(curFile), demoIDs[properidx], new Boolean(true)});
+                            dataList.add(new Object[]{displayIntoTable(curFile), demoIDs[properidx], new Boolean(true)});
                             DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[properidx] );
                             matchCount++;
                             break;
@@ -80,7 +80,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                         else {
                             if(!id_exist.containsKey((String)demoIDs[properidx]))
                             {
-                                dataList.add(new Object[]{FileUtils.getName(curFile).toString(), demoIDs[properidx], new Boolean(true)});
+                                dataList.add(new Object[]{displayIntoTable(curFile).toString(), demoIDs[properidx], new Boolean(true)});
                                 DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[properidx] );
                                 id_exist.put((String)demoIDs[properidx], "True");
                                 matchCount++;
@@ -96,7 +96,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                 if (demoIDNdx == demoIDs.length)
                 {
                     //dataList.add(new Object[]{fileintoTable(curFile), null, new Boolean(false)});
-                    dataList.add(new Object[]{FileUtils.getName(curFile).toString(), null, new Boolean(false)});
+                    dataList.add(new Object[]{displayIntoTable(curFile).toString(), null, new Boolean(false)});
                     mismatchCount++;
                 }
                 
@@ -126,7 +126,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                 if (matchIndex >= 0 ) {
                     
                     if(ismulti){
-                        dataList.add(new Object[]{fileintoTable(curFile), demoIDs[matchIndex], new Boolean(true)});
+                        dataList.add(new Object[]{displayIntoTable(curFile), demoIDs[matchIndex], new Boolean(true)});
                         DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[matchIndex] );
                         matchCount++;
                     }
@@ -250,7 +250,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
         return count;
     }
     // this funcion should be consistant to line 322 in AuditPanel.java
-    public static String fileintoTable(File file){
+    private String fileintoTable(File file){
         String abParent = file.getParent();
         String out = FileUtils.getName(file).toString();
         if (!DeidData.parentPath.equals("none"))    {
@@ -260,7 +260,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
         return out;
     }
     
-    private String displayIntoTable(File file)
+    public static String displayIntoTable(File file)
     {
          String out = file.getAbsolutePath();
         if (!DeidData.parentPath.equals("none"))    {
