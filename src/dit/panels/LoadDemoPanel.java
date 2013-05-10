@@ -46,6 +46,12 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         jTable1.setRowSelectionAllowed(false);
         jTable1.setRowHeight(26);
         
+        if(DeidData.demographicData!=null)
+        {
+            System.out.println("Demo Not Null");
+            jTable1.setModel(DeidData.demographicData);
+        }
+        
         jTable1.getTableHeader().addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e) {

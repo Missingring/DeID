@@ -466,7 +466,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
     
     @Override
     public WizardPanel getPreviousPanel() {
-        DeidData.demographicData = null;
+        //DeidData.demographicData = null;
         DEIDGUI.jButtonMisHelp.setVisible(false);
         return new LoadDemoPanel();
     }

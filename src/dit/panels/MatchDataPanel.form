@@ -72,7 +72,7 @@
                   <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jScrollPane3" pref="275" max="32767" attributes="0"/>
+              <Component id="jScrollPane3" pref="260" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lblMatchStat" min="-2" max="-2" attributes="0"/>
           </Group>
