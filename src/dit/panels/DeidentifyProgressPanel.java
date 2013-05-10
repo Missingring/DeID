@@ -163,21 +163,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                 } else {
                     newId = original;
                 }
-                //System.out.println(original+"##"+newId);
-                /* String tmpnewId = newId;
-                 * String tmporiginal = original;
-                 * for(int i = 1; i <= countID; i++)
-                 * {
-                 * if (countID > 1)
-                 * {
-                 *
-                 * tmpnewId += "_" + Integer.toString(i);
-                 * tmporiginal += "_" + Integer.toString(i);
-                 * }
-                 * DeidData.IdTable.put(tmporiginal, tmpnewId);
-                 * tmpnewId = newId;
-                 * tmporiginal = original;
-                 * }*/
+             
                 DeidData.IdTable.put(original, newId);
                 //System.out.println(DeidData.IdTable.get(original));
             }

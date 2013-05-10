@@ -133,7 +133,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                     else {
                         if(!id_exist.containsKey((String)demoIDs[matchIndex]))
                         {
-                            dataList.add(new Object[]{fileintoTable(curFile), demoIDs[matchIndex], new Boolean(true)});
+                            dataList.add(new Object[]{displayIntoTable(curFile), demoIDs[matchIndex], new Boolean(true)});
                             DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[matchIndex] );
                             id_exist.put((String)demoIDs[matchIndex], "True");
                             matchCount++;                            
@@ -151,7 +151,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                                 {
                                     if(!id_exist.containsKey((String)newIds.get(matchIndex)) )
                                     {
-                                        dataList.add(new Object[]{fileintoTable(curFile), newIds.get(matchIndex), new Boolean(true)});
+                                        dataList.add(new Object[]{displayIntoTable(curFile), newIds.get(matchIndex), new Boolean(true)});
                                         DeidData.IdFilename.put(fileintoTable(curFile), (String)newIds.get(matchIndex) );
                                         id_exist.put((String)newIds.get(matchIndex), "True");
                                         matchCount++;
@@ -169,7 +169,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                             }
                             if(newIds.size()<1)
                             {
-                                dataList.add(new Object[]{fileintoTable(curFile), null, new Boolean(false)});
+                                dataList.add(new Object[]{displayIntoTable(curFile), null, new Boolean(false)});
                                 mismatchCount++;
                             }
                         }
@@ -180,7 +180,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                 
                 if (matchIndex < 0)
                 {
-                    dataList.add(new Object[]{fileintoTable(curFile), null, new Boolean(false)});
+                    dataList.add(new Object[]{displayIntoTable(curFile), null, new Boolean(false)});
                     mismatchCount++;
                 }
                 
@@ -250,13 +250,24 @@ public class ManualMatchTableModel extends AbstractTableModel{
         return count;
     }
     // this funcion should be consistant to line 322 in AuditPanel.java
-    private String fileintoTable(File file){
+    public static String fileintoTable(File file){
         String abParent = file.getParent();
         String out = FileUtils.getName(file).toString();
         if (!DeidData.parentPath.equals("none"))    {
             
             out = abParent.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "").replaceAll("/", "") + out;
         }
+        return out;
+    }
+    
+    private String displayIntoTable(File file)
+    {
+         String out = file.getAbsolutePath();
+        if (!DeidData.parentPath.equals("none"))    {
+            
+            out = out.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "");
+        }
+        
         return out;
     }
     private String keyconvertor(String key, String IDstr){
