@@ -347,14 +347,18 @@ public class ManualMatchTableModel extends AbstractTableModel{
         for(int i=0;i<demoIDs.length;i++)
         {
             String id=(String)demoIDs[i];
-            String lcs;
+            String lcs="";
             if(key!=null)
             {
-                lcs=LCS.LCSAlgorithm(keyconvertor(key,(String)demoIDs[i]), filenet);
+               if(filenet.contains((keyconvertor(key,(String)demoIDs[i]))))
+               {
+                   lcs=(keyconvertor(key,(String)demoIDs[i]));
+               }
             }
             else
             {
-                lcs=LCS.LCSAlgorithm(id, filenet);
+                if(filenet.contains((String)demoIDs[i]))
+                    lcs=(String)demoIDs[i];                
             }
             if(lcs.length()>lcsLength)
             {
