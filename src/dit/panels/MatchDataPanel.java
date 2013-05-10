@@ -3,6 +3,9 @@ package dit.panels;
 import dit.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -14,12 +17,12 @@ import javax.swing.ListSelectionModel;
  * @author christianprescott and angelo
  */
 public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
-    private MatchTableModel model;
+
     private ManualMatchTableModel mmodel;
-    private WarningJdialog wjd;
     private ManuallyCorrectFrame mcp;
     private removeImageFrame rif;
     private ManualCorrectTableModel cmodel;
+
     
     /**
      * Creates new form MatchDataPanel
@@ -32,6 +35,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         boolean isSearchByPath = cbxSearchByPath.isSelected();
         boolean isMultipleLink = cbxMultiMatch.isSelected();
         
+  
    
         if(DeidData.demographicData== DemographicTableModel.dummyModel)
         {
@@ -45,7 +49,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
             jTable2.setModel(mmodel);
             jTable2.getColumnModel().getColumn(2).setCellRenderer(new MatchStatusRenderer());
             //System.out.println(mmodel.getMismatchedImageCount()+" and " + mmodel.getMatchedImageCount());
-            
+           findUnmatchCount();
             if(mmodel.getMismatchedImageCount() > 0 || mmodel.getMatchedImageCount() == 0){
                 // Ensure that there is at least one matched image, and that
                 // there are no unmatched images, otherwise OK
@@ -126,6 +130,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
                             //cb.setSelectedItem(cb.getSelectedItem());
                             jTable2.clearSelection();
                         }
+                   findUnmatchCount();                        
                     }
                     
                     
@@ -157,6 +162,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         cbxSearchByPath = new javax.swing.JCheckBox();
         jButton2 = new javax.swing.JButton();
         cbxMultiMatch = new javax.swing.JCheckBox();
+        lblMatchStat = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(840, 400));
 
@@ -181,9 +187,9 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         });
 
         cbxSearchByPath.setText("Search the Path for Matching Information");
-        cbxSearchByPath.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                cbxSearchByPathStateChanged(evt);
+        cbxSearchByPath.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxSearchByPathActionPerformed(evt);
             }
         });
 
@@ -195,9 +201,9 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         });
 
         cbxMultiMatch.setText("Multiple Images linking to one Subject");
-        cbxMultiMatch.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                cbxMultiMatchStateChanged(evt);
+        cbxMultiMatch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxMultiMatchActionPerformed(evt);
             }
         });
 
@@ -208,9 +214,6 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(jScrollPane3)
-                        .addContainerGap())
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(jLabel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 718, Short.MAX_VALUE)
                         .add(110, 110, 110))
@@ -227,7 +230,12 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
                         .add(cbxSearchByPath, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 301, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(18, 18, 18)
                         .add(cbxMultiMatch)
-                        .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, lblMatchStat, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(jScrollPane3))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -244,8 +252,9 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
                     .add(btnMatch)
                     .add(jButton2))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
-                .addContainerGap())
+                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(lblMatchStat))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -255,6 +264,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         boolean isSearchByPath = cbxSearchByPath.isSelected();
         boolean isMultipleLink = cbxMultiMatch.isSelected();
         match(matchingkey, isSearchByPath, isMultipleLink);
+         findUnmatchCount();
     
     }//GEN-LAST:event_btnMatchActionPerformed
     
@@ -283,6 +293,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         String  matchingkey = txtMatchpattern.getText();
         boolean isSearchByPath = cbxSearchByPath.isSelected();
         boolean isMultipleLink = cbxMultiMatch.isSelected();
+     
         //System.out.println(matchingkey);
         //if (!matchingkey.trim().equals("")) {
         
@@ -294,7 +305,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         mmodel = new ManualMatchTableModel(DeidData.niftiFiles, DeidData.demographicData.getColumn(DeidData.IdColumn),matchingkey,isSearchByPath,isMultipleLink);
         jTable2.setModel(mmodel);
         jTable2.getColumnModel().getColumn(2).setCellRenderer(new MatchStatusRenderer());
-        
+        findUnmatchCount();
         if(mmodel.getMismatchedImageCount() > 0 || mmodel.getMatchedImageCount() == 0){
             // Ensure that there is at least one matched image, and that
             // there are no unmatched images, otherwise OK
@@ -393,6 +404,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
                             //cb.setSelectedItem(cb.getSelectedItem());
                             jTable2.clearSelection();
                         }
+                        findUnmatchCount();
                     }
                     
                     
@@ -409,19 +421,21 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         //rif.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
     
-    private void cbxMultiMatchStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbxMultiMatchStateChanged
-         String  matchingkey = txtMatchpattern.getText();
-        boolean isSearchByPath = cbxSearchByPath.isSelected();
-        boolean isMultipleLink = cbxMultiMatch.isSelected();
-        match(matchingkey, isSearchByPath, isMultipleLink);
-    }//GEN-LAST:event_cbxMultiMatchStateChanged
-
-    private void cbxSearchByPathStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbxSearchByPathStateChanged
+    private void cbxSearchByPathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxSearchByPathActionPerformed
         String  matchingkey = txtMatchpattern.getText();
         boolean isSearchByPath = cbxSearchByPath.isSelected();
         boolean isMultipleLink = cbxMultiMatch.isSelected();
         match(matchingkey, isSearchByPath, isMultipleLink);
-    }//GEN-LAST:event_cbxSearchByPathStateChanged
+        findUnmatchCount();
+    }//GEN-LAST:event_cbxSearchByPathActionPerformed
+
+    private void cbxMultiMatchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxMultiMatchActionPerformed
+        String  matchingkey = txtMatchpattern.getText();
+        boolean isSearchByPath = cbxSearchByPath.isSelected();
+        boolean isMultipleLink = cbxMultiMatch.isSelected();
+        match(matchingkey, isSearchByPath, isMultipleLink);
+        findUnmatchCount();
+    }//GEN-LAST:event_cbxMultiMatchActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMatch;
@@ -432,6 +446,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable2;
+    private javax.swing.JLabel lblMatchStat;
     private javax.swing.JTextField txtMatchpattern;
     // End of variables declaration//GEN-END:variables
     
@@ -536,6 +551,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
                             //cb.setSelectedItem(cb.getSelectedItem());
                             jTable2.clearSelection();
                         }
+                        findUnmatchCount();
                     }
                     
                     
@@ -547,5 +563,17 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
             }
         });
         
+    }
+    
+    private void findUnmatchCount(){
+           Collection<String> ids= DeidData.IdFilename.values();
+                        int totalID=DeidData.demographicData.getColumn(DeidData.IdColumn).length;
+                        for(Object obj : DeidData.demographicData.getColumn(DeidData.IdColumn))
+                        {
+                            String id=(String)obj;
+                            if(ids.contains(id))
+                                totalID--;
+                        }
+                        lblMatchStat.setText(totalID+ " cases have no images");
     }
 }

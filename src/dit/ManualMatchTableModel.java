@@ -16,6 +16,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
     private String[] columnNames = new String[]{"Image File", "Demographic Data", "Status"};
     private Object[][] data;
     private int mismatchCount, matchCount;
+
     
     public ManualMatchTableModel() {
         mismatchCount = 0;
@@ -25,6 +26,8 @@ public class ManualMatchTableModel extends AbstractTableModel{
     
     public ManualMatchTableModel(List<File> images, Object[] demoIDs, final String key, final boolean isbyPath,final boolean ismulti) {
         ArrayList<Object[]> dataList = new ArrayList<Object[]>();
+        
+   
         
         // The demoIDs will ALWAYS be sorted, images probably will not be.
         // The standard string compareTo should be very reliable.
@@ -70,6 +73,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                         convertedID = (String)demoIDs[demoIDNdx];
                     }
                     if (filename.indexOf(convertedID) >= 0) {
+                    
                         int properidx = getProperindex(filename.toString(),demoIDs, key);
                         if(ismulti){
                             dataList.add(new Object[]{displayIntoTable(curFile), demoIDs[properidx], new Boolean(true)});
@@ -126,6 +130,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                 if (matchIndex >= 0 ) {
                     
                     if(ismulti){
+                      
                         dataList.add(new Object[]{displayIntoTable(curFile), demoIDs[matchIndex], new Boolean(true)});
                         DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[matchIndex] );
                         matchCount++;
@@ -133,6 +138,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                     else {
                         if(!id_exist.containsKey((String)demoIDs[matchIndex]))
                         {
+                            
                             dataList.add(new Object[]{displayIntoTable(curFile), demoIDs[matchIndex], new Boolean(true)});
                             DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[matchIndex] );
                             id_exist.put((String)demoIDs[matchIndex], "True");
@@ -151,6 +157,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                                 {
                                     if(!id_exist.containsKey((String)newIds.get(matchIndex)) )
                                     {
+                                       
                                         dataList.add(new Object[]{displayIntoTable(curFile), newIds.get(matchIndex), new Boolean(true)});
                                         DeidData.IdFilename.put(fileintoTable(curFile), (String)newIds.get(matchIndex) );
                                         id_exist.put((String)newIds.get(matchIndex), "True");
@@ -202,6 +209,8 @@ public class ManualMatchTableModel extends AbstractTableModel{
         data = dataArray;
         DeidData.data = data;
     }
+    
+    
     //get a good match
     private int getProperindex(String filename,Object[] demoIDs,String key){
         int index = 0;

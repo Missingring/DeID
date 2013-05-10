@@ -14,6 +14,7 @@ public class DeidData {
             inputFiles = new Vector<File>(),
             niftiFiles = new Vector<File>(),
             deidentifiedFiles = new Vector<File>();
+    
     public static Hashtable<File, File> 
             // Nifti result => Dicom source
             NiftiConversionSourceTable = new Hashtable<File, File>(),
