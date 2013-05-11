@@ -139,6 +139,7 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                                 + "have completed, see log for details.",
                                 DEIDGUI.LOG_LEVEL.ERROR);
                         DEIDGUI.previous();
+                        return;
                     }
                 }
                 

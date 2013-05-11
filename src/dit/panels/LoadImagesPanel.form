@@ -20,7 +20,10 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jScrollPane2" max="32767" attributes="0"/>
-                  <Component id="jLabel1" alignment="1" pref="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="jLabel1" pref="0" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="134" max="-2" attributes="0"/>
+                  </Group>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel2" alignment="0" min="-2" pref="207" max="-2" attributes="0"/>
@@ -30,20 +33,22 @@
                               <Component id="btnAddDir" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel3" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="0" pref="40" max="32767" attributes="0"/>
-                              <Component id="btnRemovedAll" min="-2" pref="12" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jButtonRemove" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="btnSelectAll" min="-2" pref="75" max="-2" attributes="0"/>
+                          <Component id="jLabel3" pref="264" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="98" pref="98" max="-2" attributes="0"/>
+                              <Component id="btnRemovedAll" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
-                  <Component id="cbxDoDeface" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="cbxDoDeface" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
+                      <Component id="btnSelectAll" min="-2" pref="110" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jButtonRemove" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -57,20 +62,22 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnAddFiles" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButtonRemove" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnSelectAll" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnRemovedAll" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnAddDir" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane2" pref="69" max="32767" attributes="0"/>
+              <Component id="jScrollPane2" pref="51" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="cbxDoDeface" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="cbxDoDeface" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonRemove" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnSelectAll" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -84,7 +91,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnAddFiles">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Add images from 1 directory.."/>
+        <Property name="text" type="java.lang.String" value="Add images from 1 directory"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddFilesActionPerformed"/>
@@ -116,7 +123,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnSelectAll">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Select All"/>
+        <Property name="text" type="java.lang.String" value="Select all"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSelectAllActionPerformed"/>
@@ -124,7 +131,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnRemovedAll">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Clear All"/>
+        <Property name="text" type="java.lang.String" value="Clear all"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRemovedAllActionPerformed"/>
@@ -142,7 +149,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnAddDir">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Add images from multiple directories..."/>
+        <Property name="text" type="java.lang.String" value="Add images from multiple directories"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddDirActionPerformed"/>

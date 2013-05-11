@@ -75,7 +75,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
 
         jLabel1.setText("<html><p>Select images or directories of images to de-identify. Images may be in DICOM, Analyze, or NIfTI format. DICOM and Analyze files will be converted to NIfTI.</p><p>&nbsp;</p></html>");
 
-        btnAddFiles.setText("Add images from 1 directory..");
+        btnAddFiles.setText("Add images from 1 directory");
         btnAddFiles.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddFilesActionPerformed(evt);
@@ -91,14 +91,14 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
             }
         });
 
-        btnSelectAll.setText("Select All");
+        btnSelectAll.setText("Select all");
         btnSelectAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSelectAllActionPerformed(evt);
             }
         });
 
-        btnRemovedAll.setText("Clear All");
+        btnRemovedAll.setText("Clear all");
         btnRemovedAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemovedAllActionPerformed(evt);
@@ -109,7 +109,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
 
         jLabel3.setText("0 images loaded");
 
-        btnAddDir.setText("Add images from multiple directories...");
+        btnAddDir.setText("Add images from multiple directories");
         btnAddDir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddDirActionPerformed(evt);
@@ -132,7 +132,9 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jScrollPane2)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .add(134, 134, 134))
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 207, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -140,17 +142,18 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                                 .add(btnAddFiles)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(btnAddDir)))
-                        .add(17, 17, 17)
+                        .add(0, 0, 0)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
-                                .add(0, 40, Short.MAX_VALUE)
-                                .add(btnRemovedAll, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 12, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(jButtonRemove)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(btnSelectAll, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 75, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                    .add(cbxDoDeface, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .add(98, 98, 98)
+                                .add(btnRemovedAll, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .add(layout.createSequentialGroup()
+                        .add(cbxDoDeface, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(77, 77, 77)
+                        .add(btnSelectAll, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 110, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButtonRemove)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -161,18 +164,19 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnAddFiles)
-                    .add(jButtonRemove)
-                    .add(btnSelectAll)
                     .add(btnRemovedAll)
                     .add(btnAddDir))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel2)
                     .add(jLabel3))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(cbxDoDeface)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(cbxDoDeface)
+                    .add(jButtonRemove)
+                    .add(btnSelectAll))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
