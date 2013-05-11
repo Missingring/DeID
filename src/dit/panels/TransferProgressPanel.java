@@ -419,7 +419,7 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                 DEIDGUI.log("FTP upload aborted: " + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
             }
         } catch (IllegalStateException ex) {
-            ex.printStackTrace();
+         //   ex.printStackTrace();
             DEIDGUI.log("FTP client is already connected. This should never, ever happen.", DEIDGUI.LOG_LEVEL.ERROR);
         } catch (IOException ex) { // Can't connect
             DEIDGUI.log("FTP client could not connect: " + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
