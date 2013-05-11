@@ -147,9 +147,13 @@ public class DeidData {
         
         for(int i=0;i<inputFiles.size();i++)
         {
-            String existFileName=inputFiles.get(i).getName();
+           
+            String existFileName=inputFiles.get(i).getAbsolutePath();
+            
             if(existFileName.contains(fileName))
+            {
                 return true;
+            }
         }
         
         return false;
