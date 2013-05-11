@@ -79,7 +79,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                 if(!oldValue.equals(newValue))
                 {
                     final int choice;
-                    choice= JOptionPane.showConfirmDialog(LoadDemoPanel.this, "Make sure this change?", "Confirm", JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION);
+                    choice= JOptionPane.showConfirmDialog(LoadDemoPanel.this, "Make sure this change?", "Confirm",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE );
                     if(choice== JOptionPane.YES_OPTION)
                     {
                         DeidData.demographicData.setValueAt(newValue, i, j);
@@ -347,7 +347,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         if(DeidData.demoSourceFile != null)
         {
             int choice = JOptionPane.showConfirmDialog(this, "Would you discard all the change?",
-                    "Revert", JOptionPane.YES_NO_OPTION);
+                    "Revert", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if(choice== JOptionPane.OK_OPTION)
                 ReadDemographicFile(DeidData.demoSourceFile);
         }
@@ -613,7 +613,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         {
             int needSave= JOptionPane.showConfirmDialog(this,
                     "We detected you changed the demogrphic file, do you want to save save these changes into a new file?",
-                    "Demographic file is changed", JOptionPane.QUESTION_MESSAGE ,JOptionPane.YES_NO_OPTION);
+                    "Demographic file is changed",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE );
             if(needSave== JOptionPane.YES_OPTION)
             {
                 JFileChooser fc=new JFileChooser(DeidData.demoSourceFile);
@@ -624,15 +624,15 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                     File file = fc.getSelectedFile();
                     if(file.exists())
                     {
-                        int choice= JOptionPane.showConfirmDialog(this, "File already existed, would you want overwrite it?","Confirm",
-                                JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION);
+                        int choice= JOptionPane.showConfirmDialog(this, "File already existed, would you want overwrite it?","Confirm", JOptionPane.YES_NO_OPTION,
+                                JOptionPane.QUESTION_MESSAGE);
                         if(choice== JOptionPane.OK_OPTION)
                             destFile=file;
                     }
                     else
                     {
-                        int choice= JOptionPane.showConfirmDialog(this, "File does not existed, would you want create it?","Confirm",
-                                JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION);
+                        int choice= JOptionPane.showConfirmDialog(this, "File does not existed, would you want create it?","Confirm", JOptionPane.YES_NO_OPTION,
+                                JOptionPane.QUESTION_MESSAGE);
                         if(choice== JOptionPane.OK_OPTION)
                         {
                             try {
