@@ -325,8 +325,7 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                 client.connect(FTPServer);
             }
             DEIDGUI.log("Connected");
-            if(remotePath.length()>0)
-               client.changeDirectory(remotePath);
+           
             // Anonymous authentication, if admitted by the connected service, 
             // can be done sending the username "anonymous" and an arbitrary 
             // password (note that some servers require an e-mail address 
@@ -337,7 +336,8 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                 pass[ndx] = '\0';
             }
             DEIDGUI.log("Logged in as " + FTPUser);
-
+            if(remotePath.length()>0)
+               client.changeDirectory(remotePath);
             // Upload the result tarball
             try {
                 final long fileSize = tarFile.length();
