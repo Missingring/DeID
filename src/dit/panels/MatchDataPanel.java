@@ -1,13 +1,8 @@
 package dit.panels;
 
 import dit.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.Collection;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JComboBox;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
@@ -22,7 +17,9 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
     private removeImageFrame rif;
     private ManualCorrectTableModel cmodel;
 
-    private int globalSelectedRow=-1;
+    public static HashMap<String,String> displayTofile;
+    
+    
     /**
      * Creates new form MatchDataPanel
      */
@@ -34,7 +31,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         boolean isSearchByPath = cbxSearchByPath.isSelected();
         boolean isMultipleLink = cbxMultiMatch.isSelected();
         
-  
+        displayTofile=new HashMap<>();
    
         if(DeidData.demographicData== DemographicTableModel.dummyModel)
         {

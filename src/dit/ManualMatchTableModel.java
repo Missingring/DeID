@@ -4,6 +4,7 @@
  */
 package dit;
 
+import dit.panels.MatchDataPanel;
 import java.io.File;
 import java.util.*;
 import javax.swing.table.AbstractTableModel;
@@ -59,6 +60,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
         {
             Hashtable<String, String> id_exist = new Hashtable<String, String>();
             while (curFile != null){
+                 String mapDisplaytoFile=fileintoTable(curFile);   //do not delete this line unless you know its function
                 int demoIDNdx = 0;
                 while(demoIDNdx < demoIDs.length){
                     
@@ -122,8 +124,9 @@ public class ManualMatchTableModel extends AbstractTableModel{
            
             Hashtable<String, String> id_exist = new Hashtable<String, String>();
             while (curFile != null){
+                 String mapDisplaytoFile=fileintoTable(curFile);   //do not delete this line unless you know its function
                 int matchIndex=findMatchedID(curFile, demoIDs,key);
-                
+               
               //  System.out.println("Curr:"+curFile.getAbsolutePath()+" I:"+matchIndex+" C:"+(String)demoIDs[matchIndex]);
                        
                 
@@ -140,6 +143,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                         {
                             
                             dataList.add(new Object[]{displayIntoTable(curFile), demoIDs[matchIndex], new Boolean(true)});
+                          
                             DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[matchIndex] );
                             id_exist.put((String)demoIDs[matchIndex], "True");
                             matchCount++;                            
@@ -266,6 +270,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
             
             out = abParent.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "").replaceAll("/", "") + out;
         }
+        MatchDataPanel.displayTofile.put(displayIntoTable(file),out );
         return out;
     }
     
@@ -275,7 +280,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
         if (!DeidData.parentPath.equals("none"))    {
             
             out = out.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "");
-        }
+        }      
         
         return out;
     }

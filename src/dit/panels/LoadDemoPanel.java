@@ -324,7 +324,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                     dummyDemographic.createNewFile();
                     FileWriter fw=new FileWriter(dummyDemographic.getAbsoluteFile());
                     BufferedWriter bw=new BufferedWriter(fw);
-                    String content="Fake Demographic File ID\nNo meaning in this cell.";
+                    String content="Fake Demographic File ID\nMissing ID";
                     bw.write(content);
                     bw.close();
                 } catch (IOException ex) {

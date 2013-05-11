@@ -6,11 +6,13 @@ package dit.panels;
 
 import dit.DEIDGUI;
 import dit.DeidData;
+import dit.FileUtils;
 import dit.MatchStatusRenderer;
 import dit.MatchTableModel;
 import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Vector;
@@ -37,7 +39,7 @@ public class ComboBoxCellEditor extends AbstractCellEditor implements TableCellE
     
     private void initBox(String currentSelected)
     {
-        DefaultComboBoxModel model = new DefaultComboBoxModel(new String[] {"None","Missing"});
+        DefaultComboBoxModel model = new DefaultComboBoxModel(new String[] {"None"});
         Object[] demoIDs = DeidData.demographicData.getColumn(DeidData.IdColumn);
         int demoIDNdx = 0;
         while(demoIDNdx < demoIDs.length){
@@ -85,19 +87,12 @@ public class ComboBoxCellEditor extends AbstractCellEditor implements TableCellE
                                     DeidData.data[i][1] = jComboBox.getSelectedItem().toString();
                                     DeidData.data[i][2] = new Boolean(false);
                                 }
-                                else if (jComboBox.getSelectedItem().toString().equals("Missing")) 
-                                {
-                                    DeidData.data[i][1] = (jComboBox.getSelectedItem().toString());
-                                    DeidData.data[i][2] = new Boolean(true);
-                                   
-                                    DeidData.IdFilename.put(filename, "missing" );
-                                }
                                 else
                                 {
                                     DeidData.data[i][1] = (jComboBox.getSelectedItem().toString());
                                     DeidData.data[i][2] = new Boolean(true);
-                                    
-                                    DeidData.IdFilename.put(filename, jComboBox.getSelectedItem().toString() );
+                                
+                                    DeidData.IdFilename.put(MatchDataPanel.displayTofile.get(filename), jComboBox.getSelectedItem().toString() );
                                 }
                                 Object[][] data = DeidData.data;
                                 int checkFlag = 0;
@@ -105,9 +100,7 @@ public class ComboBoxCellEditor extends AbstractCellEditor implements TableCellE
                                 {
                                     if (ii != i && (Boolean)data[ii][2] == true && data[ii][1].toString().equals(jComboBox.getSelectedItem().toString()))
                                     {
-                                        // wjd = new WarningJdialog(new JFrame(), "Warning", "There exists another row where has the same ID matched with a different image.");
                                         
-                                        //break;
                                     }
                                     if (!(Boolean)data[ii][2]){ checkFlag = 1;}
                                 }
@@ -156,6 +149,16 @@ public class ComboBoxCellEditor extends AbstractCellEditor implements TableCellE
         return cellEditingStopped;
     }
     
+     private String fileintoTable(File file){
+        String abParent = file.getParent();
+        String out = FileUtils.getName(file).toString();
+        if (!DeidData.parentPath.equals("none"))    {
+            
+            out = abParent.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "").replaceAll("/", "") + out;
+        }
+        return out;
+    }
+     
      private void findUnmatchCount(){
            Collection<String> ids= DeidData.IdFilename.values();
                         int totalID=DeidData.demographicData.getColumn(DeidData.IdColumn).length;

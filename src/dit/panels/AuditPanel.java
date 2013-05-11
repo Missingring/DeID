@@ -29,15 +29,15 @@ import java.util.Iterator;
  * @author christianprescott
  */
 public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
-
+    
     /**
      * Creates new form AuditPanel
      */
     private ReSkullStrippingFrame redo;
     public AuditPanel() {
         initComponents();
-       // if(DeidData.demographicData != DemographicTableModel.dummyModel)
-            createFakenames();
+        // if(DeidData.demographicData != DemographicTableModel.dummyModel)
+        createFakenames();
         jButtonViewMontage.setVisible(false);
         DEIDGUI.title = "Auditing";
         DEIDGUI.helpButton.setEnabled(true);
@@ -48,28 +48,28 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                 DeidData.includeFileInTar[ndx] = true;
             }
         }
-
+        
         // Define the AuditJTable model
         jTableImages.setModel(new AbstractTableModel() {
             // <editor-fold defaultstate="collapsed" desc="AuditTableModel">
-
+            
             private String[] columnNames = new String[]{"Selected", "Image"};
-
+            
             @Override
             public int getRowCount() {
                 return DeidData.deidentifiedFiles.size();
             }
-
+            
             @Override
             public int getColumnCount() {
                 return columnNames.length;
             }
-
+            
             @Override
             public String getColumnName(int i) {
                 return columnNames[i];
             }
-
+            
             @Override
             public Class getColumnClass(int i) {
                 Class colClass;
@@ -85,12 +85,12 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                 }
                 return colClass;
             }
-
+            
             @Override
             public boolean isCellEditable(int row, int col) {
                 return (col == 0 ? true : false);
             }
-
+            
             @Override
             public Object getValueAt(int row, int col) {
                 Object value;
@@ -107,7 +107,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                 }
                 return value;
             }
-
+            
             @Override
             public void setValueAt(Object o, int row, int col) {
                 if (col == 0) {
@@ -120,7 +120,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
         jTableImages.getSelectionModel().addListSelectionListener(
                 new ListSelectionListener() {
                     // <editor-fold defaultstate="collapsed" desc="AuditTableSelectionListener">
-
+                    
                     @Override
                     public void valueChanged(ListSelectionEvent lse) {
                         if (lse.getValueIsAdjusting()) {
@@ -136,7 +136,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
         
         DEIDGUI.log("AuditPanel initialized");
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -293,7 +293,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private boolean OpenFile(File file) {
         boolean openSucceeded;
         if (Desktop.isDesktopSupported()) {
@@ -317,96 +317,96 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     }
     
     private void createFakenames(){
-      Iterator curFile = DeidData.deidentifiedFiles.iterator();  
-      while (curFile.hasNext()){
-          String x = FileUtils.getName((File)curFile.next());
-          String y="";
+        Iterator curFile = DeidData.deidentifiedFiles.iterator();
+        while (curFile.hasNext()){
+            String x = FileUtils.getName((File)curFile.next());
+            String y="";
+            System.out.println("Get:"+x);
+            if(DeidData.demographicData== DemographicTableModel.dummyModel)
+                y=DeidData.IdTable.get(x);
+            else
+                y = DeidData.IdTable.get(DeidData.IdFilename.get(x));
+            /*  if(!multiImages(DeidData.IdFilename,y)){
+             * DeidData.multinameSolFile.put(x, y + ".nii");
+             * }
+             * else {   */
+            System.out.println("y"+y);
+            if (!DeidData.multinameSol.containsKey(y)){
+                DeidData.multinameSol.put(y,1);
+                DeidData.multinameSolFile.put(x, y + "_1"+".nii");
+            }
+            else
+            {
+                int value =  DeidData.multinameSol.get(y);
+                value = value + 1;
+                DeidData.multinameSolFile.put(x,y +"_"+ value+".nii");
+                DeidData.multinameSol.remove(y);
+                DeidData.multinameSol.put(y, value);
+            }
+            
+            //}
+        }
         
-          if(DeidData.demographicData== DemographicTableModel.dummyModel)
-              y=DeidData.IdTable.get(x);
-          else
-              y = DeidData.IdTable.get(DeidData.IdFilename.get(x));
-          /*  if(!multiImages(DeidData.IdFilename,y)){
-           * DeidData.multinameSolFile.put(x, y + ".nii");
-           }
-           else {   */     
-          System.out.println("y"+y);
-             if (!DeidData.multinameSol.containsKey(y)){                 
-              DeidData.multinameSol.put(y,1);
-              DeidData.multinameSolFile.put(x, y + "_1"+".nii");
-             }
-             else
-             {
-                 int value =  DeidData.multinameSol.get(y);
-                 value = value + 1;
-                 DeidData.multinameSolFile.put(x,y +"_"+ value+".nii");
-                 DeidData.multinameSol.remove(y);
-                 DeidData.multinameSol.put(y, value);
-             }
-             
-           //}
-      }
-    
-    
+        
     }
     private boolean multiImages(Hashtable<String, String> ht, String val ){
-    boolean ismulti = false;
-    int count = 0;
-    for (Iterator it = ht.keySet().iterator(); it.hasNext(); ) {
-    String key = (String) it.next();
-    String value = ht.get(key);
-    if (value.equals(val)) count++;   
-    
-    }
-    if (count > 1) ismulti = true;
-    return ismulti;
+        boolean ismulti = false;
+        int count = 0;
+        for (Iterator it = ht.keySet().iterator(); it.hasNext(); ) {
+            String key = (String) it.next();
+            String value = ht.get(key);
+            if (value.equals(val)) count++;
+            
+        }
+        if (count > 1) ismulti = true;
+        return ismulti;
     }
     
     private void jButtonViewImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewImageActionPerformed
-       /* if(jTableImages.getSelectedRow() >= 0){
-            File selectedFile = (File) DeidData.deidentifiedFiles.get(jTableImages.getSelectedRow());
-            OpenFile(selectedFile);
-        }*/
+        /* if(jTableImages.getSelectedRow() >= 0){
+         * File selectedFile = (File) DeidData.deidentifiedFiles.get(jTableImages.getSelectedRow());
+         * OpenFile(selectedFile);
+         * }*/
         if(jTableImages.getSelectedRow() >= 0){
             File selectedFile = (File) DeidData.deidentifiedFiles.get(jTableImages.getSelectedRow());
             OpenImagewithMRIcron openImage = new OpenImagewithMRIcron(selectedFile);
             openImage.run();
         }
     }//GEN-LAST:event_jButtonViewImageActionPerformed
-
+    
     private void jButtonViewDemoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewDemoActionPerformed
-       // OpenFile(DeidData.deidentifiedDemoFile);
+        // OpenFile(DeidData.deidentifiedDemoFile);
         TextviewFrame viewtext = new TextviewFrame(DeidData.deidentifiedDemoFile);
         //try {
         viewtext.pack();
-        viewtext.setVisible(true);        
-        //} catch(IOException ex) 
+        viewtext.setVisible(true);
+        //} catch(IOException ex)
         //{
-          //      DEIDGUI.log("Unable to open demographic file.", DEIDGUI.LOG_LEVEL.ERROR);
-       //}
+        //      DEIDGUI.log("Unable to open demographic file.", DEIDGUI.LOG_LEVEL.ERROR);
+        //}
         
     }//GEN-LAST:event_jButtonViewDemoActionPerformed
-
+    
     private void jButtonViewHeaderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewHeaderActionPerformed
         // Open matching header var file
         if(jTableImages.getSelectedRow() >= 0){
             File selectedFile = (File) DeidData.deidentifiedFiles.get(jTableImages.getSelectedRow());
             if (DeidData.ConvertedDicomHeaderTable.containsKey(selectedFile)) {
-               // OpenFile(DeidData.ConvertedDicomHeaderTable.get(selectedFile));
+                // OpenFile(DeidData.ConvertedDicomHeaderTable.get(selectedFile));
                 TextviewFrame viewtext = new TextviewFrame(DeidData.ConvertedDicomHeaderTable.get(selectedFile));
                 viewtext.pack();
-                viewtext.setVisible(true);  
+                viewtext.setVisible(true);
             }
         }
     }//GEN-LAST:event_jButtonViewHeaderActionPerformed
-
+    
     private void jSliderSliceStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSliderSliceStateChanged
         if(jTableImages.getSelectedRow() >= 0){
             File selectedFile = (File) DeidData.deidentifiedFiles.get(jTableImages.getSelectedRow());
             ((NiftiDisplayPanel)jPanel1).setSlice((float)jSliderSlice.getValue()/100f);
         }
     }//GEN-LAST:event_jSliderSliceStateChanged
-
+    
     private void jButtonViewMontageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewMontageActionPerformed
         File montageFile = new File(DeidData.outputPath + "montage.jpg");
         if(montageFile.exists()){
@@ -428,14 +428,14 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
             DEIDGUI.log("No montage image was created", DEIDGUI.LOG_LEVEL.ERROR);
         }
     }//GEN-LAST:event_jButtonViewMontageActionPerformed
-
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         redo = new ReSkullStrippingFrame();
         redo.pack();
         redo.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonViewDemo;
@@ -448,19 +448,19 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     private javax.swing.JSlider jSliderSlice;
     private javax.swing.JTable jTableImages;
     // End of variables declaration//GEN-END:variables
-
+    
     @Override
     public WizardPanel getNextPanel() {
         try{
-        redo.setVisible(false);
+            redo.setVisible(false);
         }catch (Exception e){
             
-        return new TransferPanel();
-        
+            return new TransferPanel();
+            
         }
         return new TransferPanel();
     }
-
+    
     @Override
     public WizardPanel getPreviousPanel() {
         DeidData.includeFileInTar = null;
