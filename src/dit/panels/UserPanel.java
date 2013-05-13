@@ -83,9 +83,9 @@ public class UserPanel extends javax.swing.JPanel implements WizardPanel{
 
         jLabelInstitution.setText("Institution");
 
-        jLabel1.setText("<html><p>&nbsp</p><p>Please enter your full name and institution to begin.</p><p>&nbsp</p></html>");
+        jLabel1.setText("<html><p>&nbsp</p><p>Enter your name and institution.  Clickin the 'Continue' button will take you to the next 'load images' step.</p><p>&nbsp</p></html>");
 
-        jLabel2.setText("<html><p>Development of this software was supported by <br/>the NIH/NICHD (R01 HD069374: Eckert, M.A. (PI)) and developed by <br/>Anlin Wang, Zijun Wang, Lin li, Christian Prescott, and Mark A. Eckert.</p></html>");
+        jLabel2.setText("<html><p>Development of this software was supported by <br/>the NIH/NICHD (R01 HD069374: Eckert, M.A. (PI)) and developed by <br/>Anlin Wang, Qingping Meng, Zijun Wang, Lin li, Christian Prescott, and Mark A. Eckert.</p></html>");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -94,7 +94,7 @@ public class UserPanel extends javax.swing.JPanel implements WizardPanel{
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabel1)
+                    .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(jLabelInstitution)
@@ -105,7 +105,7 @@ public class UserPanel extends javax.swing.JPanel implements WizardPanel{
                             .add(jTextFieldInstitution)))
                     .add(layout.createSequentialGroup()
                         .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(0, 7, Short.MAX_VALUE)))
+                        .add(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

@@ -451,14 +451,14 @@ public class DEIDGUI extends javax.swing.JFrame {
             }
         });
 
-        errlogButton.setText("See Error Log");
+        errlogButton.setText("See error log");
         errlogButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 errlogButtonActionPerformed(evt);
             }
         });
 
-        jButtonMisHelp.setText("Mismatch Help");
+        jButtonMisHelp.setText("Mismatch help");
         jButtonMisHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonMisHelpActionPerformed(evt);
@@ -480,7 +480,7 @@ public class DEIDGUI extends javax.swing.JFrame {
                         .add(errlogButton)
                         .add(18, 18, 18)
                         .add(jButtonMisHelp)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 142, Short.MAX_VALUE)
                         .add(backButton)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(continueButton))
@@ -507,7 +507,7 @@ public class DEIDGUI extends javax.swing.JFrame {
         pagePanel.setLayout(pagePanelLayout);
         pagePanelLayout.setHorizontalGroup(
             pagePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 652, Short.MAX_VALUE)
+            .add(0, 0, Short.MAX_VALUE)
         );
         pagePanelLayout.setVerticalGroup(
             pagePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)

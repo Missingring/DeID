@@ -19,7 +19,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel1" max="32767" attributes="0"/>
+                  <Component id="jLabel1" pref="526" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jLabelInstitution" min="-2" max="-2" attributes="0"/>
@@ -33,7 +33,7 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="7" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -84,12 +84,12 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;p&gt;&amp;nbsp&lt;/p&gt;&lt;p&gt;Please enter your full name and institution to begin.&lt;/p&gt;&lt;p&gt;&amp;nbsp&lt;/p&gt;&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;p&gt;&amp;nbsp&lt;/p&gt;&lt;p&gt;Enter your name and institution.  Clickin the &apos;Continue&apos; button will take you to the next &apos;load images&apos; step.&lt;/p&gt;&lt;p&gt;&amp;nbsp&lt;/p&gt;&lt;/html&gt;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;p&gt;Development of this software was supported by &lt;br/&gt;the NIH/NICHD (R01 HD069374: Eckert, M.A. (PI)) and developed by &lt;br/&gt;Anlin Wang, Zijun Wang, Lin li, Christian Prescott, and Mark A. Eckert.&lt;/p&gt;&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;p&gt;Development of this software was supported by &lt;br/&gt;the NIH/NICHD (R01 HD069374: Eckert, M.A. (PI)) and developed by &lt;br/&gt;Anlin Wang, Qingping Meng, Zijun Wang, Lin li, Christian Prescott, and Mark A. Eckert.&lt;/p&gt;&lt;/html&gt;"/>
       </Properties>
     </Component>
   </SubComponents>

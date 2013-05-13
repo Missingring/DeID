@@ -31,7 +31,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         initComponents();
         DEIDGUI.title = "Data Matching";
         DEIDGUI.helpButton.setEnabled(true);
-        DEIDGUI.jButtonMisHelp.setVisible(true);
+        DEIDGUI.jButtonMisHelp.setVisible(false);
         boolean isSearchByPath = cbxSearchByPath.isSelected();
         boolean isMultipleLink = cbxMultiMatch.isSelected();
         

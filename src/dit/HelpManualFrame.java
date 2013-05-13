@@ -18,99 +18,75 @@ public class HelpManualFrame extends javax.swing.JFrame {
         jTextArea1.setEditable(false);
         if (page.equals("User Information")){
         
-        jTextArea1.setText("Enter your name and institution then click 'Continue' button to proceed"
-                      +  "\nto next step 'load images'.");
+        jTextArea1.setText("Enter your name and institution then click 'Continue' button to proceedto next step 'load images'.");
         }
         else if(page.equals("Load Images")){
-        jTextArea1.setText("In this step, you can click 'add images' button to load the images"  
-                      +  "\nfrom the directory you specify. You can either select image files "
-                      +  "\nor the directory contains the files. When you finish selecting image"
-                      +  "\nfiles, they will be listed. You can select items from the list and "
-                      +  "\nclick 'Remove Selected' button to remove the images you don't want to."
-                      +  "\nprocess."
-                      +  "\nClick 'Continue' button to proceed to next step 'Load demographic file'"
-                      +  "\nand click 'Back' button to previous step 'User information'.");
+        jTextArea1.setText("Click one of the buttons to add images or add directories where the images are located."  
+                      +  "\nOnce the images are selected, remove images by clicking on the path and then clicking on the Remove selected button. "
+                      +  "\nThe Select All button can be used to highlight all of the images for removal.\n"
+                      +  "\nThe red check-box should be checked if your images are already skull-stripped.\n"
+                      +  "\nClick the 'Continue' button to proceed to next 'Load data file' step.");
         
         }
         else if (page.equals("Load Demographic Data")){
-        jTextArea1.setText("In this step, you can click 'choose data file' button to select the"
-                      +   "\ndemographic file related to the image files in the previous step. "
-                      +   "\nWe support .txt, .xls and .xlsx data files. You can change the file"
-                      +   "\nby simply click 'choose data file' button again and re-select a file."
-                      +   "\nAfter you finish selecting, the data in the file will be display in"
-                      +   "\nthe table below. DeID will remind you the problems(e.g.missing value) "
-                      +   "\nof your data. You can click 'Edit' button to modify the data but "
-                      +   "\nthis modification will not affect the original data file. A new window"
-                      +   "\nwill be created after you click 'Edit' button. You can double-click the"
-                      +   "\ntable cell to set a new value."
-                      +   "\nOnce you finish modifying the data, click 'Done' to get back to the main"
-                      +   "\nwindow and click 'Refresh' button and view the modified data in the table." 
-                      +   "\nThen you can select a variable(column name) in this table to be used in "
-                      +   "\nnext data matching step."
-                      +  "\nClick 'Continue' button to proceed to next step 'Data Matching'."
-                      +  "\nClick 'Back' button to previous step 'Load images'.");
+        jTextArea1.setText("Click the 'Choose Data File' button to select the data file related to the image files in the previous step."
+                      +   "\nDeID can read .txt, .xls and .xlsx data files. You can change the file by clicking the 'Choose Data File' button again and selecting a different file. \n"
+                      +   "\nDeID will highlight any problems in the data file (e.g., missing value). You can edit each cell to correct any problems.\n"
+                      +   "\nBy default, the first column is used for matching cases in the data file with the image files. "
+                      +   "\nIf this is not your matching variable, click on the variable name at the top of the column for your matching variable.\n"
+                      +   "\nClick the 'Continue' button to proceed to next 'Data Matching' step. ");
+                    
         }
         else if (page.equals("Data Matching")){
-        jTextArea1.setText("This step mainly focuses on the data matching(match the image files "
-                      +   "\nwith the record in demographic file). There will be an initial matching"
-                      +   "\ndone by DeID automatically. "
-                      +   "\nIf it doesn't work, you may help match the data and files."
-                      +   "\nProvide a string with regulation between the demographic matching variable "
-                      +   "\nand the image file name, then click'Auto Match' to re-match the data. "
-                      +   "\n'#' will represent a digit of number and '%' will represent a string of any length. "
-                      +   "\nIf you input 'IXI###':"
-                      +   "\nsystem will map the variable in demographic file to that format(e.g. "
-                      +   "\none sample's ID is '12', then its id will be mapped to 'IXI012'.) Then"
-                      +   "\nDeId will make use of the new substring to match image files."
-                      +   "\nIf you input 'IXI%':"
-                      +   "\nsystem will map the variable in demographic file to that format(e.g. "
-                      +   "\none sample's ID is 'ab12', then its id will be mapped to 'IXIab12'.) Then"
-                      +   "\nDeId will make use of the new substring to match image files."
-                      +   "\nYou can check the checkbox to search the images' path to find the part matches."
-                      +   "\nIf none of the above matching methods works or some of the matching result are" 
-                      +   "\nnot correct in your view, you can manually correct the mistakes. "
-                      +   "\nClick 'Manually Correct' button, a new window will show up to help correct the"
-                      +   "\nmatching mistakes. You can click the cells of id column and select a id from"
-                      +   "\nthe dropdown list of id. After you finish correcting, click 'Done' button."
-                      +   "\nClick 'Refresh' button to view the new matching result in the main window. If"
-                      +   "\neverything is OK, the 'Continue' button will be enabled to click. Otherwise, there"
-                      +   "\nwill be warnings to remind you the problem in matching."
-                      +   "\nClick 'Continue' button to proceed to next step 'Deidentification Options'."
-                      +   "\nClick 'Back' button to previous step 'Load demographic file'.");
+        jTextArea1.setText("DeID automatically tries to match the image file/path names with the ID variable in your data file. DeID will report \"MISMATCH\" when it cannot identify matching values.  "
+                      +   "\nIn the case where your path contains the subject's ID rather than the image, select 'Search the Path for Matching Information'. "
+                      +   "\nIf you have more than one image for each subject, select 'Multiple Images Linking to One Subject' . "
+                      +   "\nThese two options address most matching problems. If you still have mismatches, use the Matching Pattern function.\n"
+                      +   "\nMatching Pattern function:  You can type in a string of values that appear in your image file name that may precede "
+                      +   "\nor follow the matching values in a file and that is consistent across subjects."
+                      +   "\nIf you type IXI### in the Matching Pattern box, DeID  will map the variable in demographic file to that format (e.g., one subject's ID is '12', then its ID will be mapped to an image with 'IXI012' in the filename.).  "
+                      +   "\nOr, if you input IXI%#, DeID will map the variable in demographic file to that format (e.g., one subject's ID is 'ab12', then its ID will be mapped to an image with 'IXIab12' in the filename.)\n"
+                      +   "\nNote that you cannot Continue until the mismatches are resolved.  You can select a mismatched case and remove it. \n"
+                      +   "\nAlso note that there may be additional cases in your data file that are not matching, but these mismatches are not displayed because there is not matching image file."
+                      +   "\nThese data are given new IDs and included in the file tarball.\n"
+                      +   "\nClick the 'Continue' button to proceed to next 'Deidentification Options' step.");
         
         }
         else if (page.equals("Deidentification Options")){
-        jTextArea1.setText("In this step, you can select the variables to be de-identified in demographic"
-                      +   "\ndata. And you can also select the check box to de-face the images."
-                      +   "\nJust select one item in the list on the left and click 'remove' button to"
-                      +   "\nadd itinto the list on the right. You can also undo it by select one item"
-                      +   "\nin the list on the right and click 'add' button."                      
-                      +   "\nClick 'Continue' button to start de-identification process and proceed to "
-                      +   "\nnext step 'Auditing'."
-                      +   "\nClick 'Back' button to previous step 'Data Matching'.");
+        jTextArea1.setText("Select identifying variables that need to be removed from your data file. "
+                      +   "\nYour ID variable should be removed.  Names, addresses, contact information, birth dates, test dates, medical record numbers, and social security numbers should be removed. "
+                      +   "\nBelow is the HIPAA PHI list of 18 identifiers that should not be included in your de-identified data file.\n"
+                      +   "\nClick the 'Continue' button to start de-identification process and proceed to next step 'Auditing'.\n"
+                      +   "\n1. Names;"                      
+                      +   "\n2. All geographical subdivisions smaller than a State, including street address, city, county, precinct, zip code, and their equivalent geocodes, except for the initial three digits of a zip code"
+                      +   "\n3. All elements of dates (except year) for dates directly related to an individual, including birth date, admission date, discharge date, date of death; "
+                      +   "\nand all ages over 89 and all elements of dates (including year) indicative of such age, except that such ages and elements may be aggregated into a single category of age 90 or older;"
+                      +   "\n4. Phone numbers;"
+                      +   "\n5. Fax numbers;"
+                      +   "\n6. Electronic mail addresses;"
+                      +   "\n7. Social Security numbers;"
+                      +   "\n8. Medical record numbers;"
+                      +   "\n9. Health plan beneficiary numbers;"
+                      +   "\n10. Account numbers;"
+                      +   "\n11. Certificate/license numbers;"
+                      +   "\n12. Vehicle identifiers and serial numbers, including license plate numbers;"
+                      +   "\n13. Device identifiers and serial numbers;"
+                      +   "\n14. Web Universal Resource Locators (URLs);"
+                      +   "\n15. Internet Protocol (IP) address numbers;"
+                      +   "\n16. Biometric identifiers, including finger and voice prints;"
+                      +   "\n17. Full face photographic images and any comparable images;"
+                      +   "\n18. Any other unique identifying number, characteristic, or code (note this does not mean the unique code assigned by the investigator to code the data)");
         
         }
         else if (page.equals("Auditing")){
-        jTextArea1.setText("This step mainly focuses on auditing the de-identification results."
-                      +   "\nThere is a list of image file names with new subject ids. Click on the row to"
-                      +   "\nto view the image after skull-stripping on the right. "
-                      +   "\nSelect the checkbox to determine whether one image will be included in final "
-                      +   "\ndata tar file to submit."
-                      +   "\nClick'View Image' to view image in MRIcron with a 3D rendering window. "
-                      +   "\n'View head data' will be enabled when the image is converted from DICOM files."
-                      +   "\nClick 'View Demographic Data' to view the de-identified demographic data."
-                      +   "\nClick 'View image montage' to see the montage image generated by the system."
-                      +   "\nClick 'Redo...' to open a new window to redo the defacing job of certain images."
-                      +   "\nIn 'Redo...' window, there is a list of image files which you can select from to"
-                      +   "\nbe re-skullstripped. Simply select the checkbox or use the buttons 'select all'"
-                      +   "\nor 'unselect all' to help selecting. On the right, you can also view the current"
-                      +   "\nimage."
-                      +   "\nThen you can set new skullstripping threshold(0.0~1.0) to redo skull-stripping."
-                      +   "\nClick 'Start' to start the re-skull-stripping job."
-                      +   "\nClick 'Reset' to start another job." 
-                      +   "\nClick 'Done' to finish the job and back to main window."                      
-                      +   "\nClick 'Continue' button to proceed to next step 'Transfer Options'."
-                      +   "\nClick 'Back' button to previous step 'Deidentification Options'.");
+        jTextArea1.setText("Click on a file name to view the image after skull-stripping.\n"
+                      +   "\nThe checkbox is used to select images that will be included in the final tarball.  Images that cannot be skull stripped should not be included in the final tarball.\n"
+                      +   "\nClicking on 'View Image' will open the selected image in MRIcron with a 3D rendering window. "
+                      +   "\nYou can use these function to evaluate the quality of skull-stripping and the extent to which  face can be rendered.\n"
+                      +   "\nThe 'Redo' button allows you to skull-strip the images again with a different BET threshold.  Lower values will remove fewer voxels representing tissue.\n"
+                      +   "\nThe 'View Demographic Data' allows you to inspect the de-identified data file.\n"
+                      +   "\n'View DICOM Header' only works with DICOM files. \n"
+                      +   "\nClick the 'Continue' button to proceed to next 'Transfer Options' step.");
         
         }
         else if (page.equals("Transfer Options")){
@@ -175,7 +151,7 @@ public class HelpManualFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 716, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -187,7 +163,7 @@ public class HelpManualFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(CloseButton)
                 .addContainerGap())
         );

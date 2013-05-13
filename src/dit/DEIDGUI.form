@@ -58,7 +58,7 @@
                           <Component id="errlogButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jButtonMisHelp" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="142" max="32767" attributes="0"/>
                           <Component id="backButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="continueButton" min="-2" max="-2" attributes="0"/>
@@ -137,7 +137,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="errlogButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="See Error Log"/>
+            <Property name="text" type="java.lang.String" value="See error log"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="errlogButtonActionPerformed"/>
@@ -148,7 +148,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButtonMisHelp">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Mismatch Help"/>
+            <Property name="text" type="java.lang.String" value="Mismatch help"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonMisHelpActionPerformed"/>
