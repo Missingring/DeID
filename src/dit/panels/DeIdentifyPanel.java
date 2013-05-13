@@ -114,7 +114,6 @@ public class DeIdentifyPanel extends javax.swing.JPanel implements WizardPanel {
         jLabel1 = new javax.swing.JLabel();
         jButtonAdd = new javax.swing.JButton();
         jButtonRemove = new javax.swing.JButton();
-        jCheckBoxDeface = new javax.swing.JCheckBox();
 
         jListDeselectedFields.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Name", "Gender", "Handedness" };
@@ -150,9 +149,6 @@ public class DeIdentifyPanel extends javax.swing.JPanel implements WizardPanel {
             }
         });
 
-        jCheckBoxDeface.setSelected(true);
-        jCheckBoxDeface.setText("Deface images (Uncheck if you already have skull stripped files)");
-
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -169,10 +165,8 @@ public class DeIdentifyPanel extends javax.swing.JPanel implements WizardPanel {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jScrollPane2))
                     .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel1)
-                            .add(jCheckBoxDeface))
-                        .add(0, 0, Short.MAX_VALUE)))
+                        .add(jLabel1)
+                        .add(0, 177, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -180,12 +174,10 @@ public class DeIdentifyPanel extends javax.swing.JPanel implements WizardPanel {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jLabel1)
-                .add(18, 18, 18)
-                .add(jCheckBoxDeface)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(20, 20, 20)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(jButtonAdd)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -226,7 +218,6 @@ public class DeIdentifyPanel extends javax.swing.JPanel implements WizardPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAdd;
     private javax.swing.JButton jButtonRemove;
-    private javax.swing.JCheckBox jCheckBoxDeface;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JList jListDeselectedFields;
     private javax.swing.JList jListSelectedFields;
@@ -240,7 +231,7 @@ public class DeIdentifyPanel extends javax.swing.JPanel implements WizardPanel {
         /*double   d;
         if (!jTextField1.getText().trim().equals("")) {
             try{
-        d = Double.parseDouble(jTextField1.getText());
+        d = Double.parseDoubles\(jTextField1.getText());
         if(d >= 0.0 && d <= 1.0){
         DeidData.defaceThreshold = jTextField1.getText();
         }
@@ -248,7 +239,7 @@ public class DeIdentifyPanel extends javax.swing.JPanel implements WizardPanel {
             DeidData.defaceThreshold = "0.1";
             }
         }*/
-        return new DeidentifyProgressPanel(jCheckBoxDeface.isSelected());
+        return new DeidentifyProgressPanel(DeidData.doDeface);
     }
 
     @Override

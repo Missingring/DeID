@@ -71,6 +71,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         btnAddDir = new javax.swing.JButton();
+        cbxDoDeface = new javax.swing.JCheckBox();
 
         jLabel1.setText("<html><p>Select images or directories of images to de-identify. Images may be in DICOM, Analyze, or NIfTI format. DICOM and Analyze files will be converted to NIfTI.</p><p>&nbsp;</p></html>");
 
@@ -115,6 +116,14 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
             }
         });
 
+        cbxDoDeface.setForeground(new java.awt.Color(255, 0, 0));
+        cbxDoDeface.setText("Check if images have been skull stripped.");
+        cbxDoDeface.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxDoDefaceActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -123,7 +132,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jScrollPane2)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel1)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 207, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -135,12 +144,15 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
-                                .add(0, 0, Short.MAX_VALUE)
+                                .add(0, 40, Short.MAX_VALUE)
                                 .add(btnRemovedAll, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 12, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                                 .add(jButtonRemove)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(btnSelectAll, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 75, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
+                                .add(btnSelectAll, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 75, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                    .add(layout.createSequentialGroup()
+                        .add(cbxDoDeface, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 250, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -160,7 +172,9 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                     .add(jLabel2)
                     .add(jLabel3))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbxDoDeface)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -230,12 +244,17 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         LoadImage(fc);
     }//GEN-LAST:event_btnAddDirActionPerformed
+
+    private void cbxDoDefaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxDoDefaceActionPerformed
+        DeidData.doDeface=cbxDoDeface.isSelected();
+    }//GEN-LAST:event_cbxDoDefaceActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddDir;
     private javax.swing.JButton btnAddFiles;
     private javax.swing.JButton btnRemovedAll;
     private javax.swing.JButton btnSelectAll;
+    private javax.swing.JCheckBox cbxDoDeface;
     private javax.swing.JButton jButtonRemove;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
