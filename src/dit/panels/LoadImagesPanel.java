@@ -150,9 +150,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                                 .add(jButtonRemove)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(btnSelectAll, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 75, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                    .add(layout.createSequentialGroup()
-                        .add(cbxDoDeface, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 250, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(0, 0, Short.MAX_VALUE)))
+                    .add(cbxDoDeface, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -246,7 +244,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
     }//GEN-LAST:event_btnAddDirActionPerformed
 
     private void cbxDoDefaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxDoDefaceActionPerformed
-        DeidData.doDeface=cbxDoDeface.isSelected();
+        DeidData.doDeface=!cbxDoDeface.isSelected();
     }//GEN-LAST:event_cbxDoDefaceActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
