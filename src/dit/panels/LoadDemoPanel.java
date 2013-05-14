@@ -387,9 +387,17 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnCancleChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancleChangeActionPerformed
+        
         if(DeidData.demoSourceFile != null)
         {
-            ReadDemographicFile(DeidData.demoSourceFile);
+            int choice = JOptionPane.showConfirmDialog(this, "Would you discard all the change?",
+                    "Revert", JOptionPane.OK_CANCEL_OPTION);
+            if(choice== JOptionPane.OK_OPTION)
+                ReadDemographicFile(DeidData.demoSourceFile);
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "No previous demographic file!","Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnCancleChangeActionPerformed
 
