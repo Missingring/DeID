@@ -49,6 +49,8 @@ public class DeidData {
     public static int correctflag = 0;
     public static String defaceThreshold = "0.1";
     public static boolean doDeface=true;
+    public static boolean demoFileModified=false;
+    public static File demoSourceFile=null;
     // Data declarations
     public static String outputPath = "dit_output/";
     public static String tarfilesavedpath = "";

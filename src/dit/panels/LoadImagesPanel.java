@@ -37,7 +37,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         
         jLabel3.setText(DeidData.inputFiles.size()+" images loaded");
         jListImages.setListData(DeidData.inputFiles);
-        
+        cbxDoDeface.setSelected(!DeidData.doDeface);
         
         btnRemovedAll.setVisible(false);
         
