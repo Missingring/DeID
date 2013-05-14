@@ -17,13 +17,11 @@ import javax.swing.JPasswordField;
 import java.io.InputStream;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
-import java.util.zip.*;
-import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.io.BufferedInputStream;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Random;
+import java.util.logging.Level;
 /**
  *
  * @author christianprescott
@@ -32,6 +30,7 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
     private File tarFile, logFile, tarFileO;
     private String FTPServer, FTPUser, FTPShare;
     private JPasswordField FTPPassField;
+    private String remotePath="";
     private int FTPPort;
 
     /**
@@ -44,6 +43,8 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
         FTPPort = TransferPanel.FTPPort;
         FTPUser = TransferPanel.FTPUser;
         FTPPassField = passField;
+        remotePath= TransferPanel.remotePath;
+        
         switch(TransferPanel.ShareMode){
             case 0:
                 FTPShare = "none";
@@ -120,7 +121,17 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                             success = uploadTarSFTP();
                             break;
                         case 1:
-                            success = uploadTarFTPS();
+                            try {
+                                success = uploadTarFTPS();
+                            } catch (IllegalStateException ex) {
+                                java.util.logging.Logger.getLogger(TransferProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                java.util.logging.Logger.getLogger(TransferProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (FTPIllegalReplyException ex) {
+                                java.util.logging.Logger.getLogger(TransferProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (FTPException ex) {
+                                java.util.logging.Logger.getLogger(TransferProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                             break;
                     }
                     if(!success){
@@ -279,14 +290,16 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
      return success;
  
  }   
-    private boolean uploadTarFTPS(){
+    private boolean uploadTarFTPS() throws IllegalStateException, IOException, FTPIllegalReplyException, FTPException{
         jLabel2.setText("<html><p>Connecting to "+ FTPServer + "...</p><p>&nbsp;</p></html>");
 
         boolean success = true;
         // The manual for ftp4j is here: http://www.sauronsoftware.it/projects/ftp4j/manual.php
         FTPClient client = new FTPClient();
+        
         client.setSecurity(FTPClient.SECURITY_FTP);
-
+        if(remotePath.length()>0)
+            client.changeDirectory(remotePath);
         try {
             DEIDGUI.log("Connecting to " + FTPServer + " via FTPS");
             if (FTPPort >= 0) {

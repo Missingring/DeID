@@ -19,6 +19,7 @@ public class TransferPanel extends javax.swing.JPanel implements WizardPanel{
     public static File tarSaveDir = null;
     public static boolean doSave = true, doFTP = false;
     public static int FTPProtocol = 0, ShareMode = 0, FTPPort = -1;
+    public static String remotePath="";
     public static String FTPServer = "", FTPUser = "";
 
     /**
@@ -104,6 +105,8 @@ public class TransferPanel extends javax.swing.JPanel implements WizardPanel{
         jLabelFTPUser = new javax.swing.JLabel();
         jLabelFTPPassword = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        lblPath = new javax.swing.JLabel();
+        txtPath = new javax.swing.JTextField();
 
         setPreferredSize(new java.awt.Dimension(400, 320));
 
@@ -181,6 +184,11 @@ public class TransferPanel extends javax.swing.JPanel implements WizardPanel{
 
         jLabel2.setText("jLabel2");
 
+        lblPath.setText("Remote path");
+        lblPath.setEnabled(false);
+
+        txtPath.setEditable(false);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -207,13 +215,14 @@ public class TransferPanel extends javax.swing.JPanel implements WizardPanel{
                                 .add(jLabelSaveLocation))
                             .add(jCheckBoxFTP)
                             .add(jCheckBoxAgree))
-                        .add(0, 80, Short.MAX_VALUE))
+                        .add(0, 146, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(29, 29, 29)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(jLabelFTPServer)
                             .add(jLabelFTPProtocol)
-                            .add(jLabelFTPUser))
+                            .add(jLabelFTPUser)
+                            .add(lblPath))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
@@ -227,7 +236,9 @@ public class TransferPanel extends javax.swing.JPanel implements WizardPanel{
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jTextFieldFTPPort, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                             .add(layout.createSequentialGroup()
-                                .add(jComboBoxFTPProtocol, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(jComboBoxFTPProtocol, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(txtPath, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 226, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                                 .add(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
@@ -264,7 +275,11 @@ public class TransferPanel extends javax.swing.JPanel implements WizardPanel{
                     .add(jPasswordFieldFTPPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabelFTPUser)
                     .add(jLabelFTPPassword))
-                .add(18, 18, 18)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(lblPath)
+                    .add(txtPath, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(4, 4, 4)
                 .add(jLabel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jCheckBoxAgree)
@@ -338,6 +353,8 @@ public class TransferPanel extends javax.swing.JPanel implements WizardPanel{
     private javax.swing.JTextField jTextFieldFTPPort;
     private javax.swing.JTextField jTextFieldFTPServer;
     private javax.swing.JTextField jTextFieldFTPUser;
+    private javax.swing.JLabel lblPath;
+    private javax.swing.JTextField txtPath;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -357,7 +374,7 @@ public class TransferPanel extends javax.swing.JPanel implements WizardPanel{
         }
         FTPUser = jTextFieldFTPUser.getText().trim();
         ShareMode = jComboBoxSharing.getSelectedIndex();
-        
+        remotePath=txtPath.getText();
         return new TransferProgressPanel(jPasswordFieldFTPPassword);
     }
 
