@@ -454,6 +454,8 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                 try {
                     // Upload the result tarball
                     // If it is necessary to change directory, do so here
+                    if(remotePath.length()>0)
+                        channel.cd(remotePath);
                     final long fileSize = tarFile.length();
                     channel.put(tarFile.getAbsolutePath(), 
                             tarFile.getName(), 
