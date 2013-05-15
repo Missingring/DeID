@@ -28,6 +28,10 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Row;
 
 
 /**
@@ -501,7 +505,30 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
             workbook.close();
         }
         else if(extension.equals("xlsx"))
-        {}
+        {
+            HSSFWorkbook wb = new HSSFWorkbook();
+            TableColumnModel headerColumn=jTable1.getTableHeader().getColumnModel();
+            HSSFSheet sheet = wb.createSheet("new sheet");
+            // Create a row and put some cells in it. Rows are 0 based.
+            Row row = sheet.createRow((short) 0);
+            for(int i=0;i<headerColumn.getColumnCount();i++)
+            {
+                
+                row.createCell(i).setCellValue(headerColumn.getColumn(i).getHeaderValue().toString());
+            }
+            for(int i=0;i<jTable1.getRowCount();i++)
+            {
+                row = sheet.createRow((short) i+1);
+                for(int j=0;j<jTable1.getColumnCount();j++)
+                {
+                    row.createCell(j).setCellValue((String)jTable1.getValueAt(i, j));
+                }
+            }
+            try (FileOutputStream fileOut = new FileOutputStream(dest)) {
+                wb.write(fileOut);
+                fileOut.close();
+            }
+        }
         System.out.println("Write to:"+dest.getAbsolutePath());
         JOptionPane.showMessageDialog(this, "New File has been saved.","Congratulation", JOptionPane.INFORMATION_MESSAGE);
     }
