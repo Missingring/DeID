@@ -13,25 +13,20 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.awt.event.*;
-import jxl.*;
-import jxl.write.*;
 import javax.swing.*;
 import java.util.regex.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 /**
@@ -506,14 +501,13 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         }
         else if(extension.equals("xlsx"))
         {
-            HSSFWorkbook wb = new HSSFWorkbook();
+            org.apache.poi.ss.usermodel.Workbook wb = new XSSFWorkbook();
             TableColumnModel headerColumn=jTable1.getTableHeader().getColumnModel();
-            HSSFSheet sheet = wb.createSheet("new sheet");
+            org.apache.poi.ss.usermodel.Sheet sheet = wb.createSheet("new sheet");
             // Create a row and put some cells in it. Rows are 0 based.
             Row row = sheet.createRow((short) 0);
             for(int i=0;i<headerColumn.getColumnCount();i++)
             {
-                
                 row.createCell(i).setCellValue(headerColumn.getColumn(i).getHeaderValue().toString());
             }
             for(int i=0;i<jTable1.getRowCount();i++)
