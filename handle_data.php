@@ -82,7 +82,7 @@ if(isset($_REQUEST['action']))
 		do_html_header("Delete Observation");
                 check_valid_user();
                 display_user_menu();
-                if($_REQUEST['user_role']!="1" && $_REQUEST['user_role']!="0")
+                if($_SESSION['user_role']!="1" && $_SESSION['user_role']!="0")
                 {
                     echo "You don't have the permission! <a href='browse_my_projects_form.php'>Go back</a></p>";
                 }

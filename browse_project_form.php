@@ -34,7 +34,7 @@
 			</table>
 			<br /><input type='submit' name='action' value='Get'/>
                         <?php
-                          if($_REQUEST['user_role']==0 || $_REQUEST['user_role']==1)
+                          if($_SESSION['user_role']==0 || $_SESSION['user_role']==1)
                               echo " <input type='submit' name='action' onclick='return confirmBox();' value='Delete'/>";
                         ?>
                        
