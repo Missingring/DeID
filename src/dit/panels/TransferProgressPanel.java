@@ -78,8 +78,8 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
 
         DEIDGUI.continueButton.setEnabled(false);
         DEIDGUI.backButton.setEnabled(false);
-        
-        doTransfer();
+     
+        doTransfer();    
         
         DEIDGUI.log("TransferProgressPanel initialized");
     }
@@ -138,6 +138,7 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                         DEIDGUI.log("Errors during upload. Transfer may not "
                                 + "have completed, see log for details.",
                                 DEIDGUI.LOG_LEVEL.ERROR);
+                        DEIDGUI.previous();
                     }
                 }
                 
