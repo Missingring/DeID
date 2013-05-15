@@ -37,7 +37,7 @@ public class TransferPanel extends javax.swing.JPanel implements WizardPanel{
             jLabelFTPProtocol, jComboBoxFTPProtocol,
             jLabelFTPServer, jTextFieldFTPServer, jTextFieldFTPPort,
             jLabelFTPUser, jTextFieldFTPUser,
-            jLabelFTPPassword, jPasswordFieldFTPPassword,
+            jLabelFTPPassword, jPasswordFieldFTPPassword,txtPath,lblPath
         };
                 
         jCheckBoxSave.setSelected(doSave);
@@ -187,7 +187,7 @@ public class TransferPanel extends javax.swing.JPanel implements WizardPanel{
         lblPath.setText("Remote path");
         lblPath.setEnabled(false);
 
-        txtPath.setEditable(false);
+        txtPath.setEnabled(false);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);

@@ -390,7 +390,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         if(DeidData.demoSourceFile != null)
         {
             int choice = JOptionPane.showConfirmDialog(this, "Would you discard all the change?",
-                    "Revert", JOptionPane.OK_CANCEL_OPTION);
+                    "Revert", JOptionPane.YES_NO_OPTION);
             if(choice== JOptionPane.OK_OPTION)
                 ReadDemographicFile(DeidData.demoSourceFile);
         }
@@ -413,14 +413,14 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                 if(file.exists())
                 {
                     int choice= JOptionPane.showConfirmDialog(this, "File already existed, would you want overwrite it?","Confirm",
-                            JOptionPane.INFORMATION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+                            JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_OPTION);
                     if(choice== JOptionPane.OK_OPTION)
                         destFile=file;
                 }
                 else
                 {
                     int choice= JOptionPane.showConfirmDialog(this, "File does not existed, would you want create it?","Confirm",
-                            JOptionPane.INFORMATION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+                            JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_OPTION);
                     if(choice== JOptionPane.OK_OPTION)
                     {
                         try {
@@ -439,12 +439,13 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         if(destFile!=null)
             try {
                 writeBack(destFile);
-            }catch (WriteException ex) {
+            } catch ( WriteException | IOException ex) {
                 Logger.getLogger(LoadDemoPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
-            catch (IOException ex) {
-                Logger.getLogger(LoadDemoPanel.class.getName()).log(Level.SEVERE, null, ex);
-            } 
+          catch(Exception e)
+         {
+             JOptionPane.showMessageDialog(this, "Failed to save to file.","Error", JOptionPane.ERROR_MESSAGE);
+            }
     }//GEN-LAST:event_btnWriteBackFileActionPerformed
     
     private void writeBack(File dest) throws IOException, WriteException
