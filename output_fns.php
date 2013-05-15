@@ -16,7 +16,7 @@
 				media="screen and (max-width: 480px)">
 			<link type="text/css" rel="stylesheet" href="./css/elements-mobile.css"
 				media="screen and (max-width: 480px)">
-			<script src="js/js_fns.js"></script>
+			<script src="js/js_fns.js"></script>                       
 		</head>
 		<body class="box">
 			<div id="header">

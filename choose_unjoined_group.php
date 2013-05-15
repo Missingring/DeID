@@ -12,7 +12,7 @@
             
     // Performing SQL query
     if($_SESSION['user_role']=='0'){
-    	$result_1=$conn->query("SELECT DISTINCT groupName FROM Groups");
+    	$result_1=$conn->query("SELECT DISTINCT groupName,groupID FROM Groups");
     } else if($_SESSION['user_role']=='1'){
 	    $result_1=$conn->query("SELECT DISTINCT groupName FROM Groups WHERE groupCreater='$username'");
     }	
@@ -30,7 +30,12 @@
 			$line_3 = $result_3->fetch_array(MYSQLI_NUM);
 			echo "$line_3[0]<br />";
 		}
-		echo "</td></tr>";
+		echo "</td>";
+                if($_SESSION['user_role']=='0')
+                {
+                    echo "<td><a href='group_ajax.php?action=delete&id={$line_1[1]}'>Delete</a></td>";
+                }
+                echo   " </tr>";
 	}
 	echo "</table></form>\n";
 

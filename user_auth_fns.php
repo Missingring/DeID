@@ -1,20 +1,20 @@
 <?php
 	require_once('db_fns.php');
-	
+            
 	function register_temp($username, $email, $name, $password, $role, $groupID){
 		// connect to db
 		$conn=db_connect();
-		
+                    
 		// check if username is unique
 		$result = $conn->query("select * from Account where username='".$username."'");
 		if(!$result){
 			throw new Exception("Could not execute query");
 		}
-		
+                    
 		if($result->num_rows>0){
 			throw new Exception('That username is taken - go back and choose another one.');
 		}
-		
+                    
 		// if ok, put in temporary db table
 		$confirm_code=md5(uniqid(rand()));
 		$result=$conn->query("insert into Account_Temp values ('".$username."', '".$email."', sha1('".$password."'), '".$role."', '".$confirm_code."', '".$groupID."')");
@@ -28,7 +28,7 @@
 				$obj=$result_group->fetch_object();
 				$groupName=$obj->groupName;
 			}
-			
+                            
 			$email_addr="MARSHA9@clemson.edu";
 			$from="From: admin@iim.clemson.edu \r\n";
 			$subject="New Account Registration Request";
@@ -48,51 +48,51 @@
 			}
 		}
 	}
-	
+            
 	function create_group($groupName, $groupDescription){
 		// connect to db
 		$conn=db_connect();
-		
+                    
 		// check if username is unique
 		$result = $conn->query("select * from Groups where groupName='".$groupName."'");
 		if(!$result){
 			throw new Exception("Could not execute query");
 		}
-		
+                    
 		if($result->num_rows>0){
 			throw new Exception('That project name is taken - go back and choose another one.');
 		}
-		
+                    
 		// if ok, put in db
 		$result = $conn->query("insert into Groups values (NULL, '".$groupName."', '".$groupDescription."', '".$_SESSION['valid_user']."')");
 		if (!$result){
 			throw new Exception("Could not create a new group in database - please try again later.");
 		}
-		
+                    
 		return true;
 	}
-
+            
 	/*
 	function register($username, $email, $password, $role){
 		// connect to db
 		$conn = db_connect();
-		
+                    
 		// check if username is unique
 		$result = $conn->query("select * from Account where username='".$username."'");
 		if(!$result){
 			throw new Exception("Could not execute query");
 		}
-		
+                    
 		if($result->num_rows>0){
 			throw new Exception('That username is taken - go back and choose another one.');
 		}
-		
+                    
 		// if ok, put in db
 		$result = $conn->query("insert into Account values (NULL, '".$username."', '".$email."', sha1('".$password."'), '".$role."')");
 		if (!$result){
 			throw new Exception("Could not register you in database - please try again later.");
 		}
-		
+                    
 		return true;
 	}
 	*/
@@ -101,7 +101,7 @@
 		// if yes, return true
 		// else throw exception
 		$conn=db_connect();
-		
+                    
 		// check if username is unique
 		$result=$conn->query("select * from Account where username='".$username."' and password=sha1('".$password."')");
 		if(!$result){
@@ -117,13 +117,13 @@
 			throw new Exception("Could not log you in.");
 		}
 	}
-	
+            
 	function iPad_login($username, $password){
 		// check username and password with db
 		// if yes, return true
 		// else throw exception
 		$conn=db_connect();
-		
+                    
 		// check if username is unique
 		$result=$conn->query("select * from Account where username='".$username."' and password='".$password."'");
 		if(!$result){
@@ -139,7 +139,17 @@
 			throw new Exception("Could not log you in. No matched user or Wrong password!");
 		}
 	}
-	
+            
+        function get_user_auth($username){
+            $conn=  db_connect();
+            $sql="Select authorityLevel from Account where username='{$username}';";
+            $result=$conn->query($sql);
+            if($result->num_rows>0 && $obj=$result->fetch_object()){
+                return intval($obj->authorityLevel);
+            }
+            return -1;
+        }
+                
 	function check_valid_user(){
 		// see if somebody is logged in and notify them if not
 		if(isset($_SESSION['valid_user']) && isset($_SESSION['user_role'])){
@@ -167,7 +177,7 @@
 			exit;
 		}
 	}
-	
+            
 	function change_password($username, $old_password, $new_password){
 		// change password for username/old_password to new_password
 		// return true or false
@@ -182,7 +192,7 @@
 			return true; // changed successfully
 		}
 	}
-	
+            
 	function get_random_word($min_length, $max_length){
 		// grab a random word from dictionary between the two lengths and return it
 		// generate a random word
@@ -194,11 +204,11 @@
 			return false;
 		}
 		$size=filesize($dictionary);
-		
+                    
 		// go to a random location in dictionary
 		$rand_location=rand(0, $size);
 		fseek($fp, $rand_location);
-		
+                    
 		// get the next whole word of the right length in the file
 		while((strlen($word)<$min_length)||(strlen($word)>$max_length)||(strstr($word, "'"))){
 			if(feof($fp)){
@@ -210,13 +220,13 @@
 		$word=trim($word);
 		return $word;
 	}
-	
+            
 	function reset_password($username){
 		// set password for username to a random value
 		// return the new password or false on failure
 		// get a random dictionary word between 6 and 13 chars in length
 		$new_password=get_random_word(6, 13);
-		
+                    
 		if($new_password==false){
 			throw new Exception("Could not generate new password.");
 		}
@@ -224,7 +234,7 @@
 		// to make it a slightly better password
 		$rand_number=rand(0, 999);
 		$new_password.=$rand_number;
-		
+                    
 		// set user's password to this in database or return false
 		$conn=db_connect();
 		$result=$conn->query("update Account set password=sha1('".$new_password."') where username='".$username."'");
@@ -234,7 +244,7 @@
 			return $new_password; // changed successfully
 		}
 	}
-	
+            
 	function notify_password($username, $password){
 		// notify the user that their password has been changed
 		$conn=db_connect();
@@ -249,7 +259,7 @@
 			$email=$row->email;
 			$from="From: admin@iim.clemson.edu \r\n";
 			$mesg="Your IIM account password has been changed to ".$password."\r\n"."Please change it next time you log in.\r\n";
-			
+                            
 			if(mail($email, 'IIM login information', $mesg, $from)){
 				return true;
 			} else {
