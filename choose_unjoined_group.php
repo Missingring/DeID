@@ -7,6 +7,7 @@
 	check_valid_user();
 	display_user_menu();
 	    
+        output_confirm_function();  
     // Connecting, selecting database
     $conn=db_connect();
             
@@ -33,11 +34,11 @@
 		echo "</td>";
                 if($_SESSION['user_role']=='0')
                 {
-                    echo "<td><a href='group_ajax.php?action=delete&id={$line_1[1]}'>Delete</a></td>";
+                    echo "<td><a href='group_ajax.php?action=delete&id={$line_1[1]}' onclick='return confirmBox();'>Delete</a></td>";
                 }
                 echo   " </tr>";
 	}
 	echo "</table></form>\n";
-
+       
 	do_html_footer();
 ?>

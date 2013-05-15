@@ -5,11 +5,12 @@
 	do_html_header("Browse Project");
 	check_valid_user();
 	display_user_menu();
+        output_confirm_function();
 	?>
 	<div id="choose_project">
 		<p>Choose any observation you want to export as CVS file:</p>
-		<form action="export_data.php" method="post">
-			<table border="1">
+		<form action="handle_data.php" method="post">
+			<table sytle='width:600px; margin-left:auto;margin-right:auto;' border="1">
 				<tr>
 					<th></th>
 					<th>ObservationID</th>
@@ -31,7 +32,13 @@
 			<tr>
 				<td><input type="checkbox" onClick="toggle(this, 'observation[]')" /></td><td colspan="4" align="center">Click All</td>
 			</table>
-			<br /><input type='submit' value='Get'>
+			<br /><input type='submit' name='action' value='Get'/>
+                        <?php
+                          if($_REQUEST['user_role']==0 || $_REQUEST['user_role']==1)
+                              echo " <input type='submit' name='action' onclick='return confirmBox();' value='Delete'/>";
+                        ?>
+                       
+                              
 		</form>
 	</div>
 	

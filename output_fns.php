@@ -1,4 +1,12 @@
 <?php
+        function output_confirm_function(){            	    
+         echo "<script type='text/javascript'>
+           function confirmBox(){
+             return confirm('Are you sure you want to delete?');
+            }
+          </script>";    
+        }
+
 	function do_html_header($title){
 		// print an HTML header
 	?>
