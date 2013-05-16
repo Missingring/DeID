@@ -19,7 +19,8 @@ public class CompletePanel extends javax.swing.JPanel implements WizardPanel{
     public CompletePanel() {
         initComponents();
         DEIDGUI.title = "Complete";
-        DEIDGUI.helpButton.setEnabled(false);
+        DEIDGUI.helpButton.setEnabled(true);
+        DEIDGUI.helpButton.setVisible(false);
         DEIDGUI.continueButton.setEnabled(false);
         DEIDGUI.cancelButton.setEnabled(false);
         DEIDGUI.backButton.setEnabled(false);        
@@ -84,10 +85,10 @@ public class CompletePanel extends javax.swing.JPanel implements WizardPanel{
             .add(layout.createSequentialGroup()
                 .add(36, 36, 36)
                 .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(124, 124, 124)
-                .add(jLabel1)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(144, 144, 144)
                 .add(jButton1)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jLabel1)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
