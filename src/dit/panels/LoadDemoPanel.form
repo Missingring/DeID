@@ -28,12 +28,10 @@
                       <Component id="jButton2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="jLabel3" max="32767" attributes="0"/>
+                  <Component id="lblInstrc" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="btnCancleChange" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="btnWriteBackFile" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -44,7 +42,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+              <Component id="lblInstrc" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jButtonLoadDemo" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -54,16 +52,13 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane1" pref="49" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btnWriteBackFile" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnCancleChange" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
+              <Component id="btnCancleChange" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="jLabel3">
+    <Component class="javax.swing.JLabel" name="lblInstrc">
       <Properties>
         <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;p&gt;Select a data file, then click the column that will be used to match the images.&lt;/p&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;&lt;/html&gt;"/>
       </Properties>
@@ -106,14 +101,6 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="btnWriteBackFile">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Save new data file"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnWriteBackFileActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnCancleChange">

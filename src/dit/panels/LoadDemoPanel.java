@@ -52,6 +52,15 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         jTable1.setRowSelectionAllowed(false);
         jTable1.setRowHeight(26);
         
+         if(DeidData.demographicData!=null)
+         {
+             lblInstrc.setVisible(false);
+         }
+         else
+         {
+             lblInstrc.setVisible(true);
+         }
+        
         Action action = new AbstractAction()
         {
             public void actionPerformed(ActionEvent e)
@@ -62,6 +71,11 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                 int j=tcl.getColumn();
                 String oldValue=tcl.getOldValue().toString();
                 String newValue=tcl.getNewValue().toString();
+                if (newValue.trim().equals("")){
+                    JOptionPane.showMessageDialog(null,
+                            "WARNING: This cell may not be empty!", "Warning Massage",
+                            JOptionPane.WARNING_MESSAGE);
+                }
                 if(!oldValue.equals(newValue))
                 {
                     final int choice;
@@ -138,58 +152,6 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         }
         jTable1.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         textField.setEditable(true);
-        textField.getDocument().addDocumentListener(new DocumentListener(){
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                int i = jTable1.getSelectedRow();
-                int j = jTable1.getSelectedColumn();
-                String oldText=(String)jTable1.getValueAt(i, j);
-                String newText=textField.getText();
-               
-                if(!oldText.equals(newText))
-                {
-                    System.out.println("Not equal");
-                    final int choice;
-                    choice= JOptionPane.showConfirmDialog(LoadDemoPanel.this, "Make sure this change?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION);
-                    if(choice== JOptionPane.YES_OPTION)
-                    {
-                        DeidData.demographicData.setValueAt(textField.getText(), i, j);
-                        //correctDemoModel.setValueAt(textField.getText(), i, j);
-                        jTable1.setValueAt(textField.getText(), i, j);
-                        //  System.out.println("hit one"+i+" and " + j+textField.getText());
-                        jTable1.clearSelection();
-                    }
-                }
-            }
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                System.out.println("End read");
-                if (textField.isShowing() && textField.getText().trim().equals("")){
-                    JOptionPane.showMessageDialog(null,
-                            "WARNING: This cell may need to be non-empty!", "Warning Massage",
-                            JOptionPane.WARNING_MESSAGE);
-                }
-            }
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                
-                /*  int i = jTable1.getSelectedRow();
-                 * int j = jTable1.getSelectedColumn();
-                 * DeidData.demographicData.setValueAt(textField.getText(), i, j);
-                 * correctDemoModel.setValueAt(textField.getText(), i, j);
-                 * jTable1.setValueAt(textField.getText(), i, j);
-                 * System.out.println("hit one"+i+" and " + j+textField.getText());
-                 * if (textField.getText().trim().equals("")){
-                 * JOptionPane.showMessageDialog(null,
-                 * "Error: This cell can not be empty!", "Error Massage",
-                 * JOptionPane.ERROR_MESSAGE);
-                 * }*/
-            }
-            
-            
-            
-        });
-        
         DEIDGUI.log("LoadDemoPanel initialized");
     }
     
@@ -202,16 +164,15 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel3 = new javax.swing.JLabel();
+        lblInstrc = new javax.swing.JLabel();
         jButtonLoadDemo = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        btnWriteBackFile = new javax.swing.JButton();
         btnCancleChange = new javax.swing.JButton();
 
-        jLabel3.setText("<html><p>Select a data file, then click the column that will be used to match the images.</p><p>&nbsp;</p></html>");
+        lblInstrc.setText("<html><p>Select a data file, then click the column that will be used to match the images.</p><p>&nbsp;</p></html>");
 
         jButtonLoadDemo.setText("Choose data file...");
         jButtonLoadDemo.addActionListener(new java.awt.event.ActionListener() {
@@ -237,13 +198,6 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
             }
         });
 
-        btnWriteBackFile.setText("Save new data file");
-        btnWriteBackFile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnWriteBackFileActionPerformed(evt);
-            }
-        });
-
         btnCancleChange.setText("Revert changes");
         btnCancleChange.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -266,19 +220,17 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButton2)
                         .add(0, 0, Short.MAX_VALUE))
-                    .add(jLabel3)
+                    .add(lblInstrc)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(0, 0, Short.MAX_VALUE)
-                        .add(btnCancleChange)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(btnWriteBackFile)))
+                        .add(btnCancleChange)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jLabel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(lblInstrc, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jButtonLoadDemo)
@@ -287,9 +239,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(btnWriteBackFile)
-                    .add(btnCancleChange)))
+                .add(btnCancleChange))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -348,7 +298,14 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                 DEIDGUI.log("No Parent Directory Found!" );
             }
         }
-         
+         if(DeidData.demographicData!=null)
+         {
+             lblInstrc.setVisible(false);
+         }
+         else
+         {
+             lblInstrc.setVisible(true);
+         }
     }//GEN-LAST:event_jButtonLoadDemoActionPerformed
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -399,54 +356,6 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
             JOptionPane.showMessageDialog(this, "No previous demographic file!","Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnCancleChangeActionPerformed
-
-    private void btnWriteBackFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWriteBackFileActionPerformed
-        File destFile=null;
-        if(DeidData.demoFileModified)
-        {
-            JFileChooser fc=new JFileChooser(DeidData.demoSourceFile);
-            fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            fc.setFileFilter(new DemoFilter());
-            int returnVal = fc.showOpenDialog(this);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
-                if(file.exists())
-                {
-                    int choice= JOptionPane.showConfirmDialog(this, "File already existed, would you want overwrite it?","Confirm",
-                            JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_OPTION);
-                    if(choice== JOptionPane.OK_OPTION)
-                        destFile=file;
-                }
-                else
-                {
-                    int choice= JOptionPane.showConfirmDialog(this, "File does not existed, would you want create it?","Confirm",
-                            JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_OPTION);
-                    if(choice== JOptionPane.OK_OPTION)
-                    {
-                        try {
-                            file.createNewFile();
-                        } catch (IOException ex) {
-                        }
-                        destFile=file;
-                    }
-                }                
-            }
-        }
-        else
-        {
-            JOptionPane.showMessageDialog(this, "Demographic file is not change.", "Information", JOptionPane.INFORMATION_MESSAGE);
-        }
-        if(destFile!=null)
-            try {
-                writeBack(destFile);
-            } catch ( WriteException | IOException ex) {
-                Logger.getLogger(LoadDemoPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-          catch(Exception e)
-         {
-             JOptionPane.showMessageDialog(this, "Failed to save to file.","Error", JOptionPane.ERROR_MESSAGE);
-            }
-    }//GEN-LAST:event_btnWriteBackFileActionPerformed
     
     private void writeBack(File dest) throws IOException, WriteException
     {
@@ -665,61 +574,6 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         }
         jTable1.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         textField.setEditable(true);
-        
-        textField.getDocument().addDocumentListener(new DocumentListener(){
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                int i = jTable1.getSelectedRow();
-                int j = jTable1.getSelectedColumn();
-                
-                String oldText=(String)jTable1.getValueAt(i, j);
-                String newText=textField.getText();
-                 System.out.println("End read");
-                if(!oldText.equals(newText))
-                {
-                    System.out.println("Not equal");
-                    final int choice;
-                    choice= JOptionPane.showConfirmDialog(LoadDemoPanel.this, "Make sure this change?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION);
-                    if(choice== JOptionPane.YES_OPTION)
-                    {
-                        DeidData.demographicData.setValueAt(textField.getText(), i, j);
-                        //correctDemoModel.setValueAt(textField.getText(), i, j);
-                        jTable1.setValueAt(textField.getText(), i, j);
-                        // System.out.println("hit one"+i+" and " + j+textField.getText());
-                        jTable1.setDefaultRenderer(Object.class, new missingValueRenderer());
-                        jTable1.clearSelection();
-                    }
-                }
-            }
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                 
-                if (textField.isShowing() && textField.getText().trim().equals("")){
-                    JOptionPane.showMessageDialog(null,
-                            "WARNING: This cell may not be empty!", "Warning Massage",
-                            JOptionPane.WARNING_MESSAGE);
-                }
-            }
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                
-                /*  int i = jTable1.getSelectedRow();
-                 * int j = jTable1.getSelectedColumn();
-                 * DeidData.demographicData.setValueAt(textField.getText(), i, j);
-                 * correctDemoModel.setValueAt(textField.getText(), i, j);
-                 * jTable1.setValueAt(textField.getText(), i, j);
-                 * System.out.println("hit one"+i+" and " + j+textField.getText());
-                 * if (textField.getText().trim().equals("")){
-                 * JOptionPane.showMessageDialog(null,
-                 * "Error: This cell can not be empty!", "Error Massage",
-                 * JOptionPane.ERROR_MESSAGE);
-                 * }*/
-            }
-            
-            
-            
-        });
-        
         // System.out.println(jTable1.getColumnClass(0));
         DEIDGUI.continueButton.setEnabled(true);
         int idColumn = DeidData.demographicData.getColumnNdx("id");
@@ -744,20 +598,63 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
     }  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancleChange;
-    private javax.swing.JButton btnWriteBackFile;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonLoadDemo;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JLabel lblInstrc;
     // End of variables declaration//GEN-END:variables
     
     @Override
     public WizardPanel getNextPanel() {
-        if(DeidData.demographicData== DemographicTableModel.dummyModel)
+        File destFile=null;
+        if(DeidData.demoFileModified)
         {
-            return new DeidentifyProgressPanel(true);
+            int needSave= JOptionPane.showConfirmDialog(this,
+                    "We detected you changed the demogrphic file, do you want to save save these changes into a new file?",
+                    "Demographic file is changed", JOptionPane.INFORMATION_MESSAGE ,JOptionPane.YES_NO_OPTION);
+            if(needSave== JOptionPane.YES_OPTION)
+            {
+                JFileChooser fc=new JFileChooser(DeidData.demoSourceFile);
+                fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                fc.setFileFilter(new DemoFilter());
+                int returnVal = fc.showOpenDialog(this);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file = fc.getSelectedFile();
+                    if(file.exists())
+                    {
+                        int choice= JOptionPane.showConfirmDialog(this, "File already existed, would you want overwrite it?","Confirm",
+                                JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_OPTION);
+                        if(choice== JOptionPane.OK_OPTION)
+                            destFile=file;
+                    }
+                    else
+                    {
+                        int choice= JOptionPane.showConfirmDialog(this, "File does not existed, would you want create it?","Confirm",
+                                JOptionPane.INFORMATION_MESSAGE, JOptionPane.YES_NO_OPTION);
+                        if(choice== JOptionPane.OK_OPTION)
+                        {
+                            try {
+                                file.createNewFile();
+                            } catch (IOException ex) {
+                            }
+                            destFile=file;
+                        }
+                    }
+                }              
+              
+                if(destFile!=null)
+                    try {
+                        writeBack(destFile);
+                    } catch ( WriteException | IOException ex) {
+                        Logger.getLogger(LoadDemoPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    catch(Exception e)
+                    {
+                        JOptionPane.showMessageDialog(this, "Failed to save to file.","Error", JOptionPane.ERROR_MESSAGE);
+                    }
+            }
         }
         return new MatchDataPanel();
     }

@@ -12,7 +12,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class MatchTableModel extends AbstractTableModel {
 
-    private String[] columnNames = new String[]{"Image File", "Demographic Data", "Status"};
+    private String[] columnNames = new String[]{"Image File", "Date File ID", "Status"};
     private Object[][] data;
     private int mismatchCount, matchCount;
     

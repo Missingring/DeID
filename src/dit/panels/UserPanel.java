@@ -83,7 +83,7 @@ public class UserPanel extends javax.swing.JPanel implements WizardPanel{
 
         jLabelInstitution.setText("Institution");
 
-        jLabel1.setText("<html><p>&nbsp</p><p>Enter your name and institution.  Clickin the 'Continue' button will take you to the next 'load images' step.</p><p>&nbsp</p></html>");
+        jLabel1.setText("<html><p>&nbsp</p><p>Enter your name and institution.  Clicking the 'Continue' button will take you to the next 'load images' step.</p><p>&nbsp</p></html>");
 
         jLabel2.setText("<html><p>Development of this software was supported by <br/>the NIH/NICHD (R01 HD069374: Eckert, M.A. (PI)) and developed by <br/>Anlin Wang, Qingping Meng, Zijun Wang, Lin li, Christian Prescott, and Mark A. Eckert.</p></html>");
 

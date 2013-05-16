@@ -19,7 +19,7 @@ public class CompletePanel extends javax.swing.JPanel implements WizardPanel{
     public CompletePanel() {
         initComponents();
         DEIDGUI.title = "Complete";
-        DEIDGUI.helpButton.setEnabled(true);
+        DEIDGUI.helpButton.setEnabled(false);
         DEIDGUI.continueButton.setEnabled(false);
         DEIDGUI.cancelButton.setEnabled(false);
         DEIDGUI.backButton.setEnabled(false);        
@@ -27,13 +27,13 @@ public class CompletePanel extends javax.swing.JPanel implements WizardPanel{
         {
             int lg = DeidData.tarfilesavedpath.length();
             if (lg < 70)
-                jLabel2.setText("<html><p>The tar file has been saved to </p><div>" + DeidData.tarfilesavedpath+"</div></html>");
+                jLabel2.setText("<html><p>Your data have been saved to: </p><div>" + DeidData.tarfilesavedpath+"</div></html>");
             else {
             String str1 = DeidData.tarfilesavedpath.substring(0, 70);
             String str2 = DeidData.tarfilesavedpath.substring(71);
             System.out.println(str1);
             System.out.println(str2);
-            jLabel2.setText("<html><p>The tar file has been saved to </p><p>" + str1 +"</p><p>"+ str2 + "</p></html>");
+            jLabel2.setText("<html><p>Your data have been saved to: </p><p>" + str1 +"</p><p>"+ str2 + "</p></html>");
         
                     }
         }
@@ -49,11 +49,9 @@ public class CompletePanel extends javax.swing.JPanel implements WizardPanel{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-
-        jLabel1.setText("Complete");
+        jLabel1 = new javax.swing.JLabel();
 
         jButton1.setText("Done");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -62,6 +60,8 @@ public class CompletePanel extends javax.swing.JPanel implements WizardPanel{
             }
         });
 
+        jLabel1.setText("You cannot move back to a previous step because the temporary files have been cleaned up.");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -69,21 +69,24 @@ public class CompletePanel extends javax.swing.JPanel implements WizardPanel{
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 500, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(0, 0, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(0, 0, Short.MAX_VALUE)
-                        .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 104, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jLabel1)
-                    .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 500, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 104, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 459, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jLabel1)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(36, 36, 36)
                 .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(144, 144, 144)
+                .add(124, 124, 124)
+                .add(jLabel1)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1)
                 .addContainerGap())
         );

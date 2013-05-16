@@ -84,7 +84,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;p&gt;&amp;nbsp&lt;/p&gt;&lt;p&gt;Enter your name and institution.  Clickin the &apos;Continue&apos; button will take you to the next &apos;load images&apos; step.&lt;/p&gt;&lt;p&gt;&amp;nbsp&lt;/p&gt;&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;p&gt;&amp;nbsp&lt;/p&gt;&lt;p&gt;Enter your name and institution.  Clicking the &apos;Continue&apos; button will take you to the next &apos;load images&apos; step.&lt;/p&gt;&lt;p&gt;&amp;nbsp&lt;/p&gt;&lt;/html&gt;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
