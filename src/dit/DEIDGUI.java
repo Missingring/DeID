@@ -325,7 +325,7 @@ public class DEIDGUI extends javax.swing.JFrame {
         if(FileUtils.OS.isWindows())
         {
             gzfiles=new String[]{};
-           zipfiles= new String[]{DeidData.unpackedFileLocation.get("robex.zip").getParentFile().getAbsolutePath()+"\\robex"};
+           //zipfiles= new String[]{DeidData.unpackedFileLocation.get("robex.zip").getParentFile().getAbsolutePath()+"\\robex"};
         }
         else
         {

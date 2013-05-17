@@ -117,7 +117,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         });
 
         cbxDoDeface.setForeground(new java.awt.Color(255, 0, 0));
-        cbxDoDeface.setText("Check if images have been skull stripped.");
+        cbxDoDeface.setText("The images have already been skull-stripped.");
         cbxDoDeface.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbxDoDefaceActionPerformed(evt);
@@ -171,7 +171,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                     .add(jLabel2)
                     .add(jLabel3))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(cbxDoDeface)

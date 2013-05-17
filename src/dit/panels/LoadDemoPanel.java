@@ -19,6 +19,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import jxl.Workbook;
 import jxl.write.Label;
@@ -44,10 +45,11 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         DEIDGUI.title = "Load Demographic Data";
         DEIDGUI.helpButton.setEnabled(true);
         
-        jButton2.setVisible(false);
+       
         // TODO: remove this auto-load line
         //        ReadDemographicFile(new File("/Users/christianprescott/Desktop/dataset/my_demo_data.txt"));
-        jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        
         jTable1.setColumnSelectionAllowed(true);
         jTable1.setRowSelectionAllowed(false);
         jTable1.setRowHeight(26);
@@ -168,9 +170,8 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         jButtonLoadDemo = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         btnCancleChange = new javax.swing.JButton();
+        cbxDummy = new javax.swing.JCheckBox();
 
         lblInstrc.setText("<html><p>Select a data file, then click the column that will be used to match the images.</p><p>&nbsp;</p></html>");
 
@@ -184,24 +185,17 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         jTable1.setModel(new DemographicTableModel(new String[]{"No data"}, new Object[1][1]));
         jScrollPane1.setViewportView(jTable1);
 
-        jButton1.setText("Dummy file");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("Refresh");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
         btnCancleChange.setText("Revert changes");
         btnCancleChange.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancleChangeActionPerformed(evt);
+            }
+        });
+
+        cbxDummy.setText("No data file/image file share only");
+        cbxDummy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxDummyActionPerformed(evt);
             }
         });
 
@@ -216,9 +210,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                     .add(layout.createSequentialGroup()
                         .add(jButtonLoadDemo)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton2)
+                        .add(cbxDummy)
                         .add(0, 0, Short.MAX_VALUE))
                     .add(lblInstrc)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
@@ -234,8 +226,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jButtonLoadDemo)
-                    .add(jButton1)
-                    .add(jButton2))
+                    .add(cbxDummy))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -307,41 +298,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
              lblInstrc.setVisible(true);
          }
     }//GEN-LAST:event_jButtonLoadDemoActionPerformed
-    
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        if (DeidData.demographicData != null){
-            DeidData.demographicData = new DemographicTableModel(
-                    DeidData.demographicData.getDataFieldNames(), DeidData.demographicData.getData());
-            jTable1.setModel(DeidData.demographicData);
-        }
-        else {
-            JOptionPane.showMessageDialog(this, "No Demographic File selected.Please Select Demographic File first. "
-                    , "Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
-    
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        File dummyDemographic=new File(DeidData.outputPath+"/dummy.txt");
-        if(!dummyDemographic.exists())
-        {
-            try {
-                dummyDemographic.createNewFile();
-                FileWriter fw=new FileWriter(dummyDemographic.getAbsoluteFile());
-                BufferedWriter bw=new BufferedWriter(fw);
-                String content="TID\n1";
-                bw.write(content);
-                bw.close();
-            } catch (IOException ex) {
-                Logger.getLogger(LoadDemoPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        ReadDemographicFile(dummyDemographic);
         
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void btnCancleChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancleChangeActionPerformed
         
         if(DeidData.demoSourceFile != null)
@@ -356,6 +313,36 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
             JOptionPane.showMessageDialog(this, "No previous demographic file!","Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnCancleChangeActionPerformed
+
+    private void cbxDummyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxDummyActionPerformed
+        if(cbxDummy.isSelected())
+        {
+            File dummyDemographic=new File(DeidData.outputPath+"/dummy.txt");
+            if(!dummyDemographic.exists())
+            {
+                try {
+                    dummyDemographic.createNewFile();
+                    FileWriter fw=new FileWriter(dummyDemographic.getAbsoluteFile());
+                    BufferedWriter bw=new BufferedWriter(fw);
+                    String content="Fake Demographic File ID\nNo meaning in this cell.";
+                    bw.write(content);
+                    bw.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(LoadDemoPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            ReadDemographicFile(dummyDemographic);
+            lblInstrc.setVisible(false);
+        }
+        else
+        {
+            DeidData.demographicData=null;
+            DeidData.demoSourceFile=null;
+            DEIDGUI.continueButton.setEnabled(false);
+            jTable1.setModel(new DefaultTableModel());
+            lblInstrc.setVisible(true);
+        }
+    }//GEN-LAST:event_cbxDummyActionPerformed
     
     private void writeBack(File dest) throws IOException, WriteException
     {
@@ -598,8 +585,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
     }  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancleChange;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JCheckBox cbxDummy;
     private javax.swing.JButton jButtonLoadDemo;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
