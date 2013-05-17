@@ -74,7 +74,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         jTable2.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(comboBox));
         jTable2.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         //System.out.println(model.getMismatchedImageCount());
-        comboBox.setEditable(true);
+        comboBox.setEditable(false);
         comboBox.addItemListener(new ItemListener(){
             @Override
             public void itemStateChanged(ItemEvent e){
@@ -504,7 +504,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         jTable2.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(comboBox));
         jTable2.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         //System.out.println(model.getMismatchedImageCount());
-        comboBox.setEditable(true);
+        comboBox.setEditable(false);
         comboBox.addItemListener(new ItemListener(){
             @Override
             public void itemStateChanged(ItemEvent e){
