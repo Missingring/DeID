@@ -612,7 +612,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         if(DeidData.demoFileModified)
         {
             int needSave= JOptionPane.showConfirmDialog(this,
-                    "We detected you changed the demogrphic file, do you want to save save these changes into a new file?",
+                    "We detected that you changed the data file.  Do you want to save these changes to a new file?",
                     "Demographic file is changed",JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE );
             if(needSave== JOptionPane.YES_OPTION)
             {
