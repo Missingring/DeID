@@ -349,7 +349,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
         String filepp = file.getParentFile().getParentFile().getParentFile().getAbsolutePath();
         
         //file path without parent path
-        String filenet = filepath.replaceAll(filepp, "");
+        String filenet = filepath.replaceAll(filepp, ""); //this line may cause problem in windows cause file path contains '\' 
         
         int bestMatchIndex=-1;
         int lcsLength=0;

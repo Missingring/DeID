@@ -1,6 +1,8 @@
 package dit.panels;
 
 import dit.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Collection;
@@ -20,7 +22,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
     private removeImageFrame rif;
     private ManualCorrectTableModel cmodel;
 
-    
+    private int globalSelectedRow=-1;
     /**
      * Creates new form MatchDataPanel
      */
@@ -62,82 +64,18 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         
         jTable2.setModel(cmodel);
         jTable2.getColumnModel().getColumn(2).setCellRenderer(new MatchStatusRenderer());
-        final JComboBox comboBox = new JComboBox();
-        Object[] demoIDs = DeidData.demographicData.getColumn(DeidData.IdColumn);
-        int demoIDNdx = 0;
-        while(demoIDNdx < demoIDs.length){
-            comboBox.addItem((String)demoIDs[demoIDNdx]);
-            demoIDNdx++;
-            
-        }
-        comboBox.addItem("None");
-        jTable2.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(comboBox));
+//        final JComboBox comboBox = new JComboBox();
+//        Object[] demoIDs = DeidData.demographicData.getColumn(DeidData.IdColumn);
+//        int demoIDNdx = 0;
+//        while(demoIDNdx < demoIDs.length){
+//            comboBox.addItem((String)demoIDs[demoIDNdx]);
+//            demoIDNdx++;
+//            
+//        }
+//        comboBox.addItem("None");
+        jTable2.getColumnModel().getColumn(1).setCellEditor(new ComboBoxCellEditor(lblMatchStat));
         jTable2.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        //System.out.println(model.getMismatchedImageCount());
-        comboBox.setEditable(false);
-        comboBox.addItemListener(new ItemListener(){
-            @Override
-            public void itemStateChanged(ItemEvent e){
-                int i = jTable2.getSelectedRow();
-                if (i>=0){
-                    JComboBox cb = (JComboBox)e.getSource();
-                    Object item = e.getItem();
-                    String filename = (String)DeidData.data[i][0];
-                  //  System.out.println(i);
-                    if (e.getStateChange() == ItemEvent.SELECTED) {
-                        // Item was just selected
-                        if (DeidData.data[i][0]!=null)
-                        {
-                            if (cb.getSelectedItem().toString().equals("None")) {
-                                DeidData.data[i][1] = null;
-                                DeidData.data[i][2] = new Boolean(false);
-                            }
-                            else {
-                                DeidData.data[i][1] = (cb.getSelectedItem());
-                                DeidData.data[i][2] = new Boolean(true);
-                                /* filename = filename.replace(".nii", "");
-                                 * try {filename = filename.replace(".gz","");}
-                                 * catch (Exception ex){
-                                 * System.out.println("Fail to add filename and id pair.");
-                                 * }*/
-                                DeidData.IdFilename.put(filename, cb.getSelectedItem().toString() );
-                                
-                                
-                            }
-                            Object[][] data = DeidData.data;
-                            int checkFlag = 0;
-                            for(int ii = 0; ii < data.length; ii++)
-                            {
-                                if (ii != i && (Boolean)data[ii][2] == true && data[ii][1].toString().equals(cb.getSelectedItem().toString()))
-                                {
-                                    // wjd = new WarningJdialog(new JFrame(), "Warning", "There exists another row where has the same ID matched with a different image.");
-                                    
-                                    //break;
-                                }
-                                if (!(Boolean)data[ii][2]){ checkFlag = 1;}
-                            }
-                            if (checkFlag == 0) {DEIDGUI.continueButton.setEnabled(true);}
-                            else {DEIDGUI.continueButton.setEnabled(false);}
-                            
-                            
-                            // System.out.println(comboBox.getSelectedItem().toString());
-                            jTable2.setValueAt(cb.getSelectedItem().toString(), i, 1);
-                            jTable2.setValueAt("true", i, 2);
-                            jTable2.getColumnModel().getColumn(2).setCellRenderer(new MatchStatusRenderer());
-                            //cb.setSelectedItem(cb.getSelectedItem());
-                            jTable2.clearSelection();
-                        }
-                   findUnmatchCount();                        
-                    }
-                    
-                    
-                    
-                    
-                    
-                }
-                
-            }
-        });
+  
         DEIDGUI.log("MatchDataPanel initialized");
     }
     
@@ -294,13 +232,6 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         boolean isSearchByPath = cbxSearchByPath.isSelected();
         boolean isMultipleLink = cbxMultiMatch.isSelected();
      
-        //System.out.println(matchingkey);
-        //if (!matchingkey.trim().equals("")) {
-        
-        
-        
-        
-        
         
         mmodel = new ManualMatchTableModel(DeidData.niftiFiles, DeidData.demographicData.getColumn(DeidData.IdColumn),matchingkey,isSearchByPath,isMultipleLink);
         jTable2.setModel(mmodel);
@@ -315,110 +246,16 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         } else {
             DEIDGUI.continueButton.setEnabled(true);
         }
-        //  }
-        /* else {
-         * 
-         * 
-         * model = new MatchTableModel(DeidData.niftiFiles, DeidData.demographicData.getColumn(DeidData.IdColumn), isSearchByPath,isMultipleLink);
-         * 
-         * 
-         * jTable2.setModel(model);
-         * jTable2.getColumnModel().getColumn(2).setCellRenderer(new MatchStatusRenderer());
-         * System.out.println(model.getMismatchedImageCount());
-         * if(model.getMismatchedImageCount() > 0 || model.getMatchedImageCount() == 0){
-         * // Ensure that there is at least one matched image, and that
-         * // there are no unmatched images, otherwise OK
-         * wjd = new WarningJdialog(new JFrame(), "Warning", "Mismatch for each image must be removed.");
-         * DEIDGUI.continueButton.setEnabled(false);
-         * } else {
-         * 
-         * DEIDGUI.continueButton.setEnabled(true);
-         * }
-         * 
-         * }*/
+
         
         cmodel = new ManualCorrectTableModel();
         
         jTable2.setModel(cmodel);
         jTable2.getColumnModel().getColumn(2).setCellRenderer(new MatchStatusRenderer());
-        final JComboBox comboBox = new JComboBox();
-        Object[] demoIDs = DeidData.demographicData.getColumn(DeidData.IdColumn);
-        int demoIDNdx = 0;
-        while(demoIDNdx < demoIDs.length){
-            comboBox.addItem((String)demoIDs[demoIDNdx]);
-            demoIDNdx++;
-            
-        }
-        comboBox.addItem("None");
-        jTable2.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(comboBox));
+       
+        jTable2.getColumnModel().getColumn(1).setCellEditor(new ComboBoxCellEditor(lblMatchStat));
         jTable2.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        //System.out.println(model.getMismatchedImageCount());
-        comboBox.setEditable(true);
-        comboBox.addItemListener(new ItemListener(){
-            @Override
-            public void itemStateChanged(ItemEvent e){
-                int i = jTable2.getSelectedRow();
-                if (i>=0){
-                    JComboBox cb = (JComboBox)e.getSource();
-                    Object item = e.getItem();
-                    String filename = (String)DeidData.data[i][0];
-                    //System.out.println(i);
-                    if (e.getStateChange() == ItemEvent.SELECTED) {
-                        // Item was just selected
-                        if (DeidData.data[i][0]!=null)
-                        {
-                            if (cb.getSelectedItem().toString().equals("None")) {
-                                DeidData.data[i][1] = null;
-                                DeidData.data[i][2] = new Boolean(false);
-                            }
-                            else {
-                                DeidData.data[i][1] = (cb.getSelectedItem());
-                                DeidData.data[i][2] = new Boolean(true);
-                                /* filename = filename.replace(".nii", "");
-                                 * try {filename = filename.replace(".gz","");}
-                                 * catch (Exception ex){
-                                 * System.out.println("Fail to add filename and id pair.");
-                                 * }*/
-                                DeidData.IdFilename.put(filename, cb.getSelectedItem().toString() );
-                                
-                            }
-                            
-                            Object[][] data = DeidData.data;
-                            int checkFlag = 0;
-                            for(int ii = 0; ii < data.length; ii++)
-                            {
-                                if (ii != i && (Boolean)data[ii][2] == true && data[ii][1].toString().equals(cb.getSelectedItem().toString()))
-                                {
-                                    // wjd = new WarningJdialog(new JFrame(), "Warning", "There exists another row where has the same ID matched with a different image.");
-                                    
-                                    //break;
-                                }
-                                if (!(Boolean)data[ii][2]){ checkFlag = 1;}
-                            }
-                            if (checkFlag == 0) {DEIDGUI.continueButton.setEnabled(true);}
-                            else {DEIDGUI.continueButton.setEnabled(false);}
-                            // System.out.println(comboBox.getSelectedItem().toString());
-                            jTable2.setValueAt(cb.getSelectedItem().toString(), i, 1);
-                            jTable2.setValueAt("true", i, 2);
-                            jTable2.getColumnModel().getColumn(2).setCellRenderer(new MatchStatusRenderer());
-                            //cb.setSelectedItem(cb.getSelectedItem());
-                            jTable2.clearSelection();
-                        }
-                        findUnmatchCount();
-                    }
-                    
-                    
-                    
-                    
-                    
-                }
-                
-            }
-        });
-        //rif = new removeImageFrame();
-        
-        //rif.pack();
-        //rif.setVisible(true);
+       
     }//GEN-LAST:event_jButton2ActionPerformed
     
     private void cbxSearchByPathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxSearchByPathActionPerformed
@@ -508,6 +345,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         comboBox.addItemListener(new ItemListener(){
             @Override
             public void itemStateChanged(ItemEvent e){
+                System.out.println("Changed Item.");
                 int i = jTable2.getSelectedRow();
                 if (i>=0){
                     JComboBox cb = (JComboBox)e.getSource();

@@ -35,7 +35,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         DEIDGUI.title = "Load Images";
         DEIDGUI.helpButton.setEnabled(true);
         
-        jLabel3.setText(DeidData.inputFiles.size()+" images loaded");
+        lblImages.setText(DeidData.inputFiles.size()+" images loaded");
         jListImages.setListData(DeidData.inputFiles);
         cbxDoDeface.setSelected(!DeidData.doDeface);
         
@@ -69,7 +69,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         btnSelectAll = new javax.swing.JButton();
         btnRemovedAll = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        lblImages = new javax.swing.JLabel();
         btnAddDir = new javax.swing.JButton();
         cbxDoDeface = new javax.swing.JCheckBox();
 
@@ -107,7 +107,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
 
         jLabel2.setText("No line is selected.");
 
-        jLabel3.setText("0 images loaded");
+        lblImages.setText("0 images loaded");
 
         btnAddDir.setText("Add images from multiple directories");
         btnAddDir.addActionListener(new java.awt.event.ActionListener() {
@@ -144,7 +144,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                                 .add(btnAddDir)))
                         .add(0, 0, 0)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                            .add(lblImages, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
                                 .add(98, 98, 98)
                                 .add(btnRemovedAll, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -169,7 +169,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel2)
-                    .add(jLabel3))
+                    .add(lblImages))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -212,6 +212,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         jListImages.setListData(DeidData.inputFiles);
         DEIDGUI.log("Removed " + selection.length + " input images");
         jLabel2.setText("No line is selected.");
+        lblImages.setText(DeidData.inputFiles.size()+" images loaded");
     }//GEN-LAST:event_jButtonRemoveActionPerformed
     
     private void btnSelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectAllActionPerformed
@@ -260,9 +261,9 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
     private javax.swing.JButton jButtonRemove;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JList jListImages;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblImages;
     // End of variables declaration//GEN-END:variables
     
     @Override
@@ -387,7 +388,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                 DEIDGUI.log("No Parent Directory Found!" );
             }
             DEIDGUI.log("Added " + selectedFiles.length + " input images");
-            jLabel3.setText(DeidData.inputFiles.size() +" image(s) loaded.");
+            lblImages.setText(DeidData.inputFiles.size() +" image(s) loaded.");
         }
     }
 }

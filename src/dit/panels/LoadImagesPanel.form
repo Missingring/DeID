@@ -35,7 +35,7 @@
                       </Group>
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel3" pref="264" max="32767" attributes="0"/>
+                          <Component id="lblImages" pref="264" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <EmptySpace min="98" pref="98" max="-2" attributes="0"/>
                               <Component id="btnRemovedAll" max="32767" attributes="0"/>
@@ -68,7 +68,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblImages" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane2" pref="37" max="32767" attributes="0"/>
@@ -142,7 +142,7 @@
         <Property name="text" type="java.lang.String" value="No line is selected."/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel3">
+    <Component class="javax.swing.JLabel" name="lblImages">
       <Properties>
         <Property name="text" type="java.lang.String" value="0 images loaded"/>
       </Properties>
