@@ -162,7 +162,7 @@ public class TransferPanel extends javax.swing.JPanel implements WizardPanel{
             }
         });
 
-        jComboBoxFTPProtocol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SFTP", "FTPS" }));
+        jComboBoxFTPProtocol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SFTP", "FTPS", "FTP" }));
         jComboBoxFTPProtocol.setEnabled(false);
         jComboBoxFTPProtocol.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -122,7 +122,20 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                             break;
                         case 1:
                             try {
-                                success = uploadTarFTPS();
+                                success = uploadTarFTP(true);
+                            } catch (IllegalStateException ex) {
+                                java.util.logging.Logger.getLogger(TransferProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                java.util.logging.Logger.getLogger(TransferProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (FTPIllegalReplyException ex) {
+                                java.util.logging.Logger.getLogger(TransferProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (FTPException ex) {
+                                java.util.logging.Logger.getLogger(TransferProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            break;
+                             case 2:
+                            try {
+                                success = uploadTarFTP(false);
                             } catch (IllegalStateException ex) {
                                 java.util.logging.Logger.getLogger(TransferProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (IOException ex) {
@@ -292,14 +305,17 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
      return success;
  
  }   
-    private boolean uploadTarFTPS() throws IllegalStateException, IOException, FTPIllegalReplyException, FTPException{
+ 
+ 
+    private boolean uploadTarFTP(boolean isSecure) throws IllegalStateException, IOException, FTPIllegalReplyException, FTPException{
         jLabel2.setText("<html><p>Connecting to "+ FTPServer + "...</p><p>&nbsp;</p></html>");
 
         boolean success = true;
         // The manual for ftp4j is here: http://www.sauronsoftware.it/projects/ftp4j/manual.php
         FTPClient client = new FTPClient();
         
-        client.setSecurity(FTPClient.SECURITY_FTP);
+        if(isSecure)
+         client.setSecurity(FTPClient.SECURITY_FTP);
         if(remotePath.length()>0)
             client.changeDirectory(remotePath);
         try {
