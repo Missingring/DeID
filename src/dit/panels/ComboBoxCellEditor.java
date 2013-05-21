@@ -37,7 +37,7 @@ public class ComboBoxCellEditor extends AbstractCellEditor implements TableCellE
     
     private void initBox(String currentSelected)
     {
-        DefaultComboBoxModel model = new DefaultComboBoxModel(new String[] {"None"});
+        DefaultComboBoxModel model = new DefaultComboBoxModel(new String[] {"None","Missing"});
         Object[] demoIDs = DeidData.demographicData.getColumn(DeidData.IdColumn);
         int demoIDNdx = 0;
         while(demoIDNdx < demoIDs.length){
@@ -85,15 +85,18 @@ public class ComboBoxCellEditor extends AbstractCellEditor implements TableCellE
                                     DeidData.data[i][1] = jComboBox.getSelectedItem().toString();
                                     DeidData.data[i][2] = new Boolean(false);
                                 }
-                                else {
-                                    System.out.println("R:"+row);
+                                else if (jComboBox.getSelectedItem().toString().equals("Missing")) 
+                                {
                                     DeidData.data[i][1] = (jComboBox.getSelectedItem().toString());
                                     DeidData.data[i][2] = new Boolean(true);
-                                    /* filename = filename.replace(".nii", "");
-                                     * try {filename = filename.replace(".gz","");}
-                                     * catch (Exception ex){
-                                     * System.out.println("Fail to add filename and id pair.");
-                                     * }*/
+                                   
+                                    DeidData.IdFilename.put(filename, "missing" );
+                                }
+                                else
+                                {
+                                    DeidData.data[i][1] = (jComboBox.getSelectedItem().toString());
+                                    DeidData.data[i][2] = new Boolean(true);
+                                    
                                     DeidData.IdFilename.put(filename, jComboBox.getSelectedItem().toString() );
                                 }
                                 Object[][] data = DeidData.data;

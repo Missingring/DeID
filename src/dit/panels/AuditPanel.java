@@ -159,7 +159,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
 
         jLabel1.setText("<html><p>Ensure the data has been de-identified. Deselect images that have not had identifying information properly removed or will not be transferred.</p><p>&nbsp;</p></html>");
 
-        jButtonViewDemo.setText("View demographic data");
+        jButtonViewDemo.setText("View data file");
         jButtonViewDemo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonViewDemoActionPerformed(evt);

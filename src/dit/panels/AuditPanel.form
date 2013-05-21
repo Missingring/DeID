@@ -84,7 +84,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="jButtonViewDemo">
       <Properties>
-        <Property name="text" type="java.lang.String" value="View demographic data"/>
+        <Property name="text" type="java.lang.String" value="View data file"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonViewDemoActionPerformed"/>
