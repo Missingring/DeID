@@ -13,6 +13,7 @@ import javax.swing.ListSelectionModel;
 public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
 
     private ManualMatchTableModel mmodel;
+    private DummyFileTableModel dmodel;
     private ManuallyCorrectFrame mcp;
     private removeImageFrame rif;
     private ManualCorrectTableModel cmodel;
@@ -28,15 +29,22 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         DEIDGUI.title = "Data Matching";
         DEIDGUI.helpButton.setEnabled(true);
         DEIDGUI.jButtonMisHelp.setVisible(false);
+        lblDummy.setVisible(false);
         boolean isSearchByPath = cbxSearchByPath.isSelected();
         boolean isMultipleLink = cbxMultiMatch.isSelected();
         
         displayTofile=new HashMap<>();
-   
-        if(DeidData.demographicData== DemographicTableModel.dummyModel)
+        
+        if(DeidData.isNoData)
         {
+            lblDummy.setVisible(true);
+            btnMatch.setEnabled(false);
+            dmodel=new DummyFileTableModel(DeidData.niftiFiles);
+            jTable2.setModel(dmodel);
+            jTable2.getColumnModel().getColumn(2).setCellRenderer(new MatchStatusRenderer());
+            cbxMultiMatch.setEnabled(false);
+            cbxSearchByPath.setEnabled(false);
             DEIDGUI.continueButton.setEnabled(true);
-            return;
         }
         else
         {
@@ -45,7 +53,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
             jTable2.setModel(mmodel);
             jTable2.getColumnModel().getColumn(2).setCellRenderer(new MatchStatusRenderer());
             //System.out.println(mmodel.getMismatchedImageCount()+" and " + mmodel.getMatchedImageCount());
-           findUnmatchCount();
+            findUnmatchCount();
             if(mmodel.getMismatchedImageCount() > 0 || mmodel.getMatchedImageCount() == 0){
                 // Ensure that there is at least one matched image, and that
                 // there are no unmatched images, otherwise OK
@@ -55,24 +63,25 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
             } else {
                 DEIDGUI.continueButton.setEnabled(true);
             }
+            
+            
+            
+            cmodel = new ManualCorrectTableModel();
+            
+            jTable2.setModel(cmodel);
+            jTable2.getColumnModel().getColumn(2).setCellRenderer(new MatchStatusRenderer());
+            //        final JComboBox comboBox = new JComboBox();
+            //        Object[] demoIDs = DeidData.demographicData.getColumn(DeidData.IdColumn);
+            //        int demoIDNdx = 0;
+            //        while(demoIDNdx < demoIDs.length){
+            //            comboBox.addItem((String)demoIDs[demoIDNdx]);
+            //            demoIDNdx++;
+            //
+            //        }
+            //        comboBox.addItem("None");
+            jTable2.getColumnModel().getColumn(1).setCellEditor(new ComboBoxCellEditor(lblMatchStat));
+            jTable2.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         }
-       
-        cmodel = new ManualCorrectTableModel();
-        
-        jTable2.setModel(cmodel);
-        jTable2.getColumnModel().getColumn(2).setCellRenderer(new MatchStatusRenderer());
-//        final JComboBox comboBox = new JComboBox();
-//        Object[] demoIDs = DeidData.demographicData.getColumn(DeidData.IdColumn);
-//        int demoIDNdx = 0;
-//        while(demoIDNdx < demoIDs.length){
-//            comboBox.addItem((String)demoIDs[demoIDNdx]);
-//            demoIDNdx++;
-//            
-//        }
-//        comboBox.addItem("None");
-        jTable2.getColumnModel().getColumn(1).setCellEditor(new ComboBoxCellEditor(lblMatchStat));
-        jTable2.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-  
         DEIDGUI.log("MatchDataPanel initialized");
     }
     
@@ -95,6 +104,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
         jButton2 = new javax.swing.JButton();
         cbxMultiMatch = new javax.swing.JCheckBox();
         lblMatchStat = new javax.swing.JLabel();
+        lblDummy = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(840, 400));
 
@@ -139,6 +149,9 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
             }
         });
 
+        lblDummy.setForeground(new java.awt.Color(255, 0, 0));
+        lblDummy.setText("Some functions are not available since no data file is selected.");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -170,24 +183,30 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                         .add(btnMatch, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 66, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                                     .add(jButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 171, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                        .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(231, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
+                        .add(lblDummy)
+                        .add(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jLabel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(lblDummy)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(cbxSearchByPath)
                     .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(txtMatchpattern, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(txtMatchpattern, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(btnMatch))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(cbxMultiMatch)
                     .add(jButton2))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(lblMatchStat))
         );
@@ -280,6 +299,7 @@ public class MatchDataPanel extends javax.swing.JPanel implements WizardPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable2;
+    private javax.swing.JLabel lblDummy;
     private javax.swing.JLabel lblMatchStat;
     private javax.swing.JTextField txtMatchpattern;
     // End of variables declaration//GEN-END:variables

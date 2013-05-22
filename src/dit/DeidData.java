@@ -50,6 +50,7 @@ public class DeidData {
     public static String defaceThreshold = "0.1";
     public static boolean doDeface=true;
     public static boolean demoFileModified=false;
+    public static boolean isNoData=false;
     public static File demoSourceFile=null;
     // Data declarations
     public static String outputPath = "dit_output/";

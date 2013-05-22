@@ -154,6 +154,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         }
         jTable1.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         textField.setEditable(true);
+        cbxDummy.setSelected(DeidData.isNoData);
         DEIDGUI.log("LoadDemoPanel initialized");
     }
     
@@ -261,6 +262,8 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
             File file = fc.getSelectedFile();
             if (file.canRead()) {
                 ReadDemographicFile(file);
+                 DeidData.isNoData=false; 
+                 cbxDummy.setSelected(DeidData.isNoData);
             } else {
                 JOptionPane.showMessageDialog(this, "This file could not "
                         + "be opened.", "Invalid Demographic File",
@@ -333,15 +336,18 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
             }
             ReadDemographicFile(dummyDemographic);
             lblInstrc.setVisible(false);
+          //  DeidData.isNoData=true;
         }
         else
         {
+           // DeidData.isNoData=false;
             DeidData.demographicData=null;
             DeidData.demoSourceFile=null;
             DEIDGUI.continueButton.setEnabled(false);
             jTable1.setModel(new DefaultTableModel());
             lblInstrc.setVisible(true);
         }
+        DeidData.isNoData=cbxDummy.isSelected();
     }//GEN-LAST:event_cbxDummyActionPerformed
     
     private void writeBack(File dest) throws IOException, WriteException
@@ -426,6 +432,7 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
     
     private void ReadDemographicFile(File demoFile) {
         DeidData.demoSourceFile=demoFile;
+       
         ArrayList<Object[]> rowList = new ArrayList<Object[]>();
         String[] fields = null;
         if (demoFile.getName().endsWith(".xlsx")){
