@@ -15,8 +15,6 @@ import java.util.Scanner;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.regex.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;

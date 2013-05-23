@@ -42,7 +42,7 @@ public class DummyFileTableModel extends AbstractTableModel {
         while(curFile!=null)
         {
             dataList.add(new Object[]{ManualMatchTableModel.displayIntoTable(curFile).toString(),"missing" , new Boolean(true)});
-            DeidData.IdFilename.put(fileintoTable(curFile), "missing" );
+            DeidData.IdFilename.put(fileintoTable(curFile), "Missing ID" );
             try {
                 curFile = imageIt.next();
             } catch (NoSuchElementException e) {
