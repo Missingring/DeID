@@ -157,30 +157,30 @@ public class NiftiDisplayPanel extends JPanel {
             } else if (sform == 1.0 && quat_x < 0 && quat_y > 0 && quat_z < 0) {
                 /* i = new BufferedImage(dims[1], dims[0], BufferedImage.TYPE_INT_RGB);*/
                 i = new BufferedImage(dims[0], dims[1], BufferedImage.TYPE_INT_RGB);
-                int x = (int) ((dims[2] - 1) * Math.max(0, Math.min(sliceFactor, 1.0)));
-                for (int z = 0; z < dims[0]; z++) {
-                    for (int y = 0; y < dims[1]; y++) {
+                int x = (int) ((dims[2] - 1) * Math.max(0, Math.min(1f-sliceFactor, 1.0)));
+                for (int z = dims[0]-1; z >=0; z--) {
+                    for (int y = dims[1]-1; y >=0;y--) {
                         //  float colorFactor = Math.min(((float)data[z][y][x] - calMin2)/ (calMax - calMin), 1f);
                         //System.out.println((float)data[z][y][x]);
                         float colorFactor = Math.min(((float) data[z][y][x] - calMin2) / (calMax2 - calMin2), 1f);
                         int argb = new Color(colorFactor, colorFactor, colorFactor).getRGB();
                         //float cF =  Math.abs((float)data[z][y][x] - calMin2) * 255f / Math.abs(calMax2 - calMin2) ;
                         //int argb = new Color(cF, cF, cF).getRGB();
-                        i.setRGB(dims[0] - 1 - z, dims[1] - 1 - y, argb);
+                        i.setRGB(dims[0]-1-z,dims[1]-1-y, argb);
                         // i.setRGB(y, z, argb);
                     }
                 }
             } else if (sform == 1.0 && quat_x > 0 && quat_y > 0 && quat_z < 0) {
                 /* i = new BufferedImage(dims[1], dims[0], BufferedImage.TYPE_INT_RGB);*/
                 i = new BufferedImage(dims[2], dims[0], BufferedImage.TYPE_INT_RGB);
-
+                System.out.println(1);
                 int y = (int) ((dims[1] - 1) * Math.max(0, Math.min(sliceFactor, 1.0)));
-                for (int x = 0; x < dims[2]; x++) {
+                for (int x = dims[2]-1; x >=0 ; x--) {
                     for (int z = 0; z < dims[0]; z++) {
                         //float colorFactor = Math.min(((float)data[z][y][x] - calMin)/ (calMax - calMin), 1f);
                         float colorFactor = Math.min(((float) data[z][y][x] - calMin2) / (calMax2 - calMin2), 1f);
                         int argb = new Color(colorFactor, colorFactor, colorFactor).getRGB();
-                        i.setRGB(dims[2] - 1 - x, dims[0] - 1 - z, argb);
+                        i.setRGB(x, dims[0] - 1 - z, argb);
                     }
                 }
             } else {
