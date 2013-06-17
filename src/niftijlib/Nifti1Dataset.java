@@ -448,8 +448,6 @@ public class Nifti1Dataset {
 
 
 	ecs.close();
-
-	return;	
 	}
 
 	////////////////////////////////////////////////////////////////////
@@ -979,7 +977,6 @@ public class Nifti1Dataset {
 		System.out.println("Bits per voxel:\t\t\t\t\t"+bitpix);
 		System.out.println("Scaling slope and intercept:\t\t\t"+scl_slope+" "+scl_inter);
 
-
 		System.out.print("Dataset dimensions (Count, X,Y,Z,T...):\t\t");
 		for (i=0; i<=dim[0]; i++)
 			System.out.print(dim[i]+" ");
@@ -1017,6 +1014,8 @@ public class Nifti1Dataset {
 		System.out.println("Qform transform code:\t\t\t\t"+qform_code+" ("+decodeXform(qform_code)+")");
 		System.out.println("Quaternion b,c,d params:\t\t\t"+quatern[0]+" "+quatern[1]+" "+quatern[2]);
 		System.out.println("Quaternion x,y,z shifts:\t\t\t"+qoffset[0]+" "+qoffset[1]+" "+qoffset[2]);
+                
+                System.out.println("Sform transform code:\t\t\t\t"+sform_code+" ("+decodeXform(sform_code)+")");
 
 		System.out.println("Affine transform code:\t\t\t\t"+sform_code+" ("+decodeXform(sform_code)+")");
 		System.out.print("1st row affine transform:\t\t\t");
@@ -2432,7 +2431,7 @@ public class Nifti1Dataset {
 	public static void main(String[] args) {
 		
 
-		Nifti1Dataset nds = new Nifti1Dataset(args[0]);
+		Nifti1Dataset nds = new Nifti1Dataset("D:\\test.nii");
 		try {
 			nds.readHeader();
 			nds.printHeader();
