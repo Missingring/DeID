@@ -117,11 +117,11 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
         }
         baseId += "_";
         
-        if(DeidData.demographicData == DemographicTableModel.dummyModel)
+        if(DeidData.isNoData)
         {
             for(File file: DeidData.inputFiles)
             {
-                String original=file.getName();
+                String original= FileUtils.getName(file);
                 String newId=(System.currentTimeMillis()/1000)%10000+"";
                 DeidData.IdTable.put(original, newId);
             }            
