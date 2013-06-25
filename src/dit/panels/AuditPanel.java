@@ -322,7 +322,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
             String x = FileUtils.getName((File)curFile.next());
             String y="";
             System.out.println("Get:"+x);
-            if(DeidData.demographicData== DemographicTableModel.dummyModel)
+            if(DeidData.isNoData)
                 y=DeidData.IdTable.get(x);
             else
                 y = DeidData.IdTable.get(DeidData.IdFilename.get(x));
