@@ -122,7 +122,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
             for(File file: DeidData.inputFiles)
             {
                 String original= FileUtils.getName(file);
-                String newId=(System.currentTimeMillis()/1000)%10000+"";
+                String newId=(System.currentTimeMillis())%10000+"_"+new Random().nextInt(10);
                 DeidData.IdTable.put(original, newId);
             }            
         }
