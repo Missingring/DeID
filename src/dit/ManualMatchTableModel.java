@@ -281,7 +281,6 @@ public class ManualMatchTableModel extends AbstractTableModel{
             
             out = out.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "");
         }      
-        
         return out;
     }
     private String keyconvertor(String key, String IDstr){

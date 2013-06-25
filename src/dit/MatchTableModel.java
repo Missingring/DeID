@@ -174,10 +174,10 @@ public class MatchTableModel extends AbstractTableModel {
         
         String abParent = file.getParent();
         String out = FileUtils.getName(file).toString();
-        if (!DeidData.parentPath.equals("none"))    {
+        //if (!DeidData.parentPath.equals("none"))    {
             
-            out = abParent.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "").replaceAll("/", "") + out;
-        }
+          //  out = abParent.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "").replaceAll("/", "") + out;
+        //}
         MatchDataPanel.displayTofile.put(displayIntoTable(file),out );
         return out;
         
