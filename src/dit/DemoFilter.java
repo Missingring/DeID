@@ -21,9 +21,7 @@ public class DemoFilter extends javax.swing.filechooser.FileFilter implements ja
                     // .txt
                     (extension.equals("txt") ||
                     //.xls
-                    extension.equals("xls") ||
-                    // .xlsx
-                    extension.equals("xlsx") 
+                    extension.equals("xls") // removed xlsx file format due to library copyright
                    
                     )){
                 isAccepted = true;
@@ -35,6 +33,6 @@ public class DemoFilter extends javax.swing.filechooser.FileFilter implements ja
 
     @Override
     public String getDescription() {
-        return "Files (*.txt, *xls, *.xlsx)";
+        return "Files (*.txt, *xls)";
     }
 }
