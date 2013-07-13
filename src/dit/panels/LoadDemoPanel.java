@@ -5,7 +5,6 @@ import dit.*;
 import dit.DemographicTableModel;
 import dit.DeidData;
 import dit.XlsFile;
-import dit.XlsxFile;
 import dit.EditDemoDataFrame;
 import java.io.*;
 import java.util.Arrays;
@@ -433,22 +432,8 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
        
         ArrayList<Object[]> rowList = new ArrayList<Object[]>();
         String[] fields = null;
-        if (demoFile.getName().endsWith(".xlsx")){
-            
-            XlsxFile xlsx = new XlsxFile();
-            xlsx.setInputFile(demoFile.getAbsolutePath());
-            try{
-                fields = xlsx.readHeadings();
-                rowList = xlsx.read();
-            }
-            catch(Exception e){
-                JOptionPane.showMessageDialog(this, "This file could not "
-                        + "be opened.", "Invalid Demographic File",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-            
-        }
-        else
+      
+        //removed xlsx file format due to library copyright.
             if (demoFile.getName().endsWith(".xls")){
                 XlsFile xls = new XlsFile();
                 xls.setInputFile(demoFile.getAbsolutePath());
