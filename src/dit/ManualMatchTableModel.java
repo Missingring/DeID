@@ -60,7 +60,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
         {
             Hashtable<String, String> id_exist = new Hashtable<String, String>();
             while (curFile != null){
-                 String mapDisplaytoFile=fileintoTable(curFile);   //do not delete this line unless you know its function
+                String mapDisplaytoFile=fileintoTable(curFile);   //do not delete this line unless you know its function
                 int demoIDNdx = 0;
                 while(demoIDNdx < demoIDs.length){
                     
@@ -271,6 +271,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
          //   out = abParent.replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "").replaceAll("/", "") + out;
         //}
         MatchDataPanel.displayTofile.put(displayIntoTable(file),out );
+       // System.out.println("Out:"+out);
         return out;
     }
     

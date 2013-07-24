@@ -319,18 +319,17 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     private void createFakenames(){
         Iterator curFile = DeidData.deidentifiedFiles.iterator();
         while (curFile.hasNext()){
-            String x = FileUtils.getName((File)curFile.next());
+            String x = FileUtils.getName((File)curFile.next()).toString();
             String y="";
-            System.out.println("Get:"+x);
+            
+           
+            
             if(DeidData.isNoData)
                 y=DeidData.IdTable.get(x);
             else
                 y = DeidData.IdTable.get(DeidData.IdFilename.get(x));
-            /*  if(!multiImages(DeidData.IdFilename,y)){
-             * DeidData.multinameSolFile.put(x, y + ".nii");
-             * }
-             * else {   */
-            System.out.println("y"+y);
+            
+           
             if (!DeidData.multinameSol.containsKey(y)){
                 DeidData.multinameSol.put(y,1);
                 DeidData.multinameSolFile.put(x, y + "_1"+".nii");

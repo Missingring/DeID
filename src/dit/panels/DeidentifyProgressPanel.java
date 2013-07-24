@@ -164,7 +164,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                     newId = original;
                 }
              
-                System.out.println("Put:"+original);
+               
                 DeidData.IdTable.put(original, newId);
                 //System.out.println(DeidData.IdTable.get(original));
             }

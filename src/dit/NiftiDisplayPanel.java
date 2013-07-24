@@ -56,16 +56,17 @@ public class NiftiDisplayPanel extends JPanel {
                     quat_x = set.srow_x[3];
                     quat_y = set.srow_y[3];
                     quat_z = set.srow_z[3];
+                    /*
                     //System.out.println(calMin2);
                     //System.out.println(calMax2);
-                    System.out.println("sform code:" + sform);
-                    System.out.println("qform code:" + qform);
-                    System.out.println("Dimesion Info:" + set.xyz_unit_code);
+                   // System.out.println("sform code:" + sform);
+                   // System.out.println("qform code:" + qform);
+                   // System.out.println("Dimesion Info:" + set.xyz_unit_code);
                     for (int srowi = 0; srowi < set.srow_x.length; srowi++) {
                         System.out.println("Dimesion Info:" + set.srow_x[srowi]);
                     }
                     //  set.printHeader();
-
+*/
 
                     try {
                         short ttt = 0;

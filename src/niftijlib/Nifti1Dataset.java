@@ -2434,7 +2434,7 @@ public class Nifti1Dataset {
 		Nifti1Dataset nds = new Nifti1Dataset("D:\\test.nii");
 		try {
 			nds.readHeader();
-			nds.printHeader();
+			//nds.printHeader();
 		}
 		catch (IOException ex) {
 			System.out.println("\nCould not read header file for "+args[0]+": "+ex.getMessage());
