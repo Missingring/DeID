@@ -93,24 +93,7 @@ public class FileUtils {
      */
     public static String getName(File file) {
         
-        if (!DeidData.parentPath.equals("none")) {
-            String fullName = file.getAbsolutePath();
-
-            fullName = fullName.replace(DeidData.parentPath, "");
-            fullName=fullName.replace(System.getProperty("file.separator").toString(), "_");
-            if (fullName.endsWith(".nii.gz")) {
-                int j = fullName.lastIndexOf(".nii.gz");
-                fullName = fullName.substring(0, j);
-                return fullName;
-            }
-
-            int i = fullName.lastIndexOf('.');
-
-            if (i > 0) {
-                fullName = fullName.substring(0, i);
-            }
-            return fullName;
-        } else {
+        
            String name = file.getAbsolutePath();
             name=name.replace(System.getProperty("file.separator").toString(), "_");
             if (name.endsWith(".nii.gz")) {
@@ -125,7 +108,7 @@ public class FileUtils {
                 name = name.substring(0, i);
             }
             return name;
-        }
+       
       
     }
 
