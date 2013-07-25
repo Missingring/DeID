@@ -6,12 +6,18 @@ package dit.panels;
 
 import dit.DEIDGUI;
 import dit.DeidData;
+import dit.FileUtils;
+import java.awt.Window;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author christianprescott & angelo
  */
-public class CompletePanel extends javax.swing.JPanel implements WizardPanel{
+public class CompletePanel extends javax.swing.JPanel implements WizardPanel {
 
     /**
      * Creates new form CompletePanel
@@ -23,22 +29,21 @@ public class CompletePanel extends javax.swing.JPanel implements WizardPanel{
         DEIDGUI.helpButton.setVisible(false);
         DEIDGUI.continueButton.setEnabled(false);
         DEIDGUI.cancelButton.setEnabled(false);
-        DEIDGUI.backButton.setEnabled(false);        
-        if (!DeidData.tarfilesavedpath.equals(""))
-        {
+        DEIDGUI.backButton.setEnabled(false);
+        if (!DeidData.tarfilesavedpath.equals("")) {
             int lg = DeidData.tarfilesavedpath.length();
-            if (lg < 70)
-                jLabel2.setText("<html><p>Your data have been saved to: </p><div>" + DeidData.tarfilesavedpath+"</div></html>");
-            else {
-            String str1 = DeidData.tarfilesavedpath.substring(0, 70);
-            String str2 = DeidData.tarfilesavedpath.substring(71);
-            System.out.println(str1);
-            System.out.println(str2);
-            jLabel2.setText("<html><p>Your data have been saved to: </p><p>" + str1 +"</p><p>"+ str2 + "</p></html>");
-        
-                    }
+            if (lg < 70) {
+                jLabel2.setText("<html><p>Your data have been saved to: </p><div>" + DeidData.tarfilesavedpath + "</div></html>");
+            } else {
+                String str1 = DeidData.tarfilesavedpath.substring(0, 70);
+                String str2 = DeidData.tarfilesavedpath.substring(71);
+                System.out.println(str1);
+                System.out.println(str2);
+                jLabel2.setText("<html><p>Your data have been saved to: </p><p>" + str1 + "</p><p>" + str2 + "</p></html>");
+
+            }
         }
-        
+
     }
 
     /**
@@ -94,10 +99,16 @@ public class CompletePanel extends javax.swing.JPanel implements WizardPanel{
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        try {
+            // TODO: Delete files in the temporary output folder
+            FileUtils.deleteRecursive(new File(DeidData.outputPath));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(DEIDGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        DEIDGUI.log("Temp files deleted");
         System.exit(0);
 
     }//GEN-LAST:event_jButton1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;

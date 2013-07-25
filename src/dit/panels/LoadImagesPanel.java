@@ -338,7 +338,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
             FileReader fr = new FileReader(filename);
             BufferedReader br = new BufferedReader(fr);
             dirrec = br.readLine();
-            System.out.println(dirrec);
+    ;
             if (dirrec!= null)
             {
                 fc.setCurrentDirectory(new File(dirrec));
@@ -362,7 +362,10 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                     DeidData.parentPath = selectedFiles[idx].getParentFile().getAbsolutePath();
                     DeidData.addInputFile(imgfiles);
                 }
-                else{DeidData.addInputFile(selectedFiles[idx]);}
+                else{
+                    DeidData.addInputFile(selectedFiles[idx]);
+                   // DeidData.parentPath="none";
+                }
             }
             jListImages.setListData(DeidData.inputFiles);
             

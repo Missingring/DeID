@@ -222,6 +222,7 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                 if (DeidData.includeFileInTar[ndx]) {
                     // Add image to the tar
                     String imageName = FileUtils.getName(curImage);
+                    imageName=imageName.replace((DeidData.outputPath+"betOut/").replace(System.getProperty("file.separator").toString(), "_"), "");
                     if(DeidData.IdFilename.containsKey(imageName)){
                         //tm.addFile(curImage, DeidData.IdTable.get(imageName) + ".nii");
                        // if(!multiImages(DeidData.IdFilename,DeidData.IdFilename.get(imageName)))

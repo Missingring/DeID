@@ -322,8 +322,9 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
             String x = FileUtils.getName((File)curFile.next()).toString();
             String y="";
             
-           
-            
+           x=x.replace((DeidData.outputPath+"betOut/").replace(System.getProperty("file.separator").toString(), "_"), "");
+          //  System.out.println("X:"+x);
+            //System.out.println(DeidData.IdFilename.keys().nextElement());
             if(DeidData.isNoData)
                 y=DeidData.IdTable.get(x);
             else

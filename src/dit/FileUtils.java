@@ -20,35 +20,37 @@ public class FileUtils {
                 analyzeimg = "img",
                 niftigz = "nii.gz";
     }
-    
+
     // Check the current OS
-    public static class OS { 
-	public static boolean isWindows() {
-		String os = System.getProperty("os.name").toLowerCase();
-		return (os.indexOf("win") >= 0);
-	}
- 
-	public static boolean isMac() {
-		String os = System.getProperty("os.name").toLowerCase();
-		return (os.indexOf("mac") >= 0);
-	}
- 
-	public static boolean isUnix() {
-		String os = System.getProperty("os.name").toLowerCase();
-		return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
-	}
- 
-	public static boolean isSolaris() {
-		String os = System.getProperty("os.name").toLowerCase();
-		return (os.indexOf("sunos") >= 0);
-	}
-        
-        public static String getOS(){
+    public static class OS {
+
+        public static boolean isWindows() {
+            String os = System.getProperty("os.name").toLowerCase();
+            return (os.indexOf("win") >= 0);
+        }
+
+        public static boolean isMac() {
+            String os = System.getProperty("os.name").toLowerCase();
+            return (os.indexOf("mac") >= 0);
+        }
+
+        public static boolean isUnix() {
+            String os = System.getProperty("os.name").toLowerCase();
+            return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
+        }
+
+        public static boolean isSolaris() {
+            String os = System.getProperty("os.name").toLowerCase();
+            return (os.indexOf("sunos") >= 0);
+        }
+
+        public static String getOS() {
             return System.getProperty("os.name");
         }
-        public static boolean isOS64bit(){
-            String osarc = System.getProperty("os.arch").toLowerCase();            
-          return  (osarc.indexOf("64") >= 0);
+
+        public static boolean isOS64bit() {
+            String osarc = System.getProperty("os.arch").toLowerCase();
+            return (osarc.indexOf("64") >= 0);
         }
     }
 
@@ -58,8 +60,7 @@ public class FileUtils {
     public static String getExtension(File file) {
         String ext = null;
         String name = file.getName();
-        if (name.endsWith(".nii.gz"))
-        {
+        if (name.endsWith(".nii.gz")) {
             ext = "nii.gz";
             return ext;
         }
@@ -68,46 +69,82 @@ public class FileUtils {
         if (i > 0 && i < name.length() - 1) {
             ext = name.substring(i + 1).toLowerCase();
         }
-        
+
         return ext;
+    }
+    
+    public static boolean deleteRecursive(File path) throws FileNotFoundException
+    {
+        if(!path.exists())
+            throw new FileNotFoundException(path.getAbsolutePath());
+        boolean ret=true;
+        if(path.isDirectory())
+        {
+            for(File f : path.listFiles())
+            {
+                ret=ret&& FileUtils.deleteRecursive(f);
+            }
+        }
+        return ret && path.delete();
     }
 
     /**
      * Returns the name of a file without the extension.
      */
     public static String getName(File file) {
-        String fullName = file.getName();
-        String name = fullName;
-        if (fullName.endsWith(".nii.gz")){
-            int j = fullName.lastIndexOf(".nii.gz");
-            name = fullName.substring(0,j);
+        
+        if (!DeidData.parentPath.equals("none")) {
+            String fullName = file.getAbsolutePath();
+
+            fullName = fullName.replace(DeidData.parentPath, "");
+            fullName=fullName.replace(System.getProperty("file.separator").toString(), "_");
+            if (fullName.endsWith(".nii.gz")) {
+                int j = fullName.lastIndexOf(".nii.gz");
+                fullName = fullName.substring(0, j);
+                return fullName;
+            }
+
+            int i = fullName.lastIndexOf('.');
+
+            if (i > 0) {
+                fullName = fullName.substring(0, i);
+            }
+            return fullName;
+        } else {
+           String name = file.getAbsolutePath();
+            name=name.replace(System.getProperty("file.separator").toString(), "_");
+            if (name.endsWith(".nii.gz")) {
+                int j = name.lastIndexOf(".nii.gz");
+                name = name.substring(0, j);
+                return name;
+            }
+
+            int i = name.lastIndexOf('.');
+
+            if (i > 0) {
+                name = name.substring(0, i);
+            }
             return name;
         }
-        
-        int i = fullName.lastIndexOf('.');
-
-        if (i > 0) {
-            name = fullName.substring(0, i);
-        }
-        return name;
+      
     }
-    
-    public static String sizeToString(long size){
-        long[] dividers = new long[] {1073741824, 1048576, 1024, 1};
+
+    public static String sizeToString(long size) {
+        long[] dividers = new long[]{1073741824, 1048576, 1024, 1};
         String[] units = new String[]{"GB", "MB", "KB", "B"};
-        
-        if(size < 0){
+
+        if (size < 0) {
             throw new IllegalArgumentException("Size must be greater than zero.");
         }
-        
+
         String result = "";
-        for(int ndx = 0; ndx < dividers.length; ndx++){
-            if(size >= dividers[ndx]){
-                result = String.format("%.2f", (float)size / (float)dividers[ndx]) + units[ndx];
+        for (int ndx = 0; ndx < dividers.length; ndx++) {
+            if (size >= dividers[ndx]) {
+                result = String.format("%.2f", (float) size / (float) dividers[ndx]) + units[ndx];
                 break;
             }
         }
-        
+
         return result;
     }
 

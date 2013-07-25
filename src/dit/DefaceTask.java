@@ -104,7 +104,7 @@ public class DefaceTask implements Runnable, IDefaceTask {
             String abParent =  inputImages.get(ndx).getParent();
            // if (!DeidData.parentPath.equals("none"))
             //outFilename = outputDir + abParent.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "").replaceAll("/", "") + outFilename + ".nii" ;
-            outFilename = outputDir + outFilename + ".nii";
+            outFilename = outputDir + outFilename+ ".nii";
             System.out.println(outFilename);
             command[2] = outFilename;
             // Overwrites existing files

@@ -34,6 +34,7 @@ public class AuditJTableFileRenderer extends JLabel implements TableCellRenderer
         setText(DeidData.IdTable.get(DeidData.IdFilename.get(FileUtils.getName((File)o))) + ".nii");
         }*/
         String y = FileUtils.getName((File)o);
+        y=y.replace((DeidData.outputPath+"betOut/").replace(System.getProperty("file.separator").toString(), "_"), "");
         setText(DeidData.multinameSolFile.get(y).toString());
                  /*    else if (countID > 1)
                      {

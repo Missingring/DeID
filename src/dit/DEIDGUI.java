@@ -57,7 +57,14 @@ public class DEIDGUI extends javax.swing.JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 DEIDGUI.log("Exiting");
-                // TODO: Delete files in the temporary output folder
+                try {
+                    // TODO: Delete files in the temporary output folder
+                    FileUtils.deleteRecursive(new File(DeidData.outputPath));
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(DEIDGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                DEIDGUI.log("Temp files deleted");
+                //System.out.println("Deleted");
                 dispose();
                 try {
                     DEIDGUI.logWriter.close();
@@ -66,6 +73,8 @@ public class DEIDGUI extends javax.swing.JFrame {
                 }
                 System.exit(0);
             }
+
+            
         });
         
         // Copy tools to the tmp directory
