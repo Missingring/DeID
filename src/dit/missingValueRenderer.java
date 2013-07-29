@@ -18,7 +18,7 @@ public class missingValueRenderer extends JLabel implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable jtable, Object o, 
         boolean isSelected, boolean cellHasFocus, int i, int i1) {
-        System.out.println(o.toString());
+        //System.out.println(o.toString());
         setText(o.toString());
     if(o.toString().trim().equals("misV")){
            

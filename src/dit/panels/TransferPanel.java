@@ -115,7 +115,7 @@ public class TransferPanel extends javax.swing.JPanel implements WizardPanel{
 
         jLabelSharing.setText("Sharing");
 
-        jComboBoxSharing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "No share", "Enclave", "All share" }));
+        jComboBoxSharing.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All share", "No share", "Enclave" }));
 
         jTextFieldFTPServer.setEnabled(false);
 
@@ -239,7 +239,7 @@ public class TransferPanel extends javax.swing.JPanel implements WizardPanel{
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                     .add(jComboBoxFTPProtocol, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                     .add(txtPath, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 226, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .add(0, 0, Short.MAX_VALUE)))))
+                                .add(0, 26, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

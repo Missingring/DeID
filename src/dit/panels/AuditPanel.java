@@ -156,6 +156,9 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
         jSliderSlice = new javax.swing.JSlider();
         jButtonViewMontage = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        leftRotateBtn = new javax.swing.JButton();
+        rightRotateBtn = new javax.swing.JButton();
+        resetRotateBtn = new javax.swing.JButton();
 
         jLabel1.setText("<html><p>Ensure the data has been de-identified. Deselect images that have not had identifying information properly removed or will not be transferred.</p><p>&nbsp;</p></html>");
 
@@ -209,7 +212,9 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
             }
         });
 
+        jPanel1.setBorder(null);
         jPanel1.setMinimumSize(new java.awt.Dimension(0, 32));
+        jPanel1.setPreferredSize(new java.awt.Dimension(0, 0));
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -219,7 +224,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 32, Short.MAX_VALUE)
+            .add(0, 128, Short.MAX_VALUE)
         );
 
         jSliderSlice.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -242,6 +247,28 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
             }
         });
 
+        leftRotateBtn.setText("Left");
+        leftRotateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                leftRotateBtnActionPerformed(evt);
+            }
+        });
+
+        rightRotateBtn.setText("Right");
+        rightRotateBtn.setActionCommand("");
+        rightRotateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rightRotateBtnActionPerformed(evt);
+            }
+        });
+
+        resetRotateBtn.setText("Reset");
+        resetRotateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetRotateBtnActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -257,16 +284,23 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                         .add(jButton1)
                         .add(0, 0, Short.MAX_VALUE))
-                    .add(layout.createSequentialGroup()
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                             .add(layout.createSequentialGroup()
+                                .add(45, 45, 45)
+                                .add(leftRotateBtn)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(resetRotateBtn)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(rightRotateBtn))
+                            .add(layout.createSequentialGroup()
                                 .add(jButtonViewImage)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jButtonViewHeader))
-                            .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(jSliderSlice, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .add(jSliderSlice, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -279,11 +313,16 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                     .add(jButtonViewDemo)
                     .add(jButtonViewMontage)
                     .add(jButton1))
-                .add(18, 18, 18)
+                .add(13, 13, 13)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(leftRotateBtn, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 17, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(rightRotateBtn, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 17, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(resetRotateBtn, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 17, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
+                        .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jSliderSlice, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -435,6 +474,18 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
         redo.pack();
         redo.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void rightRotateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rightRotateBtnActionPerformed
+        ((NiftiDisplayPanel)jPanel1).rotate(90.0);
+    }//GEN-LAST:event_rightRotateBtnActionPerformed
+
+    private void leftRotateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftRotateBtnActionPerformed
+        ((NiftiDisplayPanel)jPanel1).rotate(-90.0);
+    }//GEN-LAST:event_leftRotateBtnActionPerformed
+
+    private void resetRotateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetRotateBtnActionPerformed
+         ((NiftiDisplayPanel)jPanel1).resetAngle();
+    }//GEN-LAST:event_resetRotateBtnActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -447,6 +498,9 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSlider jSliderSlice;
     private javax.swing.JTable jTableImages;
+    private javax.swing.JButton leftRotateBtn;
+    private javax.swing.JButton resetRotateBtn;
+    private javax.swing.JButton rightRotateBtn;
     // End of variables declaration//GEN-END:variables
     
     @Override

@@ -75,7 +75,7 @@
                                   <Component id="jComboBoxFTPProtocol" min="-2" max="-2" attributes="0"/>
                                   <Component id="txtPath" min="-2" pref="226" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="26" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -154,9 +154,9 @@
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="3">
-            <StringItem index="0" value="No share"/>
-            <StringItem index="1" value="Enclave"/>
-            <StringItem index="2" value="All share"/>
+            <StringItem index="0" value="All share"/>
+            <StringItem index="1" value="No share"/>
+            <StringItem index="2" value="Enclave"/>
           </StringArray>
         </Property>
       </Properties>
