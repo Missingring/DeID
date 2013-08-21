@@ -4,18 +4,14 @@
  */
 package dit.panels;
 
-import dit.DEIDGUI;
 import dit.DeidData;
 import dit.FileUtils;
 import dit.MatchStatusRenderer;
-import dit.MatchTableModel;
 import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Vector;
 import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -24,7 +20,6 @@ import javax.swing.JTable;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.TableCellEditor;
-import jxl.biff.drawing.ComboBox;
 
 public class ComboBoxCellEditor extends AbstractCellEditor implements TableCellEditor {
 

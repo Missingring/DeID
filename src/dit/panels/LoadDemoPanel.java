@@ -1,6 +1,5 @@
 package dit.panels;
 
-import dit.DEIDGUI;
 import dit.*;
 import dit.DemographicTableModel;
 import dit.DeidData;
