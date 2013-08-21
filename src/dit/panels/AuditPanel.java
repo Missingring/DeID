@@ -1,9 +1,7 @@
 package dit.panels;
 
 import dit.AuditJTable;
-import dit.DEIDGUI;
 import dit.DeidData;
-import dit.DemographicTableModel;
 import dit.FileUtils;
 import dit.NiftiDisplayPanel;
 import dit.OpenImagewithMRIcron;
@@ -50,7 +48,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
         }
         
         // Define the AuditJTable model
-        jTableImages.setModel(new AbstractTableModel() {
+        imagesTable.setModel(new AbstractTableModel() {
             // <editor-fold defaultstate="collapsed" desc="AuditTableModel">
             
             private String[] columnNames = new String[]{"Selected", "Image"};
@@ -117,14 +115,14 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
             // </editor-fold>
         });
         // Add a selection listener for enabling/disabling the "View Header" button
-        jTableImages.getSelectionModel().addListSelectionListener(
+        imagesTable.getSelectionModel().addListSelectionListener(
                 new ListSelectionListener() {
                     // <editor-fold defaultstate="collapsed" desc="AuditTableSelectionListener">
                     
                     @Override
                     public void valueChanged(ListSelectionEvent lse) {
                         if (lse.getValueIsAdjusting()) {
-                            File selectedFile = DeidData.deidentifiedFiles.get(jTableImages.getSelectedRow());
+                            File selectedFile = DeidData.deidentifiedFiles.get(imagesTable.getSelectedRow());
                             jButtonViewHeader.setEnabled(
                                     DeidData.ConvertedDicomHeaderTable.containsKey(selectedFile)
                                     ? true : false);
@@ -150,10 +148,10 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
         jButtonViewDemo = new javax.swing.JButton();
         jButtonViewImage = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTableImages = new AuditJTable();
+        imagesTable = new AuditJTable();
         jButtonViewHeader = new javax.swing.JButton();
         jPanel1 = new NiftiDisplayPanel();
-        jSliderSlice = new javax.swing.JSlider();
+        sliceBar = new javax.swing.JSlider();
         jButtonViewMontage = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         leftRotateBtn = new javax.swing.JButton();
@@ -176,7 +174,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
             }
         });
 
-        jTableImages.setModel(new javax.swing.table.DefaultTableModel(
+        imagesTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 { new Boolean(true), "File1"},
                 {null, "File2"},
@@ -202,7 +200,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTableImages);
+        jScrollPane1.setViewportView(imagesTable);
 
         jButtonViewHeader.setText("View DICOM header");
         jButtonViewHeader.setEnabled(false);
@@ -212,7 +210,6 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
             }
         });
 
-        jPanel1.setBorder(null);
         jPanel1.setMinimumSize(new java.awt.Dimension(0, 32));
         jPanel1.setPreferredSize(new java.awt.Dimension(0, 0));
 
@@ -224,12 +221,12 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 128, Short.MAX_VALUE)
+            .add(0, 114, Short.MAX_VALUE)
         );
 
-        jSliderSlice.addChangeListener(new javax.swing.event.ChangeListener() {
+        sliceBar.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSliderSliceStateChanged(evt);
+                sliceBarStateChanged(evt);
             }
         });
 
@@ -299,7 +296,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                                 .add(jButtonViewImage)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jButtonViewHeader))
-                            .add(jSliderSlice, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(sliceBar, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE))
                         .addContainerGap())))
         );
@@ -322,9 +319,9 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
-                        .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                        .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jSliderSlice, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(sliceBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jButtonViewImage)
@@ -406,8 +403,8 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
          * File selectedFile = (File) DeidData.deidentifiedFiles.get(jTableImages.getSelectedRow());
          * OpenFile(selectedFile);
          * }*/
-        if(jTableImages.getSelectedRow() >= 0){
-            File selectedFile = (File) DeidData.deidentifiedFiles.get(jTableImages.getSelectedRow());
+        if(imagesTable.getSelectedRow() >= 0){
+            File selectedFile = (File) DeidData.deidentifiedFiles.get(imagesTable.getSelectedRow());
             OpenImagewithMRIcron openImage = new OpenImagewithMRIcron(selectedFile);
             openImage.run();
         }
@@ -428,8 +425,8 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     
     private void jButtonViewHeaderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewHeaderActionPerformed
         // Open matching header var file
-        if(jTableImages.getSelectedRow() >= 0){
-            File selectedFile = (File) DeidData.deidentifiedFiles.get(jTableImages.getSelectedRow());
+        if(imagesTable.getSelectedRow() >= 0){
+            File selectedFile = (File) DeidData.deidentifiedFiles.get(imagesTable.getSelectedRow());
             if (DeidData.ConvertedDicomHeaderTable.containsKey(selectedFile)) {
                 // OpenFile(DeidData.ConvertedDicomHeaderTable.get(selectedFile));
                 TextviewFrame viewtext = new TextviewFrame(DeidData.ConvertedDicomHeaderTable.get(selectedFile));
@@ -439,12 +436,12 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
         }
     }//GEN-LAST:event_jButtonViewHeaderActionPerformed
     
-    private void jSliderSliceStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSliderSliceStateChanged
-        if(jTableImages.getSelectedRow() >= 0){
-            File selectedFile = (File) DeidData.deidentifiedFiles.get(jTableImages.getSelectedRow());
-            ((NiftiDisplayPanel)jPanel1).setSlice((float)jSliderSlice.getValue()/100f);
+    private void sliceBarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliceBarStateChanged
+        if(imagesTable.getSelectedRow() >= 0){
+            File selectedFile = (File) DeidData.deidentifiedFiles.get(imagesTable.getSelectedRow());
+            ((NiftiDisplayPanel)jPanel1).setSlice((float)sliceBar.getValue()/100f);
         }
-    }//GEN-LAST:event_jSliderSliceStateChanged
+    }//GEN-LAST:event_sliceBarStateChanged
     
     private void jButtonViewMontageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewMontageActionPerformed
         File montageFile = new File(DeidData.outputPath + "montage.jpg");
@@ -488,6 +485,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     }//GEN-LAST:event_resetRotateBtnActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable imagesTable;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonViewDemo;
     private javax.swing.JButton jButtonViewHeader;
@@ -496,11 +494,10 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSlider jSliderSlice;
-    private javax.swing.JTable jTableImages;
     private javax.swing.JButton leftRotateBtn;
     private javax.swing.JButton resetRotateBtn;
     private javax.swing.JButton rightRotateBtn;
+    private javax.swing.JSlider sliceBar;
     // End of variables declaration//GEN-END:variables
     
     @Override

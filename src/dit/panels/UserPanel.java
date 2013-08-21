@@ -4,7 +4,6 @@
  */
 package dit.panels;
 
-import dit.DEIDGUI;
 import dit.DeidData;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

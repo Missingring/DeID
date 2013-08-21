@@ -1,5 +1,10 @@
-package dit;
+package dit.panels;
 
+import dit.DeidData;
+import dit.ErrorFrame;
+import dit.FileUtils;
+import dit.HelpManualFrame;
+import dit.misHelpFrame;
 import dit.panels.UserPanel;
 import dit.panels.WizardPanel;
 import java.awt.Toolkit;

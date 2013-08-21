@@ -1,7 +1,6 @@
 package dit.panels;
 
 import com.jcraft.jsch.*;
-import dit.DEIDGUI;
 import dit.DeidData;
 import dit.FileUtils;
 import dit.TarMaker;

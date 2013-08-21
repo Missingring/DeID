@@ -1,6 +1,5 @@
 package dit.panels;
 
-import dit.DEIDGUI;
 import dit.DefaceTask;
 import dit.DefaceTaskinWindows;
 import dit.DeidData;

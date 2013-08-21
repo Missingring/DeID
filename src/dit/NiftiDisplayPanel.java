@@ -4,6 +4,7 @@
  */
 package dit;
 
+import dit.panels.DEIDGUI;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -116,6 +117,7 @@ public class NiftiDisplayPanel extends JPanel {
     private short[] dims;
     private File curImage;
     private float quat_x, quat_y, quat_z;
+    private OrientationState orientationState;
 
     public NiftiDisplayPanel() {
     }
@@ -143,73 +145,97 @@ public class NiftiDisplayPanel extends JPanel {
     }
 
     public void setSlice(float sliceFactor) {
-        // System.out.println("Sform:" + sform + "   qform:" + qform);
-        if (curImage != null) {
-            if (sform == 4.0 || sform == 0.0) {
-                i = new BufferedImage(dims[2], dims[0], BufferedImage.TYPE_INT_RGB);
-
-                int y = (int) ((dims[1] - 1) * Math.max(0, Math.min(sliceFactor, 1.0)));
-                for (int x = dims[2] - 1; x >= 0; x--) {
-                    for (int z = 0; z < dims[0]; z++) {
-                        // System.out.println("hh");
-                        //float colorFactor = Math.min(((float)data[z][y][x] - calMin)/ (calMax - calMin), 1f);
-                        float colorFactor = Math.min(((float) data[z][y][x] - calMin2) / (calMax2 - calMin2), 1f);
-                        colorFactor = Math.max(0, colorFactor);
+        i = new BufferedImage(dims[orientationState.widthAxis], dims[orientationState.heightAxis], BufferedImage.TYPE_INT_RGB);
+         int depth;
+         if(orientationState.isForward)
+           depth=(int) ((dims[orientationState.currentAxis] - 1) * Math.max(0, Math.min(sliceFactor, 1.0)));
+         else
+           depth=(int) ((dims[orientationState.currentAxis] - 1) * Math.max(0, Math.min(1.0-sliceFactor, 1.0)));
+         int widthStart,heightStart,heightStep;
+         int widthEnd,heightEnd,widthStep;
+         
+         if(orientationState.widthPostive)
+         {
+             widthStart=0;
+             widthEnd=dims[orientationState.widthAxis]-1;
+             widthStep=1;
+         }
+         else
+         {
+             widthStart=dims[orientationState.widthAxis]-1;
+             widthEnd=0;
+              widthStep=-1;
+         }
+         
+         if(orientationState.heightPostive)
+         {
+             heightStart=0;
+             heightEnd=dims[orientationState.heightAxis]-1;
+              heightStep=1;
+         }
+         else
+         {
+             heightStart=dims[orientationState.heightAxis]-1;
+             heightEnd=0;
+             heightStep=-1;
+         }
+          for (int ii = heightStart; ii != heightEnd; ii+=heightStep) {
+                    for (int j = widthStart; j !=widthEnd; j+=widthStep) {
+                        
+                        float density=0;
+                       
+                        if(orientationState.currentAxis==orientationState.Z_AXIS)
+                        {
+                            if(orientationState.widthAxis==orientationState.X_AXIS)
+                            {
+                                density=(float)data[depth][ii][j];
+                            }
+                            else
+                            {
+                                density=(float)data[depth][j][ii];
+                            }
+                        }
+                        else if(orientationState.currentAxis==orientationState.Y_AXIS)
+                        {
+                            if(orientationState.widthAxis==orientationState.X_AXIS)
+                            {
+                                density=(float)data[ii][depth][j];
+                            }
+                            else
+                            {
+                                density=(float)data[j][depth][ii];
+                            }
+                        }
+                        else  // currentAxis is X axis
+                        {
+                            if(orientationState.widthAxis==orientationState.Y_AXIS)
+                            {
+                                density=(float)data[ii][j][depth];
+                            }
+                            else
+                            {
+                                 density=(float)data[j][ii][depth];
+                            }
+                        }
+                        float colorFactor = Math.min((density - calMin2) / (calMax2 - calMin2), 1f);
                         int argb = new Color(colorFactor, colorFactor, colorFactor).getRGB();
-                        i.setRGB(x, dims[0] - 1 - z, argb);
+                        
+                        int targetX,targetY;
+                      
+                        if(orientationState.widthPostive)
+                            targetX=j;
+                        else
+                            targetX=widthStart-j;
+                        
+                        if(orientationState.heightPostive)
+                            targetY=ii;
+                        else
+                            targetY=heightStart-ii;
+                        //System.out.println("Width:"+i.getWidth()+"  Height:"+i.getHeight());
+                        //System.out.println("X:"+targetX+"  Y:"+targetY);
+                        i.setRGB(targetX,targetY, argb);
                     }
-                }
-            } else if (sform == 1.0 && quat_x < 0 && quat_y > 0 && quat_z < 0) {
-                /* i = new BufferedImage(dims[1], dims[0], BufferedImage.TYPE_INT_RGB);*/
-                i = new BufferedImage(dims[0], dims[1], BufferedImage.TYPE_INT_RGB);
-                int x = (int) ((dims[2] - 1) * Math.max(0, Math.min(1f - sliceFactor, 1.0)));
-                for (int z = dims[0] - 1; z >= 0; z--) {
-                    for (int y = dims[1] - 1; y >= 0; y--) {
-                        //  float colorFactor = Math.min(((float)data[z][y][x] - calMin2)/ (calMax - calMin), 1f);
-                        //System.out.println((float)data[z][y][x]);
-                        float colorFactor = Math.min(((float) data[z][y][x] - calMin2) / (calMax2 - calMin2), 1f);
-                        int argb = new Color(colorFactor, colorFactor, colorFactor).getRGB();
-                        //float cF =  Math.abs((float)data[z][y][x] - calMin2) * 255f / Math.abs(calMax2 - calMin2) ;
-                        //int argb = new Color(cF, cF, cF).getRGB();
-                        i.setRGB(dims[0] - 1 - z, dims[1] - 1 - y, argb);
-                        // i.setRGB(y, z, argb);
-                    }
-                }
-            } else if (sform == 1.0 && quat_x > 0 && quat_y > 0 && quat_z < 0) {
-                /* i = new BufferedImage(dims[1], dims[0], BufferedImage.TYPE_INT_RGB);*/
-                i = new BufferedImage(dims[2], dims[0], BufferedImage.TYPE_INT_RGB);
-
-                int y = (int) ((dims[1] - 1) * Math.max(0, Math.min(sliceFactor, 1.0)));
-                for (int x = dims[2] - 1; x >= 0; x--) {
-                    for (int z = 0; z < dims[0]; z++) {
-                        //float colorFactor = Math.min(((float)data[z][y][x] - calMin)/ (calMax - calMin), 1f);
-                        float colorFactor = Math.min(((float) data[z][y][x] - calMin2) / (calMax2 - calMin2), 1f);
-                        int argb = new Color(colorFactor, colorFactor, colorFactor).getRGB();
-                        i.setRGB(x, dims[0] - 1 - z, argb);
-                    }
-                }
-            } else {
-
-                i = new BufferedImage(dims[0], dims[1], BufferedImage.TYPE_INT_RGB);
-                int x = (int) ((dims[2] - 1) * Math.max(0, Math.min(sliceFactor, 1.0)));
-                for (int z = 0; z < dims[0]; z++) {
-                    for (int y = 0; y < dims[1]; y++) {
-                        //  float colorFactor = Math.min(((float)data[z][y][x] - calMin2)/ (calMax - calMin), 1f);
-                        //System.out.println((float)data[z][y][x]);
-                        float colorFactor = Math.min(((float) data[z][y][x] - calMin2) / (calMax2 - calMin2), 1f);
-                        int argb = new Color(colorFactor, colorFactor, colorFactor).getRGB();
-                        //float cF =  Math.abs((float)data[z][y][x] - calMin2) * 255f / Math.abs(calMax2 - calMin2) ;
-                        //int argb = new Color(cF, cF, cF).getRGB();
-                        i.setRGB(dims[0] - 1 - z, dims[1] - 1 - y, argb);
-                        // i.setRGB(y, z, argb);
-                    }
-                }
-                if (qform == 2.0 && sform == 2.0) {
-                    i = ImageUtils.toBufferedImage(ImageUtils.rotate(ImageUtils.toImage(i), 90.0));
-                }
-            }
-
-        }
+             }        
         this.repaint();
     }
 

@@ -1,6 +1,5 @@
 package dit.panels;
 
-import dit.DEIDGUI;
 import dit.DeidData;
 import dit.DemographicTableModel;
 import java.util.Arrays;
