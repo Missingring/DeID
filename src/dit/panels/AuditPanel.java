@@ -535,6 +535,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                  ((NiftiDisplayPanel)imagePanel).setOrientationState(((NiftiDisplayPanel)imagePanel).getOrientationState().toBottom());
                  
          }
+         
          if(diffX<0)
          {
               if(Math.abs(diffY)<(-diffX))
