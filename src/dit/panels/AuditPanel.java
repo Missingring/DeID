@@ -7,6 +7,7 @@ import dit.NiftiDisplayPanel;
 import dit.OpenImagewithMRIcron;
 import dit.TextviewFrame;
 import dit.ReSkullStrippingFrame;
+import java.awt.Cursor;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +28,18 @@ import java.util.Iterator;
  * @author christianprescott
  */
 public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
+     private class Point{
+        public float x;
+        public float y;
+        public Point(float x,float y)
+        {
+            this.x=x;
+            this.y=y;
+        }
+    }
     
+    Point startPoint;
+    Point endPoint;
     /**
      * Creates new form AuditPanel
      */
@@ -126,7 +138,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                             jButtonViewHeader.setEnabled(
                                     DeidData.ConvertedDicomHeaderTable.containsKey(selectedFile)
                                     ? true : false);
-                            ((NiftiDisplayPanel)jPanel1).setImage(selectedFile);
+                            ((NiftiDisplayPanel)imagePanel).setImage(selectedFile);
                         }
                     }
                     // </editor-fold>
@@ -150,7 +162,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         imagesTable = new AuditJTable();
         jButtonViewHeader = new javax.swing.JButton();
-        jPanel1 = new NiftiDisplayPanel();
+        imagePanel = new NiftiDisplayPanel();
         sliceBar = new javax.swing.JSlider();
         jButtonViewMontage = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -210,17 +222,28 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
             }
         });
 
-        jPanel1.setMinimumSize(new java.awt.Dimension(0, 32));
-        jPanel1.setPreferredSize(new java.awt.Dimension(0, 0));
+        imagePanel.setMinimumSize(new java.awt.Dimension(0, 32));
+        imagePanel.setPreferredSize(new java.awt.Dimension(0, 0));
+        imagePanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                imagePanelMouseEntered(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                imagePanelMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                imagePanelMouseReleased(evt);
+            }
+        });
 
-        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+        org.jdesktop.layout.GroupLayout imagePanelLayout = new org.jdesktop.layout.GroupLayout(imagePanel);
+        imagePanel.setLayout(imagePanelLayout);
+        imagePanelLayout.setHorizontalGroup(
+            imagePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 0, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+        imagePanelLayout.setVerticalGroup(
+            imagePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(0, 114, Short.MAX_VALUE)
         );
 
@@ -297,7 +320,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jButtonViewHeader))
                             .add(sliceBar, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, imagePanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -319,7 +342,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
-                        .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                        .add(imagePanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(sliceBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -439,7 +462,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     private void sliceBarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliceBarStateChanged
         if(imagesTable.getSelectedRow() >= 0){
             File selectedFile = (File) DeidData.deidentifiedFiles.get(imagesTable.getSelectedRow());
-            ((NiftiDisplayPanel)jPanel1).setSlice((float)sliceBar.getValue()/100f);
+            ((NiftiDisplayPanel)imagePanel).setSlice((float)sliceBar.getValue()/100f);
         }
     }//GEN-LAST:event_sliceBarStateChanged
     
@@ -473,19 +496,63 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void rightRotateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rightRotateBtnActionPerformed
-        ((NiftiDisplayPanel)jPanel1).setOrientationState( ((NiftiDisplayPanel)jPanel1).getOrientationState().toLeft());
-         ((NiftiDisplayPanel)jPanel1).setSlice(0.5f);
+
+        ((NiftiDisplayPanel)imagePanel).setOrientationState( ((NiftiDisplayPanel)imagePanel).getOrientationState().toLeft());
+         ((NiftiDisplayPanel)imagePanel).setSlice(0.5f);
+
     }//GEN-LAST:event_rightRotateBtnActionPerformed
 
     private void leftRotateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftRotateBtnActionPerformed
-        ((NiftiDisplayPanel)jPanel1).rotate(-90.0);
+        ((NiftiDisplayPanel)imagePanel).rotate(-90.0);
     }//GEN-LAST:event_leftRotateBtnActionPerformed
 
     private void resetRotateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetRotateBtnActionPerformed
-         ((NiftiDisplayPanel)jPanel1).resetAngle();
+         ((NiftiDisplayPanel)imagePanel).resetAngle();
     }//GEN-LAST:event_resetRotateBtnActionPerformed
+
+    private void imagePanelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imagePanelMouseEntered
+           Cursor cursor=Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR); 
+     //change cursor appearance to HAND_CURSOR when the mouse pointed on images
+           imagePanel.setCursor(cursor);    
+    }//GEN-LAST:event_imagePanelMouseEntered
+
+    private void imagePanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imagePanelMousePressed
+         startPoint=new Point(evt.getX(),evt.getY());
+         //System.out.println("Mouse entered at ("+evt.getX()+","+evt.getY()+")");
+    }//GEN-LAST:event_imagePanelMousePressed
+
+    private void imagePanelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imagePanelMouseReleased
+         endPoint=new Point(evt.getX(),evt.getY());
+         System.out.println("Mouse exited at ("+evt.getX()+","+evt.getY()+")");
+         
+         float diffX=endPoint.x-startPoint.x;
+         float diffY=endPoint.y-startPoint.y;
+         
+         if(diffX>0)
+         {
+             if(Math.abs(diffY)<diffX)
+                  ((NiftiDisplayPanel)imagePanel).setOrientationState(((NiftiDisplayPanel)imagePanel).getOrientationState().toRight());
+             else if(diffY>0)
+                    ((NiftiDisplayPanel)imagePanel).setOrientationState(((NiftiDisplayPanel)imagePanel).getOrientationState().toTop());
+             else
+                 ((NiftiDisplayPanel)imagePanel).setOrientationState(((NiftiDisplayPanel)imagePanel).getOrientationState().toBottom());
+                 
+         }
+         if(diffX<0)
+         {
+              if(Math.abs(diffY)<(-diffX))
+                  ((NiftiDisplayPanel)imagePanel).setOrientationState(((NiftiDisplayPanel)imagePanel).getOrientationState().toLeft());
+              else if(diffY>0)
+                    ((NiftiDisplayPanel)imagePanel).setOrientationState(((NiftiDisplayPanel)imagePanel).getOrientationState().toTop());
+             else
+                 ((NiftiDisplayPanel)imagePanel).setOrientationState(((NiftiDisplayPanel)imagePanel).getOrientationState().toBottom());
+         }
+             
+        ((NiftiDisplayPanel)imagePanel).setSlice(0.5f);
+    }//GEN-LAST:event_imagePanelMouseReleased
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel imagePanel;
     private javax.swing.JTable imagesTable;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonViewDemo;
@@ -493,7 +560,6 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     private javax.swing.JButton jButtonViewImage;
     private javax.swing.JButton jButtonViewMontage;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton leftRotateBtn;
     private javax.swing.JButton resetRotateBtn;
