@@ -120,6 +120,7 @@ public class NiftiDisplayPanel extends JPanel {
     private OrientationState orientationState;
 
     public NiftiDisplayPanel() {
+        orientationState=new OrientationState(0, true, 0, 5, 1, 2, 3, 4);
     }
 
     public void setImage(final File image) {

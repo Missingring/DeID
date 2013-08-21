@@ -473,7 +473,8 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void rightRotateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rightRotateBtnActionPerformed
-        ((NiftiDisplayPanel)jPanel1).rotate(90.0);
+        ((NiftiDisplayPanel)jPanel1).setOrientationState( ((NiftiDisplayPanel)jPanel1).getOrientationState().toLeft());
+         ((NiftiDisplayPanel)jPanel1).setSlice(0.5f);
     }//GEN-LAST:event_rightRotateBtnActionPerformed
 
     private void leftRotateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftRotateBtnActionPerformed
