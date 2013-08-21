@@ -143,6 +143,15 @@ public class NiftiDisplayPanel extends JPanel {
             }
         }
     }
+    
+    public void setOrientationState(OrientationState state)
+    {
+        this.orientationState=state;
+    }
+    
+    public OrientationState getOrientationState(){
+        return this.orientationState;
+    }
 
     public void setSlice(float sliceFactor) {
         i = new BufferedImage(dims[orientationState.widthAxis], dims[orientationState.heightAxis], BufferedImage.TYPE_INT_RGB);
