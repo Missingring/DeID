@@ -249,16 +249,24 @@ public class NiftiDisplayPanel extends JPanel {
         this.repaint();
     }
 
-    public void rotate(double angle) {
-        rotateAngle += angle;
-        rotateAngle %= 360;
-
-        this.repaint();
+    public OrientationState rotateClockwise() {
+        OrientationState rightOnce= orientationState.toRight();
+        OrientationState upOnce=rightOnce.toTop();
+        OrientationState result=upOnce.toLeft();
+        return result;
+    }
+    
+     public OrientationState rotateAntiClockwise() {
+        OrientationState rightOnce= orientationState.toRight();
+        OrientationState downOnce=rightOnce.toBottom();
+        OrientationState result=downOnce.toLeft();
+        return result;
     }
 
-    public void resetAngle() {
-        rotateAngle = 0;
-        this.repaint();
+
+    public void reset() {
+       orientationState=new OrientationState(0, true, 0, 5, 1, 2, 3, 4);
+       setSlice(0.5f);
     }
 
     public float getMax(double[][][] triDarr) {
