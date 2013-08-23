@@ -1,5 +1,6 @@
 package dit.panels;
 
+import dit.DEIDGUI;
 import com.jcraft.jsch.*;
 import dit.DeidData;
 import dit.FileUtils;

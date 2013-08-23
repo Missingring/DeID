@@ -1,5 +1,6 @@
 package dit.panels;
 
+import dit.DEIDGUI;
 import dit.AuditJTable;
 import dit.DeidData;
 import dit.FileUtils;

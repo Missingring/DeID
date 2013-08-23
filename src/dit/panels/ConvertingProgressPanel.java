@@ -1,5 +1,6 @@
 package dit.panels;
 
+import dit.DEIDGUI;
 import dit.AnalyzeConverterTask;
 import dit.DicomConverterTask;
 import java.io.File;

@@ -4,7 +4,6 @@
  */
 package dit;
 
-import dit.panels.DEIDGUI;
 import java.io.File;
 import java.util.Iterator;
 import javax.swing.JFrame;

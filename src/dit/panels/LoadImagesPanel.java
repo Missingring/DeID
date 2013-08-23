@@ -1,5 +1,6 @@
 package dit.panels;
 
+import dit.DEIDGUI;
 import dit.*;
 import java.awt.Component;
 import java.awt.Container;

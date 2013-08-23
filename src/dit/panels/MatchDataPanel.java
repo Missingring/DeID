@@ -1,5 +1,6 @@
 package dit.panels;
 
+import dit.DEIDGUI;
 import dit.*;
 import java.util.Collection;
 import java.util.HashMap;
