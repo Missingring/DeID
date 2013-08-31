@@ -4,6 +4,7 @@ import dit.DEIDGUI;
 import com.jcraft.jsch.*;
 import dit.DeidData;
 import dit.FileUtils;
+import dit.NIHImage;
 import dit.TarMaker;
 import it.sauronsoftware.ftp4j.*;
 import java.awt.Component;
@@ -22,30 +23,32 @@ import java.io.BufferedInputStream;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.logging.Level;
+
 /**
  *
  * @author christianprescott
  */
-public class TransferProgressPanel extends javax.swing.JPanel implements WizardPanel{
+public class TransferProgressPanel extends javax.swing.JPanel implements WizardPanel {
+
     private File tarFile, logFile, tarFileO;
     private String FTPServer, FTPUser, FTPShare;
     private JPasswordField FTPPassField;
-    private String remotePath="";
+    private String remotePath = "";
     private int FTPPort;
 
     /**
      * Creates new form ConvertingImagesPanel
-     */    
-    public TransferProgressPanel(JPasswordField passField){
+     */
+    public TransferProgressPanel(JPasswordField passField) {
         initComponents();
         DEIDGUI.helpButton.setEnabled(false);
         FTPServer = TransferPanel.FTPServer;
         FTPPort = TransferPanel.FTPPort;
         FTPUser = TransferPanel.FTPUser;
         FTPPassField = passField;
-        remotePath= TransferPanel.remotePath;
-        
-        switch(TransferPanel.ShareMode){
+        remotePath = TransferPanel.remotePath;
+
+        switch (TransferPanel.ShareMode) {
             case 0:
                 FTPShare = "none";
                 break;
@@ -57,66 +60,66 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                 break;
             default:
                 DEIDGUI.log("Invalid sharing level selection, data will not be "
-                        + "shared: " + TransferPanel.ShareMode, 
+                        + "shared: " + TransferPanel.ShareMode,
                         DEIDGUI.LOG_LEVEL.WARNING);
                 FTPShare = "none";
                 break;
         }
-        
+
         // Use the user's initials to name the tar file
         String[] words = DeidData.UserFullName.split("\\s");
         String initials = "";
-        for (String s : words){
-            if(s.length() > 0){
+        for (String s : words) {
+            if (s.length() > 0) {
                 initials += s.toLowerCase().charAt(0);
             }
         }
-        String tarName = "deid-" + initials + "-" + 
-                new SimpleDateFormat("yyMMdd-HHmmss").format(new Date());
+        String tarName = "deid-" + initials + "-"
+                + new SimpleDateFormat("yyMMdd-HHmmss").format(new Date());
         tarFile = new File(DeidData.outputPath + tarName + ".tar");
         logFile = new File(DeidData.outputPath + "log.txt");
 
         DEIDGUI.continueButton.setEnabled(false);
         DEIDGUI.backButton.setEnabled(false);
-     
-        doTransfer();    
-        
+
+        doTransfer();
+
         DEIDGUI.log("TransferProgressPanel initialized");
     }
-    
-    private void doTransfer(){
+
+    private void doTransfer() {
         final Component that = this;
-       
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if(!createLog()){
+                if (!createLog()) {
                     DEIDGUI.log("Unable to create log file. tarball not created.", DEIDGUI.LOG_LEVEL.ERROR);
                     DEIDGUI.previous();
                     return;
                 }
-                
-                if(!createTar()){
+
+                if (!createTar()) {
                     /*// Prompt user to examine tar, then choose to continue or abort
-                    String[] options = new String[] {"Cancel", "Upload"};
-                    int choice = JOptionPane.showOptionDialog(that, 
-                            "There were errors when "
-                            + "creating the tarball. Please examine the data "
-                            + "and choose to continue or cancel upload.",
-                            "Error Creating Tarball",
-                            JOptionPane.OK_CANCEL_OPTION, 
-                            JOptionPane.WARNING_MESSAGE, 
-                            null, // No icon
-                            options, 
-                            options[0]);*/
+                     String[] options = new String[] {"Cancel", "Upload"};
+                     int choice = JOptionPane.showOptionDialog(that, 
+                     "There were errors when "
+                     + "creating the tarball. Please examine the data "
+                     + "and choose to continue or cancel upload.",
+                     "Error Creating Tarball",
+                     JOptionPane.OK_CANCEL_OPTION, 
+                     JOptionPane.WARNING_MESSAGE, 
+                     null, // No icon
+                     options, 
+                     options[0]);*/
                     DEIDGUI.log("Errors creating tarball, further save action aborted", DEIDGUI.LOG_LEVEL.ERROR);
                     DEIDGUI.previous();
                     return;
                 }
-                
-                if(TransferPanel.doFTP){
+
+                if (TransferPanel.doFTP) {
                     boolean success = false;
-                    switch(TransferPanel.FTPProtocol){
+                    switch (TransferPanel.FTPProtocol) {
                         case 0:
                             success = uploadTarSFTP();
                             break;
@@ -133,7 +136,7 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                                 java.util.logging.Logger.getLogger(TransferProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             break;
-                             case 2:
+                        case 2:
                             try {
                                 success = uploadTarFTP(false);
                             } catch (IllegalStateException ex) {
@@ -147,7 +150,7 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                             }
                             break;
                     }
-                    if(!success){
+                    if (!success) {
                         DEIDGUI.log("Errors during upload. Transfer may not "
                                 + "have completed, see log for details.",
                                 DEIDGUI.LOG_LEVEL.ERROR);
@@ -155,169 +158,150 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                         return;
                     }
                 }
-                
-                if(TransferPanel.doSave && TransferPanel.tarSaveDir != null){
+
+                if (TransferPanel.doSave && TransferPanel.tarSaveDir != null) {
                     moveTar(TransferPanel.tarSaveDir);
-                    
+
                 }
-                    if (!deleteFile(tarFile))
-                    { 
-                        DEIDGUI.log("Failed to clean tar file ", 
-                    DEIDGUI.LOG_LEVEL.ERROR);
-                    }
-                    if (!deleteFile(tarFileO))
-                    { 
-                        DEIDGUI.log("Failed to clean tar file ", 
-                    DEIDGUI.LOG_LEVEL.ERROR);
-                    }
-                    
-                    File out_dir = new File(DeidData.outputPath+"betOut");
-                    if (!deleteFile(out_dir))
-                    { 
-                        DEIDGUI.log("Failed to clean files in betOut", 
-                    DEIDGUI.LOG_LEVEL.ERROR);
-                    }
-                    else  {
-                    DEIDGUI.log("Clean up finished." );
-                    }
+                if (!deleteFile(tarFile)) {
+                    DEIDGUI.log("Failed to clean tar file ",
+                            DEIDGUI.LOG_LEVEL.ERROR);
+                }
+                if (!deleteFile(tarFileO)) {
+                    DEIDGUI.log("Failed to clean tar file ",
+                            DEIDGUI.LOG_LEVEL.ERROR);
+                }
+
+                File out_dir = new File(DeidData.outputPath + "betOut");
+                if (!deleteFile(out_dir)) {
+                    DEIDGUI.log("Failed to clean files in betOut",
+                            DEIDGUI.LOG_LEVEL.ERROR);
+                } else {
+                    DEIDGUI.log("Clean up finished.");
+                }
                 DEIDGUI.advance();
-                
+
             }
         }).start();
     }
 
-    private boolean createLog(){
+    private boolean createLog() {
         boolean success = true;
         String newline = System.getProperty("line.separator");
 
         FileWriter writer = null;
         try {
             writer = new FileWriter(logFile);
-            writer.write("name\t"+DeidData.UserFullName + newline);
+            writer.write("name\t" + DeidData.UserFullName + newline);
             writer.write("institution\t" + DeidData.UserInstitution + newline);
             writer.write("sharing\t" + FTPShare + newline);
-            writer.write("date\t" + 
-                    new SimpleDateFormat("yy-MM-dd-HH:mm:ss").format(new Date()) + 
-                    newline);
+            writer.write("date\t"
+                    + new SimpleDateFormat("yy-MM-dd-HH:mm:ss").format(new Date())
+                    + newline);
         } catch (IOException ex) {
             DEIDGUI.log("Could not write log file.", DEIDGUI.LOG_LEVEL.ERROR);
             success = false;
         } finally {
-            if(writer != null){
+            if (writer != null) {
                 try {
                     writer.close();
-                } catch (IOException ex) {}
+                } catch (IOException ex) {
+                }
             }
         }
-        
+
         return success;
     }
-    
-    private boolean createTar(){
+
+    private boolean createTar() {
         try {
             TarMaker tm = new TarMaker(tarFile);
-            
-            for (int ndx = 0; ndx < DeidData.deidentifiedFiles.size(); ndx++) {
-                File curImage = DeidData.deidentifiedFiles.elementAt(ndx);
-                if (DeidData.includeFileInTar[ndx]) {
-                    // Add image to the tar
-                    String imageName = FileUtils.getName(curImage);
-                    imageName=imageName.replace((DeidData.outputPath+"betOut/").replace(System.getProperty("file.separator").toString(), "_"), "");
-                    if(DeidData.IdFilename.containsKey(imageName)){
+
+            for (NIHImage image : DeidData.imageHandler.getInputFiles()) {
+
+                if (image.isSeletecInJarFile()) {
+
+                    if (!image.getImageNewName().equals("")) {
                         //tm.addFile(curImage, DeidData.IdTable.get(imageName) + ".nii");
-                       // if(!multiImages(DeidData.IdFilename,DeidData.IdFilename.get(imageName)))
-                       // tm.addFile(curImage, DeidData.IdTable.get(DeidData.IdFilename.get(imageName)) + ".nii");
+                        // if(!multiImages(DeidData.IdFilename,DeidData.IdFilename.get(imageName)))
+                        // tm.addFile(curImage, DeidData.IdTable.get(DeidData.IdFilename.get(imageName)) + ".nii");
                         //else 
-                       // {                          
-        
-                        tm.addFile(curImage, DeidData.multinameSolFile.get(imageName).toString());
-                        
+                        // {                          
+
+                        tm.addFile(image.getTempPotision(), image.getImageNewName() + ".nii");
+
                         //}  
                     } else {
-                        DEIDGUI.log("No randomized ID was created for " + 
-                                curImage.getPath() + ", it may not be "
+                        DEIDGUI.log("No randomized ID was created for "
+                                + image.getImageName() + ", it may not be "
                                 + "deidentified", DEIDGUI.LOG_LEVEL.WARNING);
-                        tm.addFile(curImage);
+                        tm.addFile(image.getTempPotision());
                     }
                     // Include header variables file for valid DICOM source files
                     // Header files were created using randomized names, so no 
                     // need to rename here.
-                    if (DeidData.NiftiConversionSourceTable.containsKey(curImage)) {
-                        tm.addFile(DeidData.ConvertedDicomHeaderTable.get(curImage));
-                    }
+
                 }
             }
             tm.addFile(DeidData.deidentifiedDemoFile);
             tm.addFile(logFile);
-            
+
 
             DEIDGUI.log("Successfully created " + tarFile.getAbsolutePath());
             tm.close();
             String filetogz = tarFile.getAbsolutePath().toString();
-            if (gzipfile(filetogz, filetogz+".gz")) 
-            {
-                tarFileO = tarFile; 
-                tarFile = new File(filetogz+".gz");
+            if (gzipfile(filetogz, filetogz + ".gz")) {
+                tarFileO = tarFile;
+                tarFile = new File(filetogz + ".gz");
             }
         } catch (IOException ex) {
             DEIDGUI.log("Error creating tarball, file may be damaged or "
                     + "incomplete", DEIDGUI.LOG_LEVEL.WARNING);
             return false;
         }
-        
+
         return true;
     }
-    private boolean multiImages(Hashtable<String, String> ht, String val ){
-    boolean ismulti = false;
-    int count = 0;
-    for (Iterator it = ht.keySet().iterator(); it.hasNext(); ) {
-    String key = (String) it.next();
-    String value = ht.get(key);
-    if (value.equals(val)) count++;   
-    
-    }
-    if (count > 1) ismulti = true;
-    return ismulti;
-    }
- private boolean gzipfile(String gzfile, String desfile)
- {
-     boolean success = true;
-     try {
-      //File oldfile = new File(gzfile);
-      //System.out.println(" Given file name is  : " + oldfile);
-      FileInputStream finStream = new FileInputStream(gzfile);
-      BufferedInputStream bufinStream = new BufferedInputStream(finStream);
-      FileOutputStream outStream = new FileOutputStream(desfile);
-      GZIPOutputStream goutStream = new GZIPOutputStream(outStream);  
-      byte[] buf = new byte[1024];
-      int i;
-      while ((i = bufinStream.read(buf)) >= 0) {
-        goutStream.write(buf, 0, i);
+
+
+    private boolean gzipfile(String gzfile, String desfile) {
+        boolean success = true;
+        try {
+            //File oldfile = new File(gzfile);
+            //System.out.println(" Given file name is  : " + oldfile);
+            FileInputStream finStream = new FileInputStream(gzfile);
+            BufferedInputStream bufinStream = new BufferedInputStream(finStream);
+            FileOutputStream outStream = new FileOutputStream(desfile);
+            GZIPOutputStream goutStream = new GZIPOutputStream(outStream);
+            byte[] buf = new byte[1024];
+            int i;
+            while ((i = bufinStream.read(buf)) >= 0) {
+                goutStream.write(buf, 0, i);
+            }
+            //System.out.println("Created  GZIP file is " + oldfile + ".gz");
+            //System.out.println("GZIP File successfully created");
+            bufinStream.close();
+            goutStream.close();
+        } catch (IOException e) {
+            System.out.println("Exception is" + e.getMessage());
+            success = false;
         }
-      //System.out.println("Created  GZIP file is " + oldfile + ".gz");
-      //System.out.println("GZIP File successfully created");
-      bufinStream.close();
-      goutStream.close();
-      }catch (IOException e) {
-        System.out.println("Exception is" + e.getMessage());
-          success = false;
-        }
-     
-     return success;
- 
- }   
- 
- 
-    private boolean uploadTarFTP(boolean isSecure) throws IllegalStateException, IOException, FTPIllegalReplyException, FTPException{
-        jLabel2.setText("<html><p>Connecting to "+ FTPServer + "...</p><p>&nbsp;</p></html>");
+
+        return success;
+
+    }
+
+    private boolean uploadTarFTP(boolean isSecure) throws IllegalStateException, IOException, FTPIllegalReplyException, FTPException {
+        jLabel2.setText("<html><p>Connecting to " + FTPServer + "...</p><p>&nbsp;</p></html>");
 
         boolean success = true;
         // The manual for ftp4j is here: http://www.sauronsoftware.it/projects/ftp4j/manual.php
         FTPClient client = new FTPClient();
-        
-        if(isSecure)
-         client.setSecurity(FTPClient.SECURITY_FTP);
-      
+
+        if (isSecure) {
+            client.setSecurity(FTPClient.SECURITY_FTP);
+        }
+
         try {
             DEIDGUI.log("Connecting to " + FTPServer + " via FTPS");
             if (FTPPort >= 0) {
@@ -326,36 +310,43 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                 client.connect(FTPServer);
             }
             DEIDGUI.log("Connected");
-           
+
             // Anonymous authentication, if admitted by the connected service, 
             // can be done sending the username "anonymous" and an arbitrary 
             // password (note that some servers require an e-mail address 
             // in place of the password):
             char[] pass = FTPPassField.getPassword();
             client.login(FTPUser, (pass.length > 0 ? String.copyValueOf(pass) : null));
-            for(int ndx = 0; ndx < pass.length; ndx++){
+            for (int ndx = 0; ndx < pass.length; ndx++) {
                 pass[ndx] = '\0';
             }
             DEIDGUI.log("Logged in as " + FTPUser);
-            if(remotePath.length()>0)
-               client.changeDirectory(remotePath);
+            if (remotePath.length() > 0) {
+                client.changeDirectory(remotePath);
+            }
             // Upload the result tarball
             try {
                 final long fileSize = tarFile.length();
                 client.upload(tarFile, new FTPDataTransferListener() {
                     //<editor-fold defaultstate="collapsed" desc="FTPS Upload Listener">
-                    class BitrateData{
+                    class BitrateData {
+
                         private Date timestamp;
                         private long size;
-                        
-                        public BitrateData(long size){
+
+                        public BitrateData(long size) {
                             this.size = size;
                             timestamp = new Date();
                         }
-                        public long getTime(){ return timestamp.getTime();}
-                        public long getSize(){ return size;}
+
+                        public long getTime() {
+                            return timestamp.getTime();
+                        }
+
+                        public long getSize() {
+                            return size;
+                        }
                     }
-                    
                     private BitrateData point;
                     private long transferredSize;
 
@@ -366,27 +357,27 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                         jLabel2.setText("<html><p>Transferring data...</p><p>&nbsp;</p></html>");
                         DEIDGUI.log("Started upload");
                     }
-
                     String speedStr = "0";
+
                     @Override
                     public void transferred(int i) {
                         transferredSize += i;
 
                         Date now = new Date();
                         long msSinceLastPoint = now.getTime() - point.getTime();
-                        if(msSinceLastPoint > 1000){
+                        if (msSinceLastPoint > 1000) {
                             BitrateData newPoint = new BitrateData(transferredSize);
-                            
+
                             // Make an accurate estimation of bitrate
-                            float sizeScale = (float)msSinceLastPoint / 1000;
-                            long sizeDiff = (long)((newPoint.size - point.size) * sizeScale);
+                            float sizeScale = (float) msSinceLastPoint / 1000;
+                            long sizeDiff = (long) ((newPoint.size - point.size) * sizeScale);
                             speedStr = FileUtils.sizeToString(sizeDiff);
                             jLabelSpeed.setText(speedStr + "/s");
                             point = newPoint;
                         }
-                        
+
                         long percent = transferredSize * 100 / fileSize;
-                        jProgressTransfer.setValue((int)percent);
+                        jProgressTransfer.setValue((int) percent);
                     }
 
                     @Override
@@ -420,7 +411,7 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                 DEIDGUI.log("FTP upload aborted: " + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
             }
         } catch (IllegalStateException ex) {
-         //   ex.printStackTrace();
+            //   ex.printStackTrace();
             DEIDGUI.log("FTP client is already connected. This should never, ever happen.", DEIDGUI.LOG_LEVEL.ERROR);
         } catch (IOException ex) { // Can't connect
             DEIDGUI.log("FTP client could not connect: " + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
@@ -440,19 +431,19 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
             } catch (FTPException ex) { // Server refused quit command
             }
         }
-        
+
         return success;
     }
-    
-    private boolean uploadTarSFTP(){
-        jLabel2.setText("<html><p>Connecting to "+ FTPServer + "...</p><p>&nbsp;</p></html>");
+
+    private boolean uploadTarSFTP() {
+        jLabel2.setText("<html><p>Connecting to " + FTPServer + "...</p><p>&nbsp;</p></html>");
 
         boolean success = true;
 
         JSch jsch = new JSch();
         DEIDGUI.log("Connecting to " + FTPServer + " via SFTP");
         Session s = null;
-        try{
+        try {
             if (FTPPort >= 0) {
                 s = jsch.getSession(FTPUser, FTPServer, FTPPort);
             } else {
@@ -461,7 +452,7 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
             s.setConfig("StrictHostKeyChecking", "no");
             char[] pass = FTPPassField.getPassword();
             s.setPassword(String.copyValueOf(pass));
-            for(int ndx = 0; ndx < pass.length; ndx++){
+            for (int ndx = 0; ndx < pass.length; ndx++) {
                 pass[ndx] = '\0';
             }
             s.connect();
@@ -474,67 +465,74 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                 try {
                     // Upload the result tarball
                     // If it is necessary to change directory, do so here
-                    if(remotePath.length()>0)
+                    if (remotePath.length() > 0) {
                         channel.cd(remotePath);
+                    }
                     final long fileSize = tarFile.length();
-                    channel.put(tarFile.getAbsolutePath(), 
-                            tarFile.getName(), 
+                    channel.put(tarFile.getAbsolutePath(),
+                            tarFile.getName(),
                             new SftpProgressMonitor() { //<editor-fold defaultstate="collapsed" desc="SFTP Upload Listener">
-                                class BitrateData{
-                                    private Date timestamp;
-                                    private long size;
+                        class BitrateData {
 
-                                    public BitrateData(long size){
-                                        this.size = size;
-                                        timestamp = new Date();
-                                    }
-                                    public long getTime(){ return timestamp.getTime();}
-                                    public long getSize(){ return size;}
-                                }
-                                
-                                private BitrateData point;
-                                private long transferredSize;
-                                
-                                @Override
-                                public void init(int i, String string, String string1, long l) {
-                                    transferredSize = 0L;
-                                    point = new BitrateData(transferredSize);
-                                    jLabel2.setText("<html><p>Transferring data...</p><p>&nbsp;</p></html>");
-                                    DEIDGUI.log("Started upload");
-                                }
+                            private Date timestamp;
+                            private long size;
 
-                                String speedStr = "0";
-                                @Override
-                                public boolean count(long l) {
-                                    transferredSize += l;
+                            public BitrateData(long size) {
+                                this.size = size;
+                                timestamp = new Date();
+                            }
 
-                                    Date now = new Date();
-                                    long msSinceLastPoint = now.getTime() - point.getTime();
-                                    if (msSinceLastPoint > 1000) {
-                                        BitrateData newPoint = new BitrateData(transferredSize);
+                            public long getTime() {
+                                return timestamp.getTime();
+                            }
 
-                                        // Make an accurate estimation of bitrate
-                                        float sizeScale = (float) msSinceLastPoint / 1000;
-                                        long sizeDiff = (long) ((newPoint.size - point.size) * sizeScale);
-                                        speedStr = FileUtils.sizeToString(sizeDiff);
-                                        jLabelSpeed.setText(speedStr + "/s");
-                                        point = newPoint;
-                                    }
+                            public long getSize() {
+                                return size;
+                            }
+                        }
+                        private BitrateData point;
+                        private long transferredSize;
 
-                                    long percent = transferredSize * 100 / fileSize;
-                                    jProgressTransfer.setValue((int)percent);
+                        @Override
+                        public void init(int i, String string, String string1, long l) {
+                            transferredSize = 0L;
+                            point = new BitrateData(transferredSize);
+                            jLabel2.setText("<html><p>Transferring data...</p><p>&nbsp;</p></html>");
+                            DEIDGUI.log("Started upload");
+                        }
+                        String speedStr = "0";
 
-                                    return true;
-                                }
+                        @Override
+                        public boolean count(long l) {
+                            transferredSize += l;
 
-                                @Override
-                                public void end() {
-                                    jLabelSpeed.setVisible(false);
-                                    jLabel2.setText("<html><p>Transfer complete</p><p>&nbsp;</p></html>");
-                                    DEIDGUI.log("Upload completed successfully");
-                                }
+                            Date now = new Date();
+                            long msSinceLastPoint = now.getTime() - point.getTime();
+                            if (msSinceLastPoint > 1000) {
+                                BitrateData newPoint = new BitrateData(transferredSize);
+
+                                // Make an accurate estimation of bitrate
+                                float sizeScale = (float) msSinceLastPoint / 1000;
+                                long sizeDiff = (long) ((newPoint.size - point.size) * sizeScale);
+                                speedStr = FileUtils.sizeToString(sizeDiff);
+                                jLabelSpeed.setText(speedStr + "/s");
+                                point = newPoint;
+                            }
+
+                            long percent = transferredSize * 100 / fileSize;
+                            jProgressTransfer.setValue((int) percent);
+
+                            return true;
+                        }
+
+                        @Override
+                        public void end() {
+                            jLabelSpeed.setVisible(false);
+                            jLabel2.setText("<html><p>Transfer complete</p><p>&nbsp;</p></html>");
+                            DEIDGUI.log("Upload completed successfully");
+                        }
                         //</editor-fold> 
-                            }, ChannelSftp.OVERWRITE);
+                    }, ChannelSftp.OVERWRITE);
                     DEIDGUI.log("Successfully put " + fileSize + " bytes");
                 } catch (SftpException ex) {
                     jLabelSpeed.setVisible(false);
@@ -544,95 +542,90 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                 DEIDGUI.log("While opening SFTP channel: " + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
                 success = false;
             } finally {
-                if(channel != null){
+                if (channel != null) {
                     channel.exit();
                 }
             }
-        } catch (JSchException ex){
+        } catch (JSchException ex) {
             DEIDGUI.log("While initializing SFTP Session: " + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
             success = false;
         } finally {
-            if(s != null){
+            if (s != null) {
                 s.disconnect();
             }
         }
-        
+
         return success;
     }
-    
-    private void moveTar(File saveDir){
+
+    private void moveTar(File saveDir) {
         //boolean success = tarFile.renameTo(new File(saveDir.getAbsolutePath() + 
-              //  File.separator + tarFile.getName()));
-        boolean success = copyFile(tarFile.getAbsolutePath().toString(), saveDir.getAbsolutePath()+ 
-                File.separator + tarFile.getName());
-        if(!success){
-            DEIDGUI.log("tarball could not be moved to " + saveDir.getAbsolutePath(), 
+        //  File.separator + tarFile.getName()));
+        boolean success = copyFile(tarFile.getAbsolutePath().toString(), saveDir.getAbsolutePath()
+                + File.separator + tarFile.getName());
+        if (!success) {
+            DEIDGUI.log("tarball could not be moved to " + saveDir.getAbsolutePath(),
                     DEIDGUI.LOG_LEVEL.ERROR);
+        } else {
+            DeidData.tarfilesavedpath = saveDir.getAbsolutePath() + File.separator + tarFile.getName();
         }
-        else {
-            DeidData.tarfilesavedpath = saveDir.getAbsolutePath()+ File.separator + tarFile.getName();
-        }
-      /*  if (success) {
-            if (!deleteFile(tarFile)){ DEIDGUI.log("Failed to clean files ", 
-                    DEIDGUI.LOG_LEVEL.ERROR);}
-        }*/
+        /*  if (success) {
+         if (!deleteFile(tarFile)){ DEIDGUI.log("Failed to clean files ", 
+         DEIDGUI.LOG_LEVEL.ERROR);}
+         }*/
     }
-    private boolean  copyFile(String    oldPath,    String     newPath)    
-    { 
+
+    private boolean copyFile(String oldPath, String newPath) {
         boolean success = true;
-        try    
-        {    
-            int     bytesum     =     0;    
-            int     byteread     =     0;    
-            File     oldfile     =     new     File(oldPath);    
-            if     (oldfile.exists())    
-            {        
-                InputStream     inStream     =     new     FileInputStream(oldPath);         
-                FileOutputStream     fs     =     new     FileOutputStream(newPath);    
-                byte[]     buffer     =     new     byte[1444];    
-                int     length;    
-                while     (     (byteread     =     inStream.read(buffer))     !=     -1)    
-                {    
-                    bytesum +=  byteread;     //字节数     文件大小    
+        try {
+            int bytesum = 0;
+            int byteread = 0;
+            File oldfile = new File(oldPath);
+            if (oldfile.exists()) {
+                InputStream inStream = new FileInputStream(oldPath);
+                FileOutputStream fs = new FileOutputStream(newPath);
+                byte[] buffer = new byte[1444];
+                int length;
+                while ((byteread = inStream.read(buffer)) != -1) {
+                    bytesum += byteread;     //字节数     文件大小    
                     //System.out.println(bytesum);    
-                    fs.write(buffer,     0,     byteread);    
-                }    
-                inStream.close(); 
-                
-                }    
-                }    
-                catch     (Exception     e)    
-                {    
-                //System.out.println( "复制单个文件操作出错 ");  
-                    success =false;
-                e.printStackTrace();    
-                }  
+                    fs.write(buffer, 0, byteread);
+                }
+                inStream.close();
+
+            }
+        } catch (Exception e) {
+            //System.out.println( "复制单个文件操作出错 ");  
+            success = false;
+            e.printStackTrace();
+        }
         return success;
 
     }
-    
-    private boolean deleteFile(File file)
-    {
+
+    private boolean deleteFile(File file) {
         boolean success = true;
-        try 
-        {
-            if (!file.exists()) return success;
-                if (file.isFile()) {
-                        file.delete();
-                } else {
-                        for (File f : file.listFiles()) {
-                                f.delete();
-                        }
-                        file.delete();
-                } 
-        }catch (Exception e){
-        
-        success = false;
-        DEIDGUI.log("Failed to clean files ", 
+        try {
+            if (!file.exists()) {
+                return success;
+            }
+            if (file.isFile()) {
+                file.delete();
+            } else {
+                for (File f : file.listFiles()) {
+                    f.delete();
+                }
+                file.delete();
+            }
+        } catch (Exception e) {
+
+            success = false;
+            DEIDGUI.log("Failed to clean files ",
                     DEIDGUI.LOG_LEVEL.ERROR);
         }
         return success;
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

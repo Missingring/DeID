@@ -13,9 +13,8 @@ public class AuditJTable extends JTable {
 
     public AuditJTable() {
         super();
-
         setTableHeader(null); // Remove the table's header
-        setDefaultRenderer(File.class, new AuditJTableFileRenderer());
+        setDefaultRenderer(NIHImage.class, new AuditJTableFileRenderer());
     }
 
     @Override
@@ -32,7 +31,7 @@ public class AuditJTable extends JTable {
     @Override
     public String getToolTipText(MouseEvent e) {
         int row = rowAtPoint(e.getPoint());
-        File item = (File) getModel().getValueAt(row, 1);
-        return item.getAbsolutePath();
+        NIHImage item = (NIHImage) getModel().getValueAt(row, 1);
+        return item.getImageName();
     }
 }

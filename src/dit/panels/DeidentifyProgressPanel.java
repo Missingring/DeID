@@ -7,6 +7,7 @@ import dit.DeidData;
 import dit.DemographicTableModel;
 import dit.FileUtils;
 import dit.IDefaceTask;
+import dit.NIHImage;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -28,10 +29,10 @@ import org.dcm4che2.util.TagUtils;
  * @author christianprescott & angelo
  */
 public class DeidentifyProgressPanel extends javax.swing.JPanel implements WizardPanel {
-    
+
     private String outputPath = DeidData.outputPath;
     private boolean doDeface;
-    
+
     /**
      * Creates new form DeidentifyProgressPanel
      */
@@ -41,42 +42,34 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
         DEIDGUI.continueButton.setEnabled(false);
         DEIDGUI.backButton.setEnabled(false);
         this.doDeface = doDeface;
-        DeidData.IdTable = new Hashtable<String, String>();
+        //  DeidData.IdTable = new Hashtable<String, String>();
         DEIDGUI.log("DeidentifyProgressPanel initialized");
         startDeidentification();
     }
-    
+
     private void startDeidentification() {
         new Thread(new Runnable() {
-            
             @Override
             public void run() {
                 randomizeIds();
-                DeidData.deidentifiedFiles.clear();
                 if (doDeface) {
                     jLabel2.setText("<html><p>Defacing images...</p><p>&nbsp;</p></html>");
                     defaceImages();
                 } else {
-                    // Set all images to their un-defaced sources
-                    DeidData.deidentifiedFiles.addAll(DeidData.niftiFiles);
+                    DeidData.imageHandler.moveImages();
                 }
                 jLabel2.setText("<html><p>Deidentifying demographic file...</p><p>&nbsp;</p></html>");
-                if(DeidData.demographicData != DemographicTableModel.dummyModel)
-                    createDemographicFile();
-                if(DeidData.NiftiConversionSourceTable.size() > 0){
+                createDemographicFile();
+                if (DeidData.NiftiConversionSourceTable.size() > 0) {
                     jLabel2.setText("<html><p>Deidentifying DICOM header data...</p><p>&nbsp;</p></html>");
                     createHeaderDataFiles();
                 }
-                /*  if (doDeface){
-                 * jLabel2.setText("<html><p>Creating image montage...</p><p>&nbsp;</p></html>");
-                 * createMontage();
-                 * }*/
-                
+
+
                 DEIDGUI.advance();
             }
         }).start();
     }
-    
     /* Dr. Eckert's Image ID Cipher
      * image id = <site initials as numeric string>_<name initials as numeric string>_<random 4 digits>
      * i.e. 1234_5678_2301 or 1234_5678_4598
@@ -84,19 +77,23 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
      * transposed alphabet is numbered 01-26, and then used with the users site
      * and initials information */
     private final char[] CipherAlphabet = "bacfedgjihklmponqrsvutwxyz".toCharArray();
+
     private void randomizeIds() {
         // Only randomize if the ID column is selected
-        
-        
+        for(NIHImage image : DeidData.imageHandler.getInputFiles())
+        {
+            image.setImageNewName("");
+        }
+
         // Build the base ID using the cipher
         String baseId = "";
         String[] institutionBits = DeidData.UserInstitution.split("\\s");
-        for (String s : institutionBits){
-            if(s.length() > 0){
+        for (String s : institutionBits) {
+            if (s.length() > 0) {
                 // The alphabet is not sorted, so a search will not work.
                 char firstLetter = s.toLowerCase().charAt(0);
-                for(int ndx = 0; ndx < CipherAlphabet.length; ndx++){
-                    if(CipherAlphabet[ndx] == firstLetter){
+                for (int ndx = 0; ndx < CipherAlphabet.length; ndx++) {
+                    if (CipherAlphabet[ndx] == firstLetter) {
                         baseId += String.format("%02d", ndx);
                     }
                 }
@@ -104,95 +101,54 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
         }
         baseId += "_";
         String[] names = DeidData.UserFullName.split("\\s");
-        for (String s : names){
-            if(s.length() > 0){
+        for (String s : names) {
+            if (s.length() > 0) {
                 // The alphabet is not sorted, so a search will not work.
                 char firstLetter = s.toLowerCase().charAt(0);
-                for(int ndx = 0; ndx < CipherAlphabet.length; ndx++){
-                    if(CipherAlphabet[ndx] == firstLetter){
+                for (int ndx = 0; ndx < CipherAlphabet.length; ndx++) {
+                    if (CipherAlphabet[ndx] == firstLetter) {
                         baseId += String.format("%02d", ndx);
                     }
                 }
             }
         }
         baseId += "_";
-        
-        if(DeidData.isNoData)
-        {
-            for(File file: DeidData.inputFiles)
-            {
-                String original= FileUtils.getName(file);
-                String newId=(System.currentTimeMillis())%10000+"_"+new Random().nextInt(10);
-                DeidData.IdTable.put(original, newId);
-            }            
-        }
-        else
-        {
+
+        if (DeidData.isNoData) {
+            for (NIHImage file : DeidData.imageHandler.getInputFiles()) {
+                DeidData.imageHandler.assignID(file, "r" + baseId);
+            }
+        } else {
             String idIdentifier = "Filename and "
                     + DeidData.demographicData.getColumnName(DeidData.IdColumn);
             String[] omissions = DeidData.selectedIdentifyingFields;
             Arrays.sort(omissions);
             boolean randomizeFilename = (Arrays.binarySearch(
                     omissions, idIdentifier) >= 0);
-            
-            
-            Object[] idCol = DeidData.demographicData.getColumn(DeidData.IdColumn);
-            String[] ids = Arrays.copyOf(idCol, idCol.length, String[].class);
-            for (int ndx = 0; ndx < ids.length; ndx++) {
-                String original = ids[ndx];
-                String newId = "";
-                // int countID = 0;
-                if (randomizeFilename) {
-                    boolean IdCreated = false;
-                    while (IdCreated == false) {
-                        newId = baseId;
-                        for (int strNdx = 0; strNdx < 4; strNdx++) {
-                            newId += Integer.toString(new Random().nextInt(9));
-                        }
-                        // Iterator   it   =   DeidData.IdFilename.entrySet().iterator();
-                        
-                        // while(it.hasNext()){
-                        //     Map.Entry   entry   =   (Map.Entry)   it.next();
-                        //    if (entry.getValue() == original) countID++;
-                        // }
-                        // Ensure IDs are unique (at least to this dataset). It could happen!
-                        if (!DeidData.IdTable.containsValue(newId)) {
-                            IdCreated = true;
-                        }
-                    }
-                } else {
-                    newId = original;
+
+            if (randomizeFilename) {
+                for (NIHImage image : DeidData.imageHandler.getInputFiles()) {
+                    DeidData.imageHandler.assignID(image, baseId);
                 }
-             
-               
-                DeidData.IdTable.put(original, newId);
-                //System.out.println(DeidData.IdTable.get(original));
             }
+
         }
         DEIDGUI.log("Randomized file IDs");
     }
-    
+
     private void defaceImages() {
-        Iterator<File> it = DeidData.niftiFiles.iterator();
-        
         try {
             IDefaceTask defaceTask = null;
-            if(FileUtils.OS.isWindows())
-            {
+            if (FileUtils.OS.isWindows()) {
                 System.out.println("Windows Deface:");
-                defaceTask=new DefaceTaskinWindows();
-            }
-            else
-            {
-                defaceTask=new DefaceTask();
+                defaceTask = new DefaceTaskinWindows();
+            } else {
+                defaceTask = new DefaceTask();
             }
             defaceTask.setProgressBar(jProgressBar1);
             defaceTask.setTextfield(txtDetail);
-            while (it.hasNext()) {
-                File curImage = it.next();
-                defaceTask.addInputImage(curImage);
-            }
-            
+            defaceTask.setInputImages(DeidData.imageHandler.getInputFiles());
+
             synchronized (defaceTask) {
                 new Thread((Runnable) defaceTask).start();
                 try {
@@ -202,7 +158,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                             + "be incorrect", DEIDGUI.LOG_LEVEL.WARNING);
                 }
             }
-            
+
             DEIDGUI.log("Defaced images");
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -210,18 +166,18 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                     DEIDGUI.LOG_LEVEL.ERROR);
         }
     }
-    
+
     private void createDemographicFile() {
         String[] headings = DeidData.demographicData.getDataFieldNames();
         String[] omissions = DeidData.selectedIdentifyingFields;
         Arrays.sort(omissions);
         boolean[] omit = new boolean[headings.length];
-        
+
         // Find set of identifying columns to omit
         int omitCount = 0;
         for (int ndx = 0; ndx < headings.length; ndx++) {
             String fieldName = headings[ndx];
-            if(ndx == DeidData.IdColumn){
+            if (ndx == DeidData.IdColumn) {
                 fieldName = "Filename and "
                         + DeidData.demographicData.getColumnName(DeidData.IdColumn);
             }
@@ -232,20 +188,20 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                 omit[ndx] = false;
             }
         }
-        
+
         if (omitCount != DeidData.selectedIdentifyingFields.length) {
             DEIDGUI.log("Some identifying fields weren't found (" + omitCount
                     + "/" + DeidData.selectedIdentifyingFields.length + "). "
                     + "The demographic data may not be deidentified properly",
                     DEIDGUI.LOG_LEVEL.WARNING);
         }
-        
+
         File newDemoFile = new File(outputPath + "Demographics_Behavioral.txt");
         BufferedWriter writer = null;
         try {
             newDemoFile.createNewFile();
             writer = new BufferedWriter(new FileWriter(newDemoFile, false));
-            
+
             // Write headings
             for (int colNdx = 0; colNdx < headings.length; colNdx++) {
                 if (!omit[colNdx] || colNdx == DeidData.IdColumn) {
@@ -255,23 +211,35 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                 }
             }
             writer.newLine();
+
             for (int ndx = 0; ndx < DeidData.demographicData.getRowCount(); ndx++) {
+
                 Object[] row = DeidData.demographicData.getRow(ndx);
                 String[] rowS = Arrays.copyOf(row, row.length, String[].class);
-                for (int colNdx = 0; colNdx < row.length; colNdx++) {
-                    if (!omit[colNdx]) {
-                        writer.write(rowS[colNdx] + "\t");
-                    } else if (colNdx == DeidData.IdColumn) {
-                        // The ID is a special case - it must be included in its
-                        // randomized form.
-                        writer.write(DeidData.IdTable.get(rowS[colNdx]) + "\t");
-                    }
+
+                Vector<NIHImage> images = DeidData.imageHandler.findImageByIdInDataFile(rowS[DeidData.IdColumn]);
+                if (images.size() == 0) {
+                    continue;
                 }
-                writer.newLine();
+                for (NIHImage image : images) {
+                    for (int colNdx = 0; colNdx < row.length; colNdx++) {
+
+                        if (!omit[colNdx]) {
+                            writer.write(rowS[colNdx] + "\t");
+                        } else if (colNdx == DeidData.IdColumn) {
+                            // The ID is a special case - it must be included in its
+                            // randomized form.
+                            // writer.write(DeidData.IdTable.get(rowS[colNdx]) + "\t");
+
+                            writer.write(image.getImageNewName() + "\t");
+                        }
+                    }
+                    writer.newLine();
+                }
             }
         } catch (IOException ex) {
-            DEIDGUI.log("Couldn't write deidentified demographic file: " +
-                    ex.getMessage(), DEIDGUI.LOG_LEVEL.WARNING);
+            DEIDGUI.log("Couldn't write deidentified demographic file: "
+                    + ex.getMessage(), DEIDGUI.LOG_LEVEL.WARNING);
         } finally {
             if (writer != null) {
                 try {
@@ -281,10 +249,10 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
             }
         }
         DeidData.deidentifiedDemoFile = newDemoFile;
-        
+
         DEIDGUI.log("Created anonymized demographic file");
     }
-    
+
     private void createHeaderDataFiles() {
         Iterator<Entry<File, File>> it = DeidData.NiftiConversionSourceTable.entrySet().iterator();
         String newline = System.getProperty("line.separator");
@@ -323,8 +291,8 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                         }
                     }
                 } catch (IOException e) {
-                    DEIDGUI.log("Couldn't write header data to " +
-                            hdrFile.getAbsolutePath(), DEIDGUI.LOG_LEVEL.WARNING);
+                    DEIDGUI.log("Couldn't write header data to "
+                            + hdrFile.getAbsolutePath(), DEIDGUI.LOG_LEVEL.WARNING);
                 } finally {
                     if (writer != null) {
                         try {
@@ -335,39 +303,40 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                 }
             } catch (IOException ex) {
                 if (hdrFile != null) {
-                    DEIDGUI.log("Couldn't write header data to " +
-                            hdrFile.getAbsolutePath(), DEIDGUI.LOG_LEVEL.WARNING);
+                    DEIDGUI.log("Couldn't write header data to "
+                            + hdrFile.getAbsolutePath(), DEIDGUI.LOG_LEVEL.WARNING);
                 }
             }
         }
         DEIDGUI.log("Created header files");
     }
-    
-    private void createMontage(){
+
+    //need modification in the future
+    private void createMontage() {
         int imageNdx = 0;
         int imageHeight = 64, imageWidth = 64, textHeight = 12,
                 rowHeight = imageHeight + textHeight;
-        
-        if(DeidData.deidentifiedFiles.isEmpty()){
+
+        if (DeidData.imageHandler.getInputFiles().isEmpty()) {
             return;
         }
-        BufferedImage i = new BufferedImage(imageWidth * 16, rowHeight * DeidData.deidentifiedFiles.size(), BufferedImage.TYPE_INT_RGB);
-        for(File image : DeidData.deidentifiedFiles){
+        BufferedImage i = new BufferedImage(imageWidth * 16, rowHeight * DeidData.imageHandler.getInputFilesSize(), BufferedImage.TYPE_INT_RGB);
+        for (File image : DeidData.deidentifiedFiles) {
             Nifti1Dataset set = new Nifti1Dataset(image.getAbsolutePath());
             if (set.exists()) {
                 try {
                     set.readHeader();
-                    
+
                     // TODO: maybe making assignment to the same double[][][]
                     // instead of creating new ones is more memory efficient?
                     double[][][] data;
                     short[] dims = new short[]{set.ZDIM, set.YDIM, set.XDIM};
                     float calMax = set.cal_max;
-                    if(calMax <= 0){
+                    if (calMax <= 0) {
                         calMax = 255f;
                     }
                     float calMin = set.cal_min;
-                    if(calMin < 0){
+                    if (calMin < 0) {
                         calMin = 0;
                     }
                     float calMax2 = set.cal_max;
@@ -378,46 +347,46 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                         data = set.readDoubleVol(ttt);
                         if (calMax2 - calMin2 == 0) {
                             float max = 0;
-                            for(int ii = 0; ii< dims[2]; ii++)
-                                for (int j = 0; j < dims[1]; j++)
-                                    for (int k = 0; k < dims[0]; k++)
-                                    {
+                            for (int ii = 0; ii < dims[2]; ii++) {
+                                for (int j = 0; j < dims[1]; j++) {
+                                    for (int k = 0; k < dims[0]; k++) {
                                         if (data[k][j][ii] > max) {
-                                            max = (float)data[k][j][ii];
+                                            max = (float) data[k][j][ii];
                                         }
                                     }
+                                }
+                            }
                             calMax2 = max;
                             calMin2 = 0;
                         }
                         if (sform == 4.0 || sform == 0.0) {
-                            for(int x = 0; x < 16; x++){
+                            for (int x = 0; x < 16; x++) {
                                 int realX = x * dims[2] / 16;
                                 for (int y = 0; y < imageWidth; y++) {
                                     int realY = y * dims[1] / imageWidth;
                                     for (int z = 0; z < imageHeight; z++) {
                                         int realZ = z * dims[0] / imageHeight;
-                                        float colorFactor = Math.min(((float)data[realZ][realY][realX] - calMin2)/ (calMax2 - calMin2), 1f);
+                                        float colorFactor = Math.min(((float) data[realZ][realY][realX] - calMin2) / (calMax2 - calMin2), 1f);
                                         int argb = new Color(colorFactor, colorFactor, colorFactor).getRGB();
                                         i.setRGB(x * imageWidth + y, ((imageNdx + 1) * rowHeight) - 1 - z, argb);
                                     }
                                 }
                             }
-                        }
-                        else if (sform == 1.0  || sform ==2.0 || sform == 3.0){
-                            for(int x = 0; x < 16; x++){
+                        } else if (sform == 1.0 || sform == 2.0 || sform == 3.0) {
+                            for (int x = 0; x < 16; x++) {
                                 int realX = x * dims[2] / 16;
                                 for (int z = 0; z < imageHeight; z++) {
                                     int realZ = z * dims[0] / imageHeight;
                                     for (int y = 0; y < imageWidth; y++) {
                                         int realY = y * dims[1] / imageWidth;
-                                        float colorFactor = Math.min(((float)data[realZ][realY][realX] - calMin2)/ (calMax2 - calMin2), 1f);
+                                        float colorFactor = Math.min(((float) data[realZ][realY][realX] - calMin2) / (calMax2 - calMin2), 1f);
                                         int argb = new Color(colorFactor, colorFactor, colorFactor).getRGB();
                                         i.setRGB(x * imageWidth + z, ((imageNdx + 1) * rowHeight) - 1 - y, argb);
                                     }
                                 }
                             }
-                            
-                            
+
+
                         }
                         // Write image name to the image
                         Font f = new Font(Font.MONOSPACED, Font.PLAIN, 12);
@@ -425,15 +394,15 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                         g.setColor(Color.WHITE);
                         g.setFont(f);
                         //System.out.println(DeidData.IdTable.get("12"));
-                        g.drawString(DeidData.IdTable.get(DeidData.IdFilename.get(FileUtils.getName(image))) + ".nii(" +
-                                DeidData.IdFilename.get(FileUtils.getName(image)) + ")",
+                        g.drawString(DeidData.IdTable.get(DeidData.IdFilename.get(FileUtils.getName(image))) + ".nii("
+                                + DeidData.IdFilename.get(FileUtils.getName(image)) + ")",
                                 0, imageNdx * rowHeight + textHeight);
-                        
+
                         imageNdx++;
                     } catch (IOException ex) {
                         DEIDGUI.log("Unable to render image, data could not be read: "
                                 + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
-                    } catch (OutOfMemoryError ex){
+                    } catch (OutOfMemoryError ex) {
                         DEIDGUI.log("Out of memory, image could not be displayed. "
                                 + "Increase memory available to DeID with the -Xmx "
                                 + "option. -Xmx256m is recommended",
@@ -447,7 +416,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                             + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
                 }
             } else {
-                DEIDGUI.log("No image data found in "+ image.getAbsolutePath(),
+                DEIDGUI.log("No image data found in " + image.getAbsolutePath(),
                         DEIDGUI.LOG_LEVEL.ERROR);
             }
         }
@@ -458,15 +427,14 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                     DEIDGUI.LOG_LEVEL.ERROR);
         }
     }
-    
-    
+
     /**
      * USE OF DCM4CHE HAS RUNTIME DEPENDENCIES ON log4j, slf4j-api,
      * slf4j-log4j12, and dcm4che-core.
      *
      * @param dicomFile source of metadata
-     * @return A two-dimensional String array of metadata elements of
-     * the form [tag, name, data type, value]
+     * @return A two-dimensional String array of metadata elements of the form
+     * [tag, name, data type, value]
      */
     private String[][] readDicomMetadata(File dicomFile, boolean anonymizeFile) {
         DicomInputStream dis = null;
@@ -475,7 +443,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
             // Open and read the DICOM image
             dis = new DicomInputStream(dicomFile);
             DicomObject dicomObject = dis.readDicomObject();
-            
+
             // Iterate over metadata elements
             Iterator<DicomElement> metadataIt = dicomObject.iterator();
             while (metadataIt.hasNext()) {
@@ -494,24 +462,24 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                     }
                 } catch (UnsupportedOperationException e) {
                     // Only alert if the element is one that we want to keep
-                    if (Arrays.binarySearch(DeidData.dicomVarIds, elemTag) >= 0){
+                    if (Arrays.binarySearch(DeidData.dicomVarIds, elemTag) >= 0) {
                         DEIDGUI.log("Couldn't get value of desired DICOM element "
                                 + elemTag + " \"" + elemName + "\". The image "
                                 + "header file may be incomplete.", DEIDGUI.LOG_LEVEL.WARNING);
                     }
                 }
-                
+
                 metadataList.add(new String[]{
                     elemTag,
                     elemName,
                     elemVR,
                     elemValue});
-                if(anonymizeFile && Arrays.binarySearch(DeidData.dicomVarIds, elemTag) < 0){
+                if (anonymizeFile && Arrays.binarySearch(DeidData.dicomVarIds, elemTag) < 0) {
                     // Anonymize other elements
                     dicomObject.remove(elem.tag());
                 }
             }
-            
+
             if (anonymizeFile) {
                 // Save anonymized file
                 // TODO: Save this file in a temporary location - the original
@@ -532,12 +500,12 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
             } catch (IOException ex) {
             }
         }
-        
+
         String[][] metadataArray = new String[metadataList.size()][metadataList.get(0).length];
         metadataList.toArray(metadataArray);
         return metadataArray;
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -596,8 +564,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
 
     @Override
     public WizardPanel getPreviousPanel() {
-         if(DeidData.demographicData != DemographicTableModel.dummyModel)
-             return new LoadDemoPanel();
+
         return new DeIdentifyPanel();
     }
 }

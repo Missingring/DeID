@@ -1,6 +1,7 @@
 package dit;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -10,10 +11,13 @@ import java.util.Vector;
  */
 public class DeidData {
 
+    ///following three are abandoned
     public static Vector<File> 
             inputFiles = new Vector<File>(),
             niftiFiles = new Vector<File>(),
             deidentifiedFiles = new Vector<File>();
+    
+    public static NIHImageHandler imageHandler=new NIHImageHandler();
     
     public static Hashtable<File, File> 
             // Nifti result => Dicom source
@@ -32,9 +36,14 @@ public class DeidData {
     public static String anaPath = "/tmp/deid_output/fslchfiletypeOut";
     public static String dicomPath = "tmp/deid_output/dcm2niiOut";
     public static Vector<String> multimatchingNamelist;
-    public static Hashtable<String, Integer> multinameSol = new Hashtable();;
+    public static Hashtable<String, Integer> multinameSol = new Hashtable();
     public static Hashtable<String,String> multinameSolFile = new Hashtable();;
     public static Hashtable<String, String> IdTable;
+    
+    //this hashtable is to make sure all the longitudinal images belong to same subject have a same id.
+    public static Hashtable<String,String> longitudinalIDs=new Hashtable();
+    
+    
     public static String[] 
             selectedIdentifyingFields, 
             deselectedIdentifyingFields;
@@ -123,23 +132,21 @@ public class DeidData {
         for(int i =0;i<files.size();i++)
         {
             File currentFile=files.get(i);
-            if(!isExistInputFile(currentFile))
-            {
-                inputFiles.add(currentFile);
-            }            
+         
+                imageHandler.addFile(currentFile);
+                       
         }
     }
     
     public static void addInputFile(File file)
-    {
-       if(!isExistInputFile(file))
-            {
-                inputFiles.add(file);
-            }            
+    {       
+                imageHandler.addFile(file);                       
     }
 
     private static boolean isExistInputFile(File file)
     {
+       
+        
         String fileName=file.getAbsolutePath();
         if(fileName.endsWith("nii.gz"))
         {
@@ -152,16 +159,15 @@ public class DeidData {
         
         for(int i=0;i<inputFiles.size();i++)
         {
-           
-            String existFileName=inputFiles.get(i).getAbsolutePath();
-            
-            if(existFileName.contains(fileName))
+            String existFileName=inputFiles.get(i).getAbsolutePath().substring(0,inputFiles.get(i).getAbsolutePath().lastIndexOf("."));;
+            if(existFileName.equals(fileName))
             {
                 return true;
             }
         }
         
         return false;
+        
     }
     
 }

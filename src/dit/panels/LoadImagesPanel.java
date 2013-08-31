@@ -208,12 +208,12 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
     }//GEN-LAST:event_btnAddFilesActionPerformed
     
     private void jButtonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRemoveActionPerformed
-        Object[] selection = jListImages.getSelectedValues();
-        DeidData.inputFiles.removeAll(Arrays.asList(selection));
-        jListImages.setListData(DeidData.inputFiles);
-        DEIDGUI.log("Removed " + selection.length + " input images");
+        List selection = jListImages.getSelectedValuesList();
+        DeidData.imageHandler.removeAll(selection);
+        jListImages.setListData(DeidData.imageHandler.getInputFiles());
+        DEIDGUI.log("Removed " + selection.size() + " input images");
         jLabel2.setText("No line is selected.");
-        lblImages.setText(DeidData.inputFiles.size()+" images loaded");
+        lblImages.setText(DeidData.imageHandler.getInputFilesSize()+" images loaded");
     }//GEN-LAST:event_jButtonRemoveActionPerformed
     
     private void btnSelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectAllActionPerformed
@@ -271,6 +271,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
     public WizardPanel getNextPanel() {
         final WizardPanel nextPanel;
         
+        /*
         DeidData.niftiFiles.clear();
         // Determine if conversions of the selected images are necessary
         HashSet<File> dicomDirs = new HashSet<File>(),
@@ -290,12 +291,9 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                 DeidData.niftiFiles.add(curImage);
             }
         }
-        
-        if (dicomDirs.size() > 0 && !FileUtils.OS.isWindows()) { // library on windows can handle img/hdr without converting.
-            nextPanel = new ConvertingProgressPanel(dicomDirs, analyzePairs);
-        } else {
+        */
             nextPanel = new LoadDemoPanel();
-        }
+       
         return nextPanel;
     }
     
@@ -368,7 +366,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                    // DeidData.parentPath="none";
                 }
             }
-            jListImages.setListData(DeidData.inputFiles);
+            jListImages.setListData(DeidData.imageHandler.getInputFiles());
             
             String dir = fc.getSelectedFile().getParent();
             
@@ -392,7 +390,7 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
                 DEIDGUI.log("No Parent Directory Found!" );
             }
             DEIDGUI.log("Added " + selectedFiles.length + " input images");
-            lblImages.setText(DeidData.inputFiles.size() +" image(s) loaded.");
+            lblImages.setText(DeidData.imageHandler.getInputFilesSize() +" image(s) loaded.");
         }
     }
 }

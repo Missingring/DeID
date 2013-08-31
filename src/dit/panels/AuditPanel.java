@@ -4,6 +4,7 @@ import dit.DEIDGUI;
 import dit.AuditJTable;
 import dit.DeidData;
 import dit.FileUtils;
+import dit.NIHImage;
 import dit.NiftiDisplayPanel;
 import dit.OpenImagewithMRIcron;
 import dit.TextviewFrame;
@@ -48,17 +49,11 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     public AuditPanel() {
         initComponents();
         // if(DeidData.demographicData != DemographicTableModel.dummyModel)
-        createFakenames();
+      //  createFakenames();
         jButtonViewMontage.setVisible(false);
         DEIDGUI.title = "Auditing";
         DEIDGUI.helpButton.setEnabled(true);
-        if(DeidData.includeFileInTar == null){
-            DeidData.includeFileInTar = new Boolean[DeidData.deidentifiedFiles.size()];
-            // Select all images by default
-            for (int ndx = 0; ndx < DeidData.includeFileInTar.length; ndx++) {
-                DeidData.includeFileInTar[ndx] = true;
-            }
-        }
+        
         
         // Define the AuditJTable model
         imagesTable.setModel(new AbstractTableModel() {
@@ -68,7 +63,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
             
             @Override
             public int getRowCount() {
-                return DeidData.deidentifiedFiles.size();
+                return DeidData.imageHandler.getInputFilesSize();
             }
             
             @Override
@@ -89,7 +84,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                         colClass = Boolean.class;
                         break;
                     case 1:
-                        colClass = File.class;
+                        colClass = NIHImage.class;
                         break;
                     default:
                         colClass = Object.class;
@@ -107,10 +102,10 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                 Object value;
                 switch (col) {
                     case 0:
-                        value = DeidData.includeFileInTar[row];
+                        value = DeidData.imageHandler.getInputFiles().get(row).isSeletecInJarFile();
                         break;
                     case 1:
-                        value = DeidData.deidentifiedFiles.get(row);
+                        value =  DeidData.imageHandler.getInputFiles().get(row);
                         break;
                     default:
                         value = "Error";
@@ -122,7 +117,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
             @Override
             public void setValueAt(Object o, int row, int col) {
                 if (col == 0) {
-                    DeidData.includeFileInTar[row] = (Boolean) o;
+                   DeidData.imageHandler.getInputFiles().get(row).setSeletecInJarFile( (Boolean) o);
                 }
             }
             // </editor-fold>
@@ -135,11 +130,9 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
                     @Override
                     public void valueChanged(ListSelectionEvent lse) {
                         if (lse.getValueIsAdjusting()) {
-                            File selectedFile = DeidData.deidentifiedFiles.get(imagesTable.getSelectedRow());
-                            jButtonViewHeader.setEnabled(
-                                    DeidData.ConvertedDicomHeaderTable.containsKey(selectedFile)
-                                    ? true : false);
-                            ((NiftiDisplayPanel)imagePanel).setImage(selectedFile);
+                            NIHImage selectedFile = DeidData.imageHandler.getInputFiles().get(imagesTable.getSelectedRow());
+                            jButtonViewHeader.setEnabled(false);
+                            ((NiftiDisplayPanel)imagePanel).setImage(selectedFile.getTempPotision());
                            // ((NiftiDisplayPanel)imagePanel).reset();
                         }
                     }
@@ -364,73 +357,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
     
-    private boolean OpenFile(File file) {
-        boolean openSucceeded;
-        if (Desktop.isDesktopSupported()) {
-            try {
-                Desktop.getDesktop().open(file);
-                openSucceeded = true;
-            } catch (IOException ex) {
-                DEIDGUI.log("The system couldn't open " + file.toString() + ": "
-                        + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
-                openSucceeded = false;
-            } catch (IllegalArgumentException e) {
-                DEIDGUI.log("The system couldn't open " + file.toString() + ": "
-                        + e.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
-                openSucceeded = false;
-            }
-        } else {
-            DEIDGUI.log("Unable to open file, desktop operations not supported", DEIDGUI.LOG_LEVEL.ERROR);
-            openSucceeded = false;
-        }
-        return openSucceeded;
-    }
     
-    private void createFakenames(){
-        Iterator curFile = DeidData.deidentifiedFiles.iterator();
-        while (curFile.hasNext()){
-            String x = FileUtils.getName((File)curFile.next()).toString();
-            String y="";
-            
-           x=x.replace((DeidData.outputPath+"betOut/").replace(System.getProperty("file.separator").toString(), "_"), "");
-          //  System.out.println("X:"+x);
-            //System.out.println(DeidData.IdFilename.keys().nextElement());
-            if(DeidData.isNoData)
-                y=DeidData.IdTable.get(x);
-            else
-                y = DeidData.IdTable.get(DeidData.IdFilename.get(x));
-            
-           
-            if (!DeidData.multinameSol.containsKey(y)){
-                DeidData.multinameSol.put(y,1);
-                DeidData.multinameSolFile.put(x, y + "_1"+".nii");
-            }
-            else
-            {
-                int value =  DeidData.multinameSol.get(y);
-                value = value + 1;
-                DeidData.multinameSolFile.put(x,y +"_"+ value+".nii");
-                DeidData.multinameSol.remove(y);
-                DeidData.multinameSol.put(y, value);
-            }
-            
-            //}
-        }
-        
-        
-    }
-    private boolean multiImages(Hashtable<String, String> ht, String val ){
-        boolean ismulti = false;
-        int count = 0;
-        for (Iterator it = ht.keySet().iterator(); it.hasNext(); ) {
-            String key = (String) it.next();
-            String value = ht.get(key);
-            if (value.equals(val)) count++;
-            
-        }
-        if (count > 1) ismulti = true;
-        return ismulti;
-    }
     
     private void jButtonViewImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewImageActionPerformed
         /* if(jTableImages.getSelectedRow() >= 0){
@@ -438,7 +365,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
          * OpenFile(selectedFile);
          * }*/
         if(imagesTable.getSelectedRow() >= 0){
-            File selectedFile = (File) DeidData.deidentifiedFiles.get(imagesTable.getSelectedRow());
+            File selectedFile =  DeidData.imageHandler.getInputFiles().get(imagesTable.getSelectedRow()).getTempPotision();
             OpenImagewithMRIcron openImage = new OpenImagewithMRIcron(selectedFile);
             openImage.run();
         }
@@ -472,7 +399,6 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     
     private void sliceBarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sliceBarStateChanged
         if(imagesTable.getSelectedRow() >= 0){
-            File selectedFile = (File) DeidData.deidentifiedFiles.get(imagesTable.getSelectedRow());
             ((NiftiDisplayPanel)imagePanel).setSlice((float)sliceBar.getValue()/100f);
         }
     }//GEN-LAST:event_sliceBarStateChanged
