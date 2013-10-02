@@ -33,21 +33,21 @@ public class NIHImageHandler {
     }
 
     public void addFile(File file) {
-        NIHImage image=new NIHImage(file);
-        if(image.getImageFormat().equals("hdr"))
-        {
-            File secondPart=new File(image.getImageName()+".img");
-            if(!secondPart.exists())
+        NIHImage image = new NIHImage(file);
+        if (image.getImageFormat().equals("hdr")) {
+            File secondPart = new File(image.getImageName() + ".img");
+            if (!secondPart.exists()) {
                 return;
+            }
         }
-        
-        if(image.getImageFormat().equals("img"))
-        {
-            File secondPart=new File(image.getImageName()+".hdr");
-            if(!secondPart.exists())
+
+        if (image.getImageFormat().equals("img")) {
+            File secondPart = new File(image.getImageName() + ".hdr");
+            if (!secondPart.exists()) {
                 return;
+            }
         }
-        
+
         if (!isExistInputFile(file)) {
             _inputFiles.add(image);
         }
@@ -164,6 +164,12 @@ public class NIHImageHandler {
 
     public void correctOrientation() {
         for (NIHImage image : _inputFiles) {
+
+            if (image.isIsCorrectedOrientation()) {
+                continue;
+            }
+            
+
             Nifti1Dataset set = new Nifti1Dataset(image.getTempPotision().getAbsolutePath());
             float sform = set.sform_code;
             float qform = set.qform_code;
@@ -171,24 +177,25 @@ public class NIHImageHandler {
             float quat_y = set.srow_y[3];
             float quat_z = set.srow_z[3];
             OrientationState oldState = image.getOrientationState();
-            
-            OrientationState newState=null;
+
+            OrientationState newState = null;
             if (sform == 4.0 || sform == 0.0) {
                 newState = oldState.toTop().toTop().toRight().toRight();
-              //  System.out.println("Case 1:" + sform + "   " + qform);
+                //  System.out.println("Case 1:" + sform + "   " + qform);
             } else if (sform == 1.0 && quat_x < 0 && quat_y > 0 && quat_z < 0) {
                 newState = oldState.toTop().toTop().toRight().toRight();
                 // System.out.println("Case 1:" + sform + "   " + qform);
 
             } else if (sform == 1.0 && quat_x > 0 && quat_y > 0 && quat_z < 0) {
                 System.out.println("Case 3:" + sform + "   " + qform);
-                newState=oldState;
+                newState = oldState;
             } else {
                 System.out.println("Case 4:" + sform + "   " + qform);
-                newState=oldState;
+                newState = oldState;
             }
-            
+
             image.setOrientationState(newState);
+            image.setIsCorrectedOrientation(true);
         }
     }
 

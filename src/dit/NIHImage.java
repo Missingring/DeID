@@ -32,6 +32,7 @@ public class NIHImage {
     private boolean _isLongitudinal;
     private boolean _seletedInJarFile;
     private boolean _needRedefaced;
+    private boolean _isCorrectedOrientation;
     private String _longitudinalSuject = "";
     private String _longitudinalNumber = "";
     private OrientationState orientationState;
@@ -69,7 +70,8 @@ public class NIHImage {
         _needRedefaced = false;
         _isDefaced = false;
         _seletedInJarFile = true;
-
+        _isCorrectedOrientation=false;
+        
         orientationState = new OrientationState(0, true, 0, 5, 1, 2, 3, 4);
     }
 
@@ -81,7 +83,7 @@ public class NIHImage {
     }
     
     public void initNifti(){
-        _set = new Nifti1Dataset(_storedPotistion.getAbsolutePath());
+        _set = new Nifti1Dataset(_tempPotision.getAbsolutePath());
         short ttt = 0;
         try {
             _set.readHeader();
@@ -438,6 +440,20 @@ public class NIHImage {
      */
     public void setMontageFile(File montageFile) {
         this._montageFile = montageFile;
+    }
+
+    /**
+     * @return the _isCorrectedOrientation
+     */
+    public boolean isIsCorrectedOrientation() {
+        return _isCorrectedOrientation;
+    }
+
+    /**
+     * @param isCorrectedOrientation the _isCorrectedOrientation to set
+     */
+    public void setIsCorrectedOrientation(boolean isCorrectedOrientation) {
+        this._isCorrectedOrientation = isCorrectedOrientation;
     }
 
     private class NiftiPara {

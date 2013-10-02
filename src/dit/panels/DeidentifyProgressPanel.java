@@ -56,13 +56,14 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
             @Override
             public void run() {
                 randomizeIds();
-                initNiftidataset();
+               
                 if (doDeface) {
                     jLabel2.setText("<html><p>Defacing images...</p><p>&nbsp;</p></html>");
                     defaceImages();
                 } else {
                     DeidData.imageHandler.moveImages();
                 }
+                 initNiftidataset();
                 jLabel2.setText("<html><p>Deidentifying demographic file...</p><p>&nbsp;</p></html>");
                 createDemographicFile();
                 if (DeidData.NiftiConversionSourceTable.size() > 0) {
@@ -328,7 +329,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
     private void createMontage() {
         
         int imageHeight = 64, imageWidth = 64, textHeight = 12,
-                rowHeight = imageHeight + textHeight;
+                rowHeight = imageHeight*4 + textHeight;
 
         if (DeidData.imageHandler.getInputFiles().isEmpty()) {
             return;
@@ -337,14 +338,14 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
       
         for (NIHImage image : DeidData.imageHandler.getInputFiles()) {
             
-         BufferedImage i = new BufferedImage(imageWidth * 16, rowHeight, BufferedImage.TYPE_INT_RGB);
+         BufferedImage i = new BufferedImage(imageWidth * 4, rowHeight, BufferedImage.TYPE_INT_RGB);
             Nifti1Dataset set = new Nifti1Dataset(image.getTempPotision().getAbsolutePath());
             for (int idx = 0; idx < 16; idx++) {
                 try {
                     BufferedImage ii = image.imageAt((float) (idx) / 16.0f, image.getOrientationState());
                     Graphics2D g = i.createGraphics();
                     g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                    g.drawImage(ii, 64 * idx, textHeight, imageWidth, imageHeight, null);
+                    g.drawImage(ii, 64 * (idx%4), textHeight+ (idx/4)*imageHeight, imageWidth, imageHeight, null);
                 } catch (IOException ex) {
                     Logger.getLogger(DeidentifyProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -355,9 +356,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
             g.setColor(Color.WHITE);
             g.setFont(f);
             //System.out.println(DeidData.IdTable.get("12"));
-            g.drawString(image.getImageNewName() + ".nii("
-                    + image.getImageName() + ")",
-                    0, textHeight);           
+            g.drawString(image.getImageNewName() + ".nii",0, textHeight);           
            
 
             try {
