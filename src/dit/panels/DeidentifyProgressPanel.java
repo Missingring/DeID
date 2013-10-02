@@ -10,11 +10,15 @@ import dit.IDefaceTask;
 import dit.NIHImage;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Map.Entry;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import niftijlib.Nifti1Dataset;
 import org.dcm4che2.data.DicomElement;
@@ -52,6 +56,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
             @Override
             public void run() {
                 randomizeIds();
+                initNiftidataset();
                 if (doDeface) {
                     jLabel2.setText("<html><p>Defacing images...</p><p>&nbsp;</p></html>");
                     defaceImages();
@@ -64,9 +69,18 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                     jLabel2.setText("<html><p>Deidentifying DICOM header data...</p><p>&nbsp;</p></html>");
                     createHeaderDataFiles();
                 }
-
+                DeidData.imageHandler.correctOrientation();
+                 createMontage();
 
                 DEIDGUI.advance();
+            }
+
+            private void initNiftidataset() {
+                  jLabel2.setText("<html><p>Analysing images header files...</p><p>&nbsp;</p></html>");
+                  for(NIHImage image : DeidData.imageHandler.getInputFiles())
+                  {
+                      image.initNifti();
+                  }
             }
         }).start();
     }
@@ -80,8 +94,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
 
     private void randomizeIds() {
         // Only randomize if the ID column is selected
-        for(NIHImage image : DeidData.imageHandler.getInputFiles())
-        {
+        for (NIHImage image : DeidData.imageHandler.getInputFiles()) {
             image.setImageNewName("");
         }
 
@@ -313,129 +326,60 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
 
     //need modification in the future
     private void createMontage() {
-        int imageNdx = 0;
+        
         int imageHeight = 64, imageWidth = 64, textHeight = 12,
                 rowHeight = imageHeight + textHeight;
 
         if (DeidData.imageHandler.getInputFiles().isEmpty()) {
             return;
         }
-        BufferedImage i = new BufferedImage(imageWidth * 16, rowHeight * DeidData.imageHandler.getInputFilesSize(), BufferedImage.TYPE_INT_RGB);
-        for (File image : DeidData.deidentifiedFiles) {
-            Nifti1Dataset set = new Nifti1Dataset(image.getAbsolutePath());
-            if (set.exists()) {
+
+      
+        for (NIHImage image : DeidData.imageHandler.getInputFiles()) {
+            
+         BufferedImage i = new BufferedImage(imageWidth * 16, rowHeight, BufferedImage.TYPE_INT_RGB);
+            Nifti1Dataset set = new Nifti1Dataset(image.getTempPotision().getAbsolutePath());
+            for (int idx = 0; idx < 16; idx++) {
                 try {
-                    set.readHeader();
-
-                    // TODO: maybe making assignment to the same double[][][]
-                    // instead of creating new ones is more memory efficient?
-                    double[][][] data;
-                    short[] dims = new short[]{set.ZDIM, set.YDIM, set.XDIM};
-                    float calMax = set.cal_max;
-                    if (calMax <= 0) {
-                        calMax = 255f;
-                    }
-                    float calMin = set.cal_min;
-                    if (calMin < 0) {
-                        calMin = 0;
-                    }
-                    float calMax2 = set.cal_max;
-                    float calMin2 = set.cal_min;
-                    float sform = set.sform_code;
-                    try {
-                        short ttt = 0;
-                        data = set.readDoubleVol(ttt);
-                        if (calMax2 - calMin2 == 0) {
-                            float max = 0;
-                            for (int ii = 0; ii < dims[2]; ii++) {
-                                for (int j = 0; j < dims[1]; j++) {
-                                    for (int k = 0; k < dims[0]; k++) {
-                                        if (data[k][j][ii] > max) {
-                                            max = (float) data[k][j][ii];
-                                        }
-                                    }
-                                }
-                            }
-                            calMax2 = max;
-                            calMin2 = 0;
-                        }
-                        if (sform == 4.0 || sform == 0.0) {
-                            for (int x = 0; x < 16; x++) {
-                                int realX = x * dims[2] / 16;
-                                for (int y = 0; y < imageWidth; y++) {
-                                    int realY = y * dims[1] / imageWidth;
-                                    for (int z = 0; z < imageHeight; z++) {
-                                        int realZ = z * dims[0] / imageHeight;
-                                        float colorFactor = Math.min(((float) data[realZ][realY][realX] - calMin2) / (calMax2 - calMin2), 1f);
-                                        int argb = new Color(colorFactor, colorFactor, colorFactor).getRGB();
-                                        i.setRGB(x * imageWidth + y, ((imageNdx + 1) * rowHeight) - 1 - z, argb);
-                                    }
-                                }
-                            }
-                        } else if (sform == 1.0 || sform == 2.0 || sform == 3.0) {
-                            for (int x = 0; x < 16; x++) {
-                                int realX = x * dims[2] / 16;
-                                for (int z = 0; z < imageHeight; z++) {
-                                    int realZ = z * dims[0] / imageHeight;
-                                    for (int y = 0; y < imageWidth; y++) {
-                                        int realY = y * dims[1] / imageWidth;
-                                        float colorFactor = Math.min(((float) data[realZ][realY][realX] - calMin2) / (calMax2 - calMin2), 1f);
-                                        int argb = new Color(colorFactor, colorFactor, colorFactor).getRGB();
-                                        i.setRGB(x * imageWidth + z, ((imageNdx + 1) * rowHeight) - 1 - y, argb);
-                                    }
-                                }
-                            }
-
-
-                        }
-                        // Write image name to the image
-                        Font f = new Font(Font.MONOSPACED, Font.PLAIN, 12);
-                        Graphics2D g = i.createGraphics();
-                        g.setColor(Color.WHITE);
-                        g.setFont(f);
-                        //System.out.println(DeidData.IdTable.get("12"));
-                        g.drawString(DeidData.IdTable.get(DeidData.IdFilename.get(FileUtils.getName(image))) + ".nii("
-                                + DeidData.IdFilename.get(FileUtils.getName(image)) + ")",
-                                0, imageNdx * rowHeight + textHeight);
-
-                        imageNdx++;
-                    } catch (IOException ex) {
-                        DEIDGUI.log("Unable to render image, data could not be read: "
-                                + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
-                    } catch (OutOfMemoryError ex) {
-                        DEIDGUI.log("Out of memory, image could not be displayed. "
-                                + "Increase memory available to DeID with the -Xmx "
-                                + "option. -Xmx256m is recommended",
-                                DEIDGUI.LOG_LEVEL.ERROR);
-                    }
-                } catch (FileNotFoundException ex) {
-                    DEIDGUI.log("Unable to render image, file does not exist: "
-                            + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
+                    BufferedImage ii = image.imageAt((float) (idx) / 16.0f, image.getOrientationState());
+                    Graphics2D g = i.createGraphics();
+                    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    g.drawImage(ii, 64 * idx, textHeight, imageWidth, imageHeight, null);
                 } catch (IOException ex) {
-                    DEIDGUI.log("Unable to render image, file read error: "
-                            + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
+                    Logger.getLogger(DeidentifyProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } else {
-                DEIDGUI.log("No image data found in " + image.getAbsolutePath(),
+            }
+            // Write image name to the image
+            Font f = new Font(Font.MONOSPACED, Font.PLAIN, 12);
+            Graphics2D g = i.createGraphics();
+            g.setColor(Color.WHITE);
+            g.setFont(f);
+            //System.out.println(DeidData.IdTable.get("12"));
+            g.drawString(image.getImageNewName() + ".nii("
+                    + image.getImageName() + ")",
+                    0, textHeight);           
+           
+
+            try {
+                File targetFile=new File(DeidData.outputPath + image.getImageNewName()+"_montage.jpg");
+                ImageIO.write(i, "jpg", targetFile);
+                image.setMontageFile(targetFile);
+            } catch (IOException ex) {
+                DEIDGUI.log("Unable to write montage.png",
                         DEIDGUI.LOG_LEVEL.ERROR);
             }
         }
-        try {
-            ImageIO.write(i, "jpg", new File(DeidData.outputPath + "montage.jpg"));
-        } catch (IOException ex) {
-            DEIDGUI.log("Unable to write montage.png",
-                    DEIDGUI.LOG_LEVEL.ERROR);
-        }
+
+        /**
+         * USE OF DCM4CHE HAS RUNTIME DEPENDENCIES ON log4j, slf4j-api,
+         * slf4j-log4j12, and dcm4che-core.
+         *
+         * @param dicomFile source of metadata
+         * @return A two-dimensional String array of metadata elements of the
+         * form [tag, name, data type, value]
+         */
     }
 
-    /**
-     * USE OF DCM4CHE HAS RUNTIME DEPENDENCIES ON log4j, slf4j-api,
-     * slf4j-log4j12, and dcm4che-core.
-     *
-     * @param dicomFile source of metadata
-     * @return A two-dimensional String array of metadata elements of the form
-     * [tag, name, data type, value]
-     */
     private String[][] readDicomMetadata(File dicomFile, boolean anonymizeFile) {
         DicomInputStream dis = null;
         ArrayList<String[]> metadataList = new ArrayList<String[]>();

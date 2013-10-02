@@ -36,8 +36,8 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
         DEIDGUI.title = "Load Images";
         DEIDGUI.helpButton.setEnabled(true);
         
-        lblImages.setText(DeidData.inputFiles.size()+" images loaded");
-        jListImages.setListData(DeidData.inputFiles);
+        lblImages.setText(DeidData.imageHandler.getInputFiles().size()+" images loaded");
+        jListImages.setListData(DeidData.imageHandler.getInputFiles());
         cbxDoDeface.setSelected(!DeidData.doDeface);
         
         btnRemovedAll.setVisible(false);
@@ -219,13 +219,13 @@ public class LoadImagesPanel extends JPanel implements WizardPanel {
     private void btnSelectAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelectAllActionPerformed
         // TODO add your handling code here:
         int ind[];
-        ind = new int[DeidData.inputFiles.size()];
-        for(int i = 0; i< DeidData.inputFiles.size();i++ )
+        ind = new int[DeidData.imageHandler.getInputFiles().size()];
+        for(int i = 0; i< DeidData.imageHandler.getInputFiles().size();i++ )
         {
             ind[i] = i;            
         }
         jListImages.setSelectedIndices(ind);
-        jLabel2.setText(DeidData.inputFiles.size()+" line(s) selected.");
+        jLabel2.setText(DeidData.imageHandler.getInputFiles().size()+" line(s) selected.");
     }//GEN-LAST:event_btnSelectAllActionPerformed
     
     private void btnRemovedAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemovedAllActionPerformed

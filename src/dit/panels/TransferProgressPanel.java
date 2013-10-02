@@ -221,15 +221,10 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
 
                 if (image.isSeletecInJarFile()) {
 
-                    if (!image.getImageNewName().equals("")) {
-                        //tm.addFile(curImage, DeidData.IdTable.get(imageName) + ".nii");
-                        // if(!multiImages(DeidData.IdFilename,DeidData.IdFilename.get(imageName)))
-                        // tm.addFile(curImage, DeidData.IdTable.get(DeidData.IdFilename.get(imageName)) + ".nii");
-                        //else 
-                        // {                          
+                    if (!image.getImageNewName().equals("")) {                                     
 
                         tm.addFile(image.getTempPotision(), image.getImageNewName() + ".nii");
-
+                        tm.addFile(image.getMontageFile());
                         //}  
                     } else {
                         DEIDGUI.log("No randomized ID was created for "
@@ -242,8 +237,7 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                     // need to rename here.
 
                 }
-            }
-            tm.addFile(DeidData.deidentifiedDemoFile);
+            }           
             tm.addFile(logFile);
 
 

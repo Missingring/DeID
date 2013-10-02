@@ -1,7 +1,14 @@
 package dit;
 
 import com.sun.org.apache.bcel.internal.generic.ISHL;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import niftijlib.Nifti1Dataset;
 
 /**
  *
@@ -12,6 +19,7 @@ public class NIHImage {
 
     private File _storedPotistion; //where images are stored
     private File _tempPotision;   //where images are put during the program
+    private File _montageFile;
     private String _imageName;      //images' name without extensiont
     private String _imageNewName;   //new id generated for images
     private String _imageDisplayName;  //name shown in the Matching GUI
@@ -19,46 +27,50 @@ public class NIHImage {
     private String _imageFormat;  //images' extension
     private String _idInDataFile;  // the id in data file when matching 
     private String _parentPath;  // if images is chosen from multiple directies, this indicate it's parent file path
-   
-    private boolean _needDefaced;  
+    private boolean _needDefaced;
     private boolean _isDefaced;
     private boolean _isLongitudinal;
     private boolean _seletedInJarFile;
     private boolean _needRedefaced;
+    private String _longitudinalSuject = "";
+    private String _longitudinalNumber = "";
+    private OrientationState orientationState;
+    private Nifti1Dataset _set;
+    double[][][] _data; // where pixels are stored
+    private NiftiPara _para;
 
-    private String _longitudinalSuject="";
-    private String _longitudinalNumber="";
-    
     public NIHImage(File file) {
         _storedPotistion = file;
         _tempPotision = null;
-        
+
         String fileName = file.getAbsolutePath();
         if (fileName.endsWith("nii.gz")) {
             fileName = fileName.replace("nii.gz", "");
         } else {
             fileName = fileName.substring(0, fileName.lastIndexOf("."));
         }
-        _imageName=fileName;
-        _imageNewName="";
+        _imageName = fileName;
+        _imageNewName = "";
         _imageFormalName = FileUtils.getName(file);
         _imageFormat = FileUtils.getExtension(file);
-        _parentPath="";
-        _idInDataFile="";
-        
-        _imageDisplayName=_storedPotistion.getAbsolutePath();
-        
-        if(_imageName.matches("^.*#\\d+$")){
-            _isLongitudinal=true;
-            _longitudinalSuject=_imageName.substring(0,_imageName.lastIndexOf('#'));
-            _longitudinalNumber=_imageName.substring(_imageName.lastIndexOf('#'));
+        _parentPath = "";
+        _idInDataFile = "";
+
+        _imageDisplayName = _storedPotistion.getAbsolutePath();       
+
+        if (_imageName.matches("^.*#\\d+$")) {
+            _isLongitudinal = true;
+            _longitudinalSuject = _imageName.substring(0, _imageName.lastIndexOf('#'));
+            _longitudinalNumber = _imageName.substring(_imageName.lastIndexOf('#'));
+        } else {
+            _isLongitudinal = false;
         }
-        else
-            _isLongitudinal=false;
         _needDefaced = true;
-        _needRedefaced=false;
+        _needRedefaced = false;
         _isDefaced = false;
-        _seletedInJarFile=true;
+        _seletedInJarFile = true;
+
+        orientationState = new OrientationState(0, true, 0, 5, 1, 2, 3, 4);
     }
 
     /**
@@ -66,6 +78,18 @@ public class NIHImage {
      */
     public File getStoredPotistion() {
         return _storedPotistion;
+    }
+    
+    public void initNifti(){
+        _set = new Nifti1Dataset(_storedPotistion.getAbsolutePath());
+        short ttt = 0;
+        try {
+            _set.readHeader();
+            _data = _set.readDoubleVol(ttt);
+            _para=new NiftiPara(_set);
+        } catch (IOException ex) {
+            Logger.getLogger(NIHImage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -172,8 +196,8 @@ public class NIHImage {
     public void setImageFormalName(String imageFormalName) {
         this._imageFormalName = imageFormalName;
     }
-    
-    public String toString(){
+
+    public String toString() {
         return _storedPotistion.getAbsolutePath().toString();
     }
 
@@ -287,5 +311,147 @@ public class NIHImage {
      */
     public void setNeedRedefaced(boolean needRedefaced) {
         this._needRedefaced = needRedefaced;
+    }
+
+    /**
+     * @return the orientationState
+     */
+    public OrientationState getOrientationState() {
+        return orientationState;
+    }
+
+    /**
+     * @param orientationState the orientationState to set
+     */
+    public void setOrientationState(OrientationState orientationState) {
+        this.orientationState = orientationState;
+    }
+
+    public BufferedImage imageAt(float sliceFactor, OrientationState orientationState) throws IOException {
+
+        short[] dims = _para.dims;
+        float calMax2 = _para.calMax2;
+        float calMin2 = _para.calMin2;
+
+
+        BufferedImage i = new BufferedImage(dims[orientationState.widthAxis], dims[orientationState.heightAxis], BufferedImage.TYPE_INT_RGB);
+        int depth;
+        if (orientationState.isForward) {
+            depth = (int) ((dims[orientationState.currentAxis] - 1) * Math.max(0, Math.min(sliceFactor, 1.0)));
+        } else {
+            depth = (int) ((dims[orientationState.currentAxis] - 1) * Math.max(0, Math.min(1.0 - sliceFactor, 1.0)));
+        }
+        int widthStart, heightStart, heightStep;
+        int widthEnd, heightEnd, widthStep;
+
+        if (orientationState.widthPostive) {
+            widthStart = 0;
+            widthEnd = dims[orientationState.widthAxis] - 1;
+            widthStep = 1;
+        } else {
+            widthStart = dims[orientationState.widthAxis] - 1;
+            widthEnd = 0;
+            widthStep = -1;
+        }
+
+        if (orientationState.heightPostive) {
+            heightStart = 0;
+            heightEnd = dims[orientationState.heightAxis] - 1;
+            heightStep = 1;
+        } else {
+            heightStart = dims[orientationState.heightAxis] - 1;
+            heightEnd = 0;
+            heightStep = -1;
+        }
+        for (int ii = heightStart; ii != heightEnd; ii += heightStep) {
+            for (int j = widthStart; j != widthEnd; j += widthStep) {
+
+                float density = 0;
+
+                if (orientationState.currentAxis == orientationState.Z_AXIS) {
+                    if (orientationState.widthAxis == orientationState.X_AXIS) {
+                        density = (float) _data[depth][ii][j];
+                    } else {
+                        density = (float) _data[depth][j][ii];
+                    }
+                } else if (orientationState.currentAxis == orientationState.Y_AXIS) {
+                    if (orientationState.widthAxis == orientationState.X_AXIS) {
+                        density = (float) _data[ii][depth][j];
+                    } else {
+                        density = (float) _data[j][depth][ii];
+                    }
+                } else // currentAxis is X axis
+                {
+                    if (orientationState.widthAxis == orientationState.Y_AXIS) {
+                        density = (float) _data[ii][j][depth];
+                    } else {
+                        density = (float) _data[j][ii][depth];
+                    }
+                }
+                float colorFactor = Math.min((density - calMin2) / (calMax2 - calMin2), 1f);
+                int argb = new Color(colorFactor, colorFactor, colorFactor).getRGB();
+
+                int targetX, targetY;
+
+                if (orientationState.widthPostive) {
+                    targetX = j;
+                } else {
+                    targetX = widthStart - j;
+                }
+
+                if (orientationState.heightPostive) {
+                    targetY = ii;
+                } else {
+                    targetY = heightStart - ii;
+                }
+                //System.out.println("Width:"+i.getWidth()+"  Height:"+i.getHeight());
+                //System.out.println("X:"+targetX+"  Y:"+targetY);
+                i.setRGB(targetX, targetY, argb);
+            }
+        }
+        return i;
+    }
+
+    public float getMax(double[][][] triDarr, short[] dims) {
+        float max = 0;
+        for (int i = 0; i < dims[2]; i++) {
+            for (int j = 0; j < dims[1]; j++) {
+                for (int k = 0; k < dims[0]; k++) {
+                    if (triDarr[k][j][i] > max) {
+                        max = (float) triDarr[k][j][i];
+                    }
+                }
+            }
+        }
+        return max;
+    }
+
+    /**
+     * @return the _montageFile
+     */
+    public File getMontageFile() {
+        return _montageFile;
+    }
+
+    /**
+     * @param montageFile the _montageFile to set
+     */
+    public void setMontageFile(File montageFile) {
+        this._montageFile = montageFile;
+    }
+
+    private class NiftiPara {
+
+        short[] dims;
+        float calMax2;
+        float calMin2;
+
+        public NiftiPara(Nifti1Dataset _set) {
+            dims = new short[]{_set.ZDIM, _set.YDIM, _set.XDIM};
+            if (calMax2 - calMin2 == 0) {
+                calMax2 = getMax(_data, dims);
+                calMin2 = 0;
+            }
+        }
     }
 }

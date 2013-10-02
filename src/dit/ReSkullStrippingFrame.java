@@ -102,7 +102,7 @@ public class ReSkullStrippingFrame extends javax.swing.JFrame {
                     //jButtonViewHeader.setEnabled(
                     //   DeidData.ConvertedDicomHeaderTable.containsKey(selectedFile)
                     //  ? true : false);
-                    ((NiftiDisplayPanel) jPanel1).setImage(selectedFile.getTempPotision());
+                    ((NiftiDisplayPanel) jPanel1).setImage(selectedFile);
                 }
             }
             // </editor-fold>
