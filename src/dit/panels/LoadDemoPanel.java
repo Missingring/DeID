@@ -42,10 +42,12 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
         DEIDGUI.title = "Load Demographic Data";
         DEIDGUI.helpButton.setEnabled(true);
         
+        jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+       
        
         // TODO: remove this auto-load line
         //        ReadDemographicFile(new File("/Users/christianprescott/Desktop/dataset/my_demo_data.txt"));
-        jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+      //  jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         
         jTable1.setColumnSelectionAllowed(true);
         jTable1.setRowSelectionAllowed(false);
@@ -166,10 +168,10 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
 
         lblInstrc = new javax.swing.JLabel();
         jButtonLoadDemo = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         btnCancleChange = new javax.swing.JButton();
         cbxDummy = new javax.swing.JCheckBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         lblInstrc.setText("<html><p>Select a data file, then click the column that will be used to match the images.</p><p>&nbsp;</p></html>");
 
@@ -179,9 +181,6 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                 jButtonLoadDemoActionPerformed(evt);
             }
         });
-
-        jTable1.setModel(new DemographicTableModel(new String[]{"No data"}, new Object[1][1]));
-        jScrollPane1.setViewportView(jTable1);
 
         btnCancleChange.setText("Revert changes");
         btnCancleChange.addActionListener(new java.awt.event.ActionListener() {
@@ -197,6 +196,10 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
             }
         });
 
+        jTable1.setModel(new DemographicTableModel(new String[]{"No data"}, new Object[1][1]));
+        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        jScrollPane1.setViewportView(jTable1);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -205,12 +208,12 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jScrollPane1)
+                    .add(lblInstrc, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 675, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
                         .add(jButtonLoadDemo)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                         .add(cbxDummy)
                         .add(0, 0, Short.MAX_VALUE))
-                    .add(lblInstrc)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(0, 0, Short.MAX_VALUE)
                         .add(btnCancleChange)))
@@ -221,14 +224,14 @@ public class LoadDemoPanel extends javax.swing.JPanel implements WizardPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(lblInstrc, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jButtonLoadDemo)
                     .add(cbxDummy))
+                .add(7, 7, 7)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(btnCancleChange))
+                .add(btnCancleChange)
+                .add(6, 6, 6))
         );
     }// </editor-fold>//GEN-END:initComponents
     
