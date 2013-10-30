@@ -12,6 +12,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -28,12 +29,12 @@ public class DummyFileTableModel extends AbstractTableModel {
         data = new Object[0][0];
     }
     
-    public DummyFileTableModel(List<File> images)
+    public DummyFileTableModel(Vector<NIHImage> images)
     {
         ArrayList<Object[]> dataList = new ArrayList<>();
-        DeidData.IdFilename = new Hashtable<String, String>();
-        Iterator<File> imageIt = images.iterator();
-        File curFile = null;
+       // DeidData.IdFilename = new Hashtable<String, String>();
+        Iterator<NIHImage> imageIt = images.iterator();
+        NIHImage curFile = null;
         try {
             curFile = imageIt.next();
         } catch (NoSuchElementException e) {
@@ -41,8 +42,9 @@ public class DummyFileTableModel extends AbstractTableModel {
         }
         while(curFile!=null)
         {
-            dataList.add(new Object[]{ManualMatchTableModel.displayIntoTable(curFile).toString(),"missing" , new Boolean(true)});
-            DeidData.IdFilename.put(fileintoTable(curFile), "Missing ID" );
+            dataList.add(new Object[]{curFile.getImageDisplayName(),"missing" , new Boolean(true)});
+           // DeidData.IdFilename.put(fileintoTable(curFile), "Missing ID" );
+            curFile.setIdInDataFile("Missing ID");
             try {
                 curFile = imageIt.next();
             } catch (NoSuchElementException e) {
@@ -76,14 +78,5 @@ public class DummyFileTableModel extends AbstractTableModel {
     public Object getValueAt(int row, int col) {
         return data[row][col];
     }
-    
-     private String fileintoTable(File file){
-        String abParent = file.getParent();
-        String out = FileUtils.getName(file).toString();
-        if (!DeidData.parentPath.equals("none"))    {
-            
-            out = abParent.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "").replaceAll("/", "") + out;
-        }
-        return out;
-    }
+   
 }

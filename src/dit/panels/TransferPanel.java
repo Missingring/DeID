@@ -4,6 +4,7 @@
  */
 package dit.panels;
 
+import dit.DEIDGUI;
 import java.awt.Component;
 import java.io.File;
 import javax.swing.JFileChooser;

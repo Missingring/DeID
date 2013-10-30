@@ -163,7 +163,7 @@ public class FileUtils {
     public static void copyFile(File source, File dest) throws
             FileNotFoundException, IOException {
         if (!dest.exists()) {
-            dest.createNewFile();
+            dest.createNewFile();            
         }
 
         FileChannel readStream = null, writeStream = null;

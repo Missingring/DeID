@@ -1,11 +1,11 @@
 package dit;
 
-import dit.panels.DEIDGUI;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JProgressBar;
@@ -20,7 +20,7 @@ public class DefaceTask implements Runnable, IDefaceTask {
     private String outputDir = DeidData.outputPath + "betOut/";
     private JProgressBar progressBar = null;
     private JTextField detailText=null;
-    private ArrayList<File> inputImages;
+    private Vector<NIHImage> inputImages;
     private String[] command;
 
     public DefaceTask() throws RuntimeException{
@@ -39,7 +39,7 @@ public class DefaceTask implements Runnable, IDefaceTask {
             outDir.mkdirs();
         }
         
-        inputImages = new ArrayList<>();        
+        inputImages = new Vector<>();        
         command = new String[]{
             DeidData.unpackedFileLocation.get("bet").getAbsolutePath(),
             // Depends on imtest and 
@@ -83,8 +83,8 @@ public class DefaceTask implements Runnable, IDefaceTask {
      * @param file File object representing a directory that contains .dcm
      * images
      */
-    public void addInputImage(File file) {
-        inputImages.add(file);
+    public void setInputImages(Vector<NIHImage> files) {
+        inputImages=files;
     }
 
     @Override
@@ -92,17 +92,17 @@ public class DefaceTask implements Runnable, IDefaceTask {
         ArrayList<File> newFiles = new ArrayList<>();
         String errorPatternStr = "ERROR";
         Pattern errorPattern = Pattern.compile(errorPatternStr);
-
+        System.out.println("Here we go"+ inputImages.size());
         for (int ndx = 0; ndx < inputImages.size(); ndx++) {
             // Set input directory for bet
             
-            command[1] = inputImages.get(ndx).getAbsolutePath();
-            String outFilename = FileUtils.getName(inputImages.get(ndx));
+            command[1] = inputImages.get(ndx).getStoredPotistion().getAbsolutePath();
+            String outFilename = inputImages.get(ndx).getImageFormalName();
 //            if(DeidData.IdTable.containsKey(outFilename)){
 //                outFilename = DeidData.IdTable.get(outFilename);
 //            }
          //   outFilename = outputDir + outFilename + ".nii";
-            String abParent =  inputImages.get(ndx).getParent();
+            String abParent =  inputImages.get(ndx).getParentPath();
            // if (!DeidData.parentPath.equals("none"))
             //outFilename = outputDir + abParent.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "").replaceAll("/", "") + outFilename + ".nii" ;
             outFilename = outputDir + outFilename+ ".nii";
@@ -154,19 +154,21 @@ public class DefaceTask implements Runnable, IDefaceTask {
             
             if(fileValid){
                 File newFile = new File(outFilename);
-                File defaceSource = inputImages.get(ndx);
-                
+             // File defaceSource = inputImages.get(ndx);
+               inputImages.get(ndx).setTempPotision(newFile);
                 // If the image was associated with a dicom, pair the 
                 // new file with that source.
-                if(DeidData.NiftiConversionSourceTable.containsKey(defaceSource)){
+              /*
+               if(DeidData.NiftiConversionSourceTable.containsKey(defaceSource)){
                     DeidData.NiftiConversionSourceTable.put(newFile, 
                             DeidData.NiftiConversionSourceTable.get(defaceSource));
                     DeidData.NiftiConversionSourceTable.remove(defaceSource);
                 }
-                
+                */
                 // Add the image to deientified files list.
                 System.out.println("Deface File:"+newFile.getAbsolutePath());
-                DeidData.deidentifiedFiles.add(newFile);
+                inputImages.get(ndx).setIsDefaced(true);
+              //  DeidData.deidentifiedFiles.add(newFile);
             }
             float processProgress = (float) ndx / (float) inputImages.size();
             if (progressBar != null) {

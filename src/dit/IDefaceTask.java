@@ -5,6 +5,7 @@
 package dit;
 
 import java.io.File;
+import java.util.Vector;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -16,7 +17,7 @@ import javax.swing.JTextField;
 public interface IDefaceTask {
     public void setProgressBar(JProgressBar bar);
     public void setTextfield(JTextField text);
-    public void addInputImage(File file);
+    public void setInputImages(Vector<NIHImage> file);
     public void run();
     
 }

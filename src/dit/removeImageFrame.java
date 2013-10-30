@@ -4,7 +4,6 @@
  */
 package dit;
 
-import dit.panels.DEIDGUI;
 import java.util.Arrays;
 
 /**

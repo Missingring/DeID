@@ -53,9 +53,9 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnMatch" min="-2" pref="66" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jButton2" min="-2" pref="171" max="-2" attributes="0"/>
+                          <Component id="btnRemoveSel" min="-2" pref="171" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="20" max="32767" attributes="0"/>
+                      <EmptySpace pref="190" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="lblDummy" min="-2" max="-2" attributes="0"/>
@@ -82,7 +82,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="cbxMultiMatch" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnRemoveSel" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jScrollPane3" pref="231" max="32767" attributes="0"/>
@@ -143,12 +143,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbxSearchByPathActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton2">
+    <Component class="javax.swing.JButton" name="btnRemoveSel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Remove selected image"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRemoveSelActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JCheckBox" name="cbxMultiMatch">

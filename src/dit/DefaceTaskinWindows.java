@@ -1,11 +1,11 @@
 package dit;
 
-import dit.panels.DEIDGUI;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -22,7 +22,7 @@ public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
     private String outputDir = DeidData.outputPath + "betOut/";
     private JTextField detailText=null;
     private JProgressBar progressBar = null;
-    private ArrayList<File> inputImages;
+    private Vector<File> inputImages;
     private String[] command;
 
     public DefaceTaskinWindows() throws RuntimeException{
@@ -41,7 +41,7 @@ public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
             outDir.mkdirs();
         }
         
-        inputImages = new ArrayList<>();        
+        inputImages = new Vector<>();        
         command = new String[]{
             DeidData.unpackedFileLocation.get("robex.zip").getParentFile().getAbsoluteFile()+"\\ROBEX.exe",
             // Depends on imtest and 
@@ -80,8 +80,8 @@ public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
      * @param file File object representing a directory that contains .dcm
      * images
      */
-    public void addInputImage(File file) {
-        inputImages.add(file);
+    public void setInputImages(Vector<NIHImage> files) {
+        //inputImages=files;
     }
 
      public void setTextfield(JTextField field)

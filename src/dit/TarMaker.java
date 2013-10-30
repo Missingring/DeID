@@ -1,6 +1,5 @@
 package dit;
 
-import dit.panels.DEIDGUI;
 import java.io.*;
 import org.xeustechnologies.jtar.TarEntry;
 import org.xeustechnologies.jtar.TarOutputStream;

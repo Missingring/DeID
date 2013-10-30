@@ -4,7 +4,6 @@
  */
 package dit;
 
-import dit.panels.DEIDGUI;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -13,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import niftijlib.Nifti1Dataset;
 import org.imgscalr.Scalr;
@@ -22,6 +23,10 @@ import org.imgscalr.Scalr;
  * @author christianprescott & angelo
  */
 public class NiftiDisplayPanel extends JPanel {
+
+    private void correctOrieatation() {
+        
+    }
 
     private class ImageLoader implements Runnable {
 
@@ -35,6 +40,7 @@ public class NiftiDisplayPanel extends JPanel {
         public void run() {
             i = null;
             curImage = null;
+           // curNIHImage=null;
             data = null;
 
             Nifti1Dataset set = new Nifti1Dataset(image.getAbsolutePath());
@@ -59,12 +65,12 @@ public class NiftiDisplayPanel extends JPanel {
                     quat_x = set.srow_x[3];
                     quat_y = set.srow_y[3];
                     quat_z = set.srow_z[3];
+               
                     //  set.printHeader();
                     /*
                      //System.out.println(calMin2);
                      //System.out.println(calMax2);
-                     // System.out.println("sform code:" + sform);
-                     // System.out.println("qform code:" + qform);
+                    
                      // System.out.println("Dimesion Info:" + set.xyz_unit_code);
                      for (int srowi = 0; srowi < set.srow_x.length; srowi++) {
                      System.out.println("Dimesion Info:" + set.srow_x[srowi]);
@@ -75,7 +81,7 @@ public class NiftiDisplayPanel extends JPanel {
                     try {
                         short ttt = 0;
                         data = set.readDoubleVol(ttt);
-                        correctOrieatation();
+
                         curImage = image;
                         if (calMax2 - calMin2 == 0) {
                             calMax2 = getMax(data);
@@ -106,9 +112,6 @@ public class NiftiDisplayPanel extends JPanel {
                 this.notify();
             }
         }
-
-        private void correctOrieatation() {
-        }
     }
     private BufferedImage i;
     private double rotateAngle = 0;
@@ -116,24 +119,32 @@ public class NiftiDisplayPanel extends JPanel {
     private float calMin, calMax, calMin2, calMax2, sform, qform;
     private short[] dims;
     private File curImage;
+    private NIHImage curNIHImage;
     private float quat_x, quat_y, quat_z;
     private OrientationState orientationState;
 
     public NiftiDisplayPanel() {
+        orientationState = new OrientationState(0, true, 0, 5, 1, 2, 3, 4);
     }
 
-    public void setImage(final File image) {
+    public void setImage(final NIHImage nihimage) {
+        File image=nihimage.getTempPotision();
+        curNIHImage=nihimage;
         if (curImage != image) {
+        
             // Set busy cursor
             DEIDGUI.getFrames()[0].setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
             Thread loadThread = new Thread(new ImageLoader(image));
+            
 
             synchronized (loadThread) {
                 try {
                     loadThread.start();
-                    loadThread.wait();
+                    loadThread.wait();                   
+                    this.orientationState=nihimage.getOrientationState();
                     setSlice(.5f);
+                    
                 } catch (InterruptedException ex) {
                     DEIDGUI.log("Failed to load image", DEIDGUI.LOG_LEVEL.ERROR);
                 } finally {
@@ -143,121 +154,41 @@ public class NiftiDisplayPanel extends JPanel {
             }
         }
     }
-    
-    public void setOrientationState(OrientationState state)
-    {
-        this.orientationState=state;
+
+    public void setOrientationState(OrientationState state) {
+        this.orientationState = state;
     }
-    
-    public OrientationState getOrientationState(){
+
+    public OrientationState getOrientationState() {
         return this.orientationState;
     }
 
-    public void setSlice(float sliceFactor) {
-        i = new BufferedImage(dims[orientationState.widthAxis], dims[orientationState.heightAxis], BufferedImage.TYPE_INT_RGB);
-         int depth;
-         if(orientationState.isForward)
-           depth=(int) ((dims[orientationState.currentAxis] - 1) * Math.max(0, Math.min(sliceFactor, 1.0)));
-         else
-           depth=(int) ((dims[orientationState.currentAxis] - 1) * Math.max(0, Math.min(1.0-sliceFactor, 1.0)));
-         int widthStart,heightStart,heightStep;
-         int widthEnd,heightEnd,widthStep;
-         
-         if(orientationState.widthPostive)
-         {
-             widthStart=0;
-             widthEnd=dims[orientationState.widthAxis]-1;
-             widthStep=1;
-         }
-         else
-         {
-             widthStart=dims[orientationState.widthAxis]-1;
-             widthEnd=0;
-              widthStep=-1;
-         }
-         
-         if(orientationState.heightPostive)
-         {
-             heightStart=0;
-             heightEnd=dims[orientationState.heightAxis]-1;
-              heightStep=1;
-         }
-         else
-         {
-             heightStart=dims[orientationState.heightAxis]-1;
-             heightEnd=0;
-             heightStep=-1;
-         }
-          for (int ii = heightStart; ii != heightEnd; ii+=heightStep) {
-                    for (int j = widthStart; j !=widthEnd; j+=widthStep) {
-                        
-                        float density=0;
-                       
-                        if(orientationState.currentAxis==orientationState.Z_AXIS)
-                        {
-                            if(orientationState.widthAxis==orientationState.X_AXIS)
-                            {
-                                density=(float)data[depth][ii][j];
-                            }
-                            else
-                            {
-                                density=(float)data[depth][j][ii];
-                            }
-                        }
-                        else if(orientationState.currentAxis==orientationState.Y_AXIS)
-                        {
-                            if(orientationState.widthAxis==orientationState.X_AXIS)
-                            {
-                                density=(float)data[ii][depth][j];
-                            }
-                            else
-                            {
-                                density=(float)data[j][depth][ii];
-                            }
-                        }
-                        else  // currentAxis is X axis
-                        {
-                            if(orientationState.widthAxis==orientationState.Y_AXIS)
-                            {
-                                density=(float)data[ii][j][depth];
-                            }
-                            else
-                            {
-                                 density=(float)data[j][ii][depth];
-                            }
-                        }
-                        float colorFactor = Math.min((density - calMin2) / (calMax2 - calMin2), 1f);
-                        int argb = new Color(colorFactor, colorFactor, colorFactor).getRGB();
-                        
-                        int targetX,targetY;
-                      
-                        if(orientationState.widthPostive)
-                            targetX=j;
-                        else
-                            targetX=widthStart-j;
-                        
-                        if(orientationState.heightPostive)
-                            targetY=ii;
-                        else
-                            targetY=heightStart-ii;
-                        //System.out.println("Width:"+i.getWidth()+"  Height:"+i.getHeight());
-                        //System.out.println("X:"+targetX+"  Y:"+targetY);
-                        i.setRGB(targetX,targetY, argb);
-                    }
-             }        
+    public void setSlice(float sliceFactor) {     
+        try {       
+            i=curNIHImage.imageAt(sliceFactor,orientationState);
+        } catch (IOException ex) {
+            Logger.getLogger(NiftiDisplayPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.repaint();
     }
 
-    public void rotate(double angle) {
-        rotateAngle += angle;
-        rotateAngle %= 360;
-
-        this.repaint();
+    public OrientationState rotateClockwise() {
+        OrientationState rightOnce = orientationState.toRight();
+        OrientationState upOnce = rightOnce.toTop();
+        OrientationState result = upOnce.toLeft();
+        return result;
     }
 
-    public void resetAngle() {
-        rotateAngle = 0;
-        this.repaint();
+    public OrientationState rotateAntiClockwise() {
+        OrientationState rightOnce = orientationState.toRight();
+        OrientationState downOnce = rightOnce.toBottom();
+        OrientationState result = downOnce.toLeft();
+        return result;
+    }
+
+    public void reset() {
+        orientationState = new OrientationState(0, true, 0, 5, 1, 2, 3, 4);
+        setSlice(0.5f);
     }
 
     public float getMax(double[][][] triDarr) {
@@ -280,7 +211,7 @@ public class NiftiDisplayPanel extends JPanel {
         g.clearRect(0, 0, getWidth(), getHeight());
 
         if (i != null) {
-        
+
 
             BufferedImage newi = ImageUtils.toBufferedImage(ImageUtils.rotate(ImageUtils.toImage(i), rotateAngle));
             BufferedImage finalImage = null;

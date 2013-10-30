@@ -1,5 +1,6 @@
 package dit.panels;
 
+import dit.DEIDGUI;
 import dit.DeidData;
 import dit.DemographicTableModel;
 import java.util.Arrays;
@@ -227,17 +228,6 @@ public class DeIdentifyPanel extends javax.swing.JPanel implements WizardPanel {
     @Override
     public WizardPanel getNextPanel() {
         saveSelectedFields();
-        /*double   d;
-        if (!jTextField1.getText().trim().equals("")) {
-            try{
-        d = Double.parseDoubles\(jTextField1.getText());
-        if(d >= 0.0 && d <= 1.0){
-        DeidData.defaceThreshold = jTextField1.getText();
-        }
-            } catch(Exception e){
-            DeidData.defaceThreshold = "0.1";
-            }
-        }*/
         return new DeidentifyProgressPanel(DeidData.doDeface);
     }
 

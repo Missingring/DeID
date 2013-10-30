@@ -4,7 +4,6 @@
  */
 package dit;
 
-import dit.panels.DEIDGUI;
 import java.awt.*;
 import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;

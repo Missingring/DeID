@@ -25,30 +25,30 @@ public class ManualMatchTableModel extends AbstractTableModel{
         data = new Object[0][0];
     }
     
-    public ManualMatchTableModel(List<File> images, Object[] demoIDs, final String key, final boolean isbyPath,final boolean ismulti) {
+    public ManualMatchTableModel(Vector<NIHImage> images, Object[] demoIDs, final String key, final boolean isbyPath,final boolean ismulti) {
         ArrayList<Object[]> dataList = new ArrayList<Object[]>();
         
    
         
         // The demoIDs will ALWAYS be sorted, images probably will not be.
         // The standard string compareTo should be very reliable.
-        Collections.sort(images, new Comparator<File>(){
+        Collections.sort(images, new Comparator<NIHImage>(){
             @Override
-            public int compare(File f1, File f2) {
+            public int compare(NIHImage f1, NIHImage f2) {
                 if (key != null)
                 {
-                    String s1 = filenameconvertor(key, FileUtils.getName(f1));
-                    String s2 = filenameconvertor(key, FileUtils.getName(f2));
+                    String s1 = filenameconvertor(key, f1.getImageFormalName());
+                    String s2 = filenameconvertor(key, f2.getImageFormalName());
                     return s1.compareToIgnoreCase(s2);
                 }
                 else
-                    return FileUtils.getName(f1).compareToIgnoreCase(FileUtils.getName(f2));
+                    return f1.getImageFormalName().compareToIgnoreCase(f2.getImageFormalName());
             }
         });
         
         DeidData.IdFilename = new Hashtable<String, String>();
-        Iterator<File> imageIt = images.iterator();
-        File curFile = null;
+        Iterator<NIHImage> imageIt = images.iterator();
+        NIHImage curFile = null;
         try {
             curFile = imageIt.next();
         } catch (NoSuchElementException e) {
@@ -60,11 +60,11 @@ public class ManualMatchTableModel extends AbstractTableModel{
         {
             Hashtable<String, String> id_exist = new Hashtable<String, String>();
             while (curFile != null){
-                String mapDisplaytoFile=fileintoTable(curFile);   //do not delete this line unless you know its function
+                //String mapDisplaytoFile=fileintoTable(curFile);   //do not delete this line unless you know its function
                 int demoIDNdx = 0;
                 while(demoIDNdx < demoIDs.length){
                     
-                    String filename = FileUtils.getName(curFile);
+                    String filename = curFile.getImageFormalName();
                     String convertedID;
                     if (key != null)
                     {
@@ -78,16 +78,18 @@ public class ManualMatchTableModel extends AbstractTableModel{
                     
                         int properidx = getProperindex(filename.toString(),demoIDs, key);
                         if(ismulti){
-                            dataList.add(new Object[]{displayIntoTable(curFile), demoIDs[properidx], new Boolean(true)});
-                            DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[properidx] );
+                            dataList.add(new Object[]{curFile.getImageDisplayName(), demoIDs[properidx], new Boolean(true)});
+                            //DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[properidx] );
+                            curFile.setIdInDataFile( (String)demoIDs[properidx]);
                             matchCount++;
                             break;
                         }
                         else {
                             if(!id_exist.containsKey((String)demoIDs[properidx]))
                             {
-                                dataList.add(new Object[]{displayIntoTable(curFile).toString(), demoIDs[properidx], new Boolean(true)});
-                                DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[properidx] );
+                                dataList.add(new Object[]{curFile.getImageDisplayName(), demoIDs[properidx], new Boolean(true)});
+                              //  DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[properidx] );
+                                 curFile.setIdInDataFile( (String)demoIDs[properidx]);
                                 id_exist.put((String)demoIDs[properidx], "True");
                                 matchCount++;
                                 break;
@@ -102,19 +104,14 @@ public class ManualMatchTableModel extends AbstractTableModel{
                 if (demoIDNdx == demoIDs.length)
                 {
                     //dataList.add(new Object[]{fileintoTable(curFile), null, new Boolean(false)});
-                    dataList.add(new Object[]{displayIntoTable(curFile).toString(), null, new Boolean(false)});
+                    dataList.add(new Object[]{curFile.getImageDisplayName(), null, new Boolean(false)});
                     mismatchCount++;
                 }
-                
-                
-                
-                
                 try {
                     curFile = imageIt.next();
                 } catch (NoSuchElementException e) {
                     curFile = null;
                 }
-                
                 
             }
           
@@ -124,27 +121,24 @@ public class ManualMatchTableModel extends AbstractTableModel{
            
             Hashtable<String, String> id_exist = new Hashtable<String, String>();
             while (curFile != null){
-                 String mapDisplaytoFile=fileintoTable(curFile);   //do not delete this line unless you know its function
-                int matchIndex=findMatchedID(curFile, demoIDs,key);
-               
-              //  System.out.println("Curr:"+curFile.getAbsolutePath()+" I:"+matchIndex+" C:"+(String)demoIDs[matchIndex]);
-                       
-                
+               //  String mapDisplaytoFile=fileintoTable(curFile);   //do not delete this line unless you know its function
+                int matchIndex=findMatchedID(curFile, demoIDs,key);                
                 if (matchIndex >= 0 ) {
                     
                     if(ismulti){
                       
-                        dataList.add(new Object[]{displayIntoTable(curFile), demoIDs[matchIndex], new Boolean(true)});
-                        DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[matchIndex] );
+                        dataList.add(new Object[]{curFile.getImageDisplayName(), demoIDs[matchIndex], new Boolean(true)});
+                        //DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[matchIndex] );
+                       curFile.setIdInDataFile((String)demoIDs[matchIndex]);
                         matchCount++;
                     }
                     else {
                         if(!id_exist.containsKey((String)demoIDs[matchIndex]))
                         {
                             
-                            dataList.add(new Object[]{displayIntoTable(curFile), demoIDs[matchIndex], new Boolean(true)});
-                          
-                            DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[matchIndex] );
+                            dataList.add(new Object[]{curFile.getImageDisplayName(), demoIDs[matchIndex], new Boolean(true)});
+                           curFile.setIdInDataFile((String)demoIDs[matchIndex]);
+                           // DeidData.IdFilename.put(fileintoTable(curFile), (String)demoIDs[matchIndex] );
                             id_exist.put((String)demoIDs[matchIndex], "True");
                             matchCount++;                            
                         }
@@ -162,8 +156,9 @@ public class ManualMatchTableModel extends AbstractTableModel{
                                     if(!id_exist.containsKey((String)newIds.get(matchIndex)) )
                                     {
                                        
-                                        dataList.add(new Object[]{displayIntoTable(curFile), newIds.get(matchIndex), new Boolean(true)});
-                                        DeidData.IdFilename.put(fileintoTable(curFile), (String)newIds.get(matchIndex) );
+                                        dataList.add(new Object[]{curFile.getImageDisplayName(), newIds.get(matchIndex), new Boolean(true)});
+                                       // DeidData.IdFilename.put(fileintoTable(curFile), (String)newIds.get(matchIndex) );
+                                         curFile.setIdInDataFile((String)demoIDs[matchIndex]);
                                         id_exist.put((String)newIds.get(matchIndex), "True");
                                         matchCount++;
                                         break;
@@ -180,7 +175,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                             }
                             if(newIds.size()<1)
                             {
-                                dataList.add(new Object[]{displayIntoTable(curFile), null, new Boolean(false)});
+                                dataList.add(new Object[]{curFile.getImageDisplayName(), null, new Boolean(false)});
                                 mismatchCount++;
                             }
                         }
@@ -191,7 +186,7 @@ public class ManualMatchTableModel extends AbstractTableModel{
                 
                 if (matchIndex < 0)
                 {
-                    dataList.add(new Object[]{displayIntoTable(curFile), null, new Boolean(false)});
+                    dataList.add(new Object[]{curFile.getImageDisplayName(), null, new Boolean(false)});
                     mismatchCount++;
                 }
                 
@@ -341,8 +336,9 @@ public class ManualMatchTableModel extends AbstractTableModel{
         else return filename;
     }
     
-    public int findMatchedID(File file,Object[] demoIDs,String key)
+    public int findMatchedID(NIHImage image,Object[] demoIDs,String key)
     {
+        File file=image.getStoredPotistion();
         if(file ==null)
             return -1;
         if(demoIDs.length<1)

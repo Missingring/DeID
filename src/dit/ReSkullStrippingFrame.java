@@ -4,7 +4,6 @@
  */
 package dit;
 
-import dit.panels.DEIDGUI;
 import java.io.File;
 import java.util.Iterator;
 import javax.swing.JFrame;
@@ -17,28 +16,23 @@ import javax.swing.table.AbstractTableModel;
  * @author angelo
  */
 public class ReSkullStrippingFrame extends javax.swing.JFrame {
+
     private WarningJdialog wjd;
+
     /**
      * Creates new form ReSkullStrippingFrame
      */
     public ReSkullStrippingFrame() {
         initComponents();
-        
-        if(DeidData.whetherredoImage == null){
-            DeidData.whetherredoImage = new Boolean[DeidData.deidentifiedFiles.size()];
-            // Select all images by default
-            for (int ndx = 0; ndx < DeidData.whetherredoImage.length; ndx++) {
-                DeidData.whetherredoImage[ndx] = true;
-            }
-        }
-         jTableImages.setModel(new AbstractTableModel() {
-            // <editor-fold defaultstate="collapsed" desc="AuditTableModel">
 
+
+        jTableImages.setModel(new AbstractTableModel() {
+            // <editor-fold defaultstate="collapsed" desc="AuditTableModel">
             private String[] columnNames = new String[]{"Selected", "Image"};
 
             @Override
             public int getRowCount() {
-                return DeidData.deidentifiedFiles.size();
+                return DeidData.imageHandler.getInputFilesSize();
             }
 
             @Override
@@ -59,7 +53,7 @@ public class ReSkullStrippingFrame extends javax.swing.JFrame {
                         colClass = Boolean.class;
                         break;
                     case 1:
-                        colClass = File.class;
+                        colClass = NIHImage.class;
                         break;
                     default:
                         colClass = Object.class;
@@ -77,10 +71,10 @@ public class ReSkullStrippingFrame extends javax.swing.JFrame {
                 Object value;
                 switch (col) {
                     case 0:
-                        value = DeidData.whetherredoImage[row];
+                        value = DeidData.imageHandler.getInputFiles().get(row).isNeedRedefaced();
                         break;
                     case 1:
-                        value = DeidData.deidentifiedFiles.get(row);
+                        value = DeidData.imageHandler.getInputFiles().get(row);
                         break;
                     default:
                         value = "Error";
@@ -92,7 +86,7 @@ public class ReSkullStrippingFrame extends javax.swing.JFrame {
             @Override
             public void setValueAt(Object o, int row, int col) {
                 if (col == 0) {
-                    DeidData.whetherredoImage[row] = (Boolean) o;
+                    DeidData.imageHandler.getInputFiles().get(row).setNeedRedefaced((Boolean) o);
                 }
             }
             // </editor-fold>
@@ -100,21 +94,20 @@ public class ReSkullStrippingFrame extends javax.swing.JFrame {
         // Add a selection listener for enabling/disabling the "View Header" button
         jTableImages.getSelectionModel().addListSelectionListener(
                 new ListSelectionListener() {
-                    // <editor-fold defaultstate="collapsed" desc="AuditTableSelectionListener">
+            // <editor-fold defaultstate="collapsed" desc="AuditTableSelectionListener">
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                if (lse.getValueIsAdjusting()) {
+                    NIHImage selectedFile = DeidData.imageHandler.getInputFiles().get(jTableImages.getSelectedRow());
+                    //jButtonViewHeader.setEnabled(
+                    //   DeidData.ConvertedDicomHeaderTable.containsKey(selectedFile)
+                    //  ? true : false);
+                    ((NiftiDisplayPanel) jPanel1).setImage(selectedFile);
+                }
+            }
+            // </editor-fold>
+        });
 
-                    @Override
-                    public void valueChanged(ListSelectionEvent lse) {
-                        if (lse.getValueIsAdjusting()) {
-                            File selectedFile = DeidData.deidentifiedFiles.get(jTableImages.getSelectedRow());
-                            //jButtonViewHeader.setEnabled(
-                                 //   DeidData.ConvertedDicomHeaderTable.containsKey(selectedFile)
-                                  //  ? true : false);
-                            ((NiftiDisplayPanel)jPanel1).setImage(selectedFile);
-                        }
-                    }
-                    // </editor-fold>
-                });
-        
     }
 
     /**
@@ -307,27 +300,23 @@ public class ReSkullStrippingFrame extends javax.swing.JFrame {
 
     private void jSliderSliceStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSliderSliceStateChanged
         if (jTableImages.getSelectedRow() >= 0) {
-            File selectedFile = (File) DeidData.deidentifiedFiles.get(jTableImages.getSelectedRow());
             ((NiftiDisplayPanel) jPanel1).setSlice((float) jSliderSlice.getValue() / 100f);
         }
     }//GEN-LAST:event_jSliderSliceStateChanged
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        for (int ndx = 0; ndx < DeidData.whetherredoImage.length; ndx++) {
-                DeidData.whetherredoImage[ndx] = true;
-                
-                //jTableImages.setValueAt(new Boolean(true), ndx, 0);
-            }
+        for (NIHImage image : DeidData.imageHandler.getInputFiles()) {
+            image.setNeedRedefaced(true);
+        }
         jTableImages.repaint();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        for (int ndx = 0; ndx < DeidData.whetherredoImage.length; ndx++) {
-                DeidData.whetherredoImage[ndx] = false;
-                //jTableImages.setValueAt(new Boolean(false), ndx, 0);
-            }
+        for (NIHImage image : DeidData.imageHandler.getInputFiles()) {
+            image.setNeedRedefaced(false);
+        }
         jTableImages.repaint();
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -336,41 +325,40 @@ public class ReSkullStrippingFrame extends javax.swing.JFrame {
         //jProgressBar1.setValue(0);
         jButton3.setEnabled(false);
         if (!redoFlag()) {
-        wjd = new WarningJdialog(new JFrame(), "Warning", "No images selected!");
-        
+            wjd = new WarningJdialog(new JFrame(), "Warning", "No images selected!");
+
+        } else {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    jLabel3.setText("ReDefacing...");
+
+
+                    double d;
+                    if (!jTextField1.getText().trim().equals("")) {
+                        try {
+                            d = Double.parseDouble(jTextField1.getText());
+                            if (d >= 0.0 && d <= 1.0) {
+                                DeidData.defaceThreshold = jTextField1.getText();
+                            }
+                        } catch (Exception e) {
+                            DeidData.defaceThreshold = "0.1";
+                        }
+                    }
+
+                    defaceImages();
+
+                    jLabel3.setText("<html><p>Finished. Press Reset<br/> to start another reDefacing.</p></html>");
+                    jProgressBar1.setValue(100);
+                    jTableImages.repaint();
+                    jTableImages.clearSelection();
+
+                }
+                //this.jButton3.setEnabled(true);
+            }).start();
         }
-        else {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                
-        jLabel3.setText("ReDefacing...");      
-        
-            
-        double   d;
-        if (!jTextField1.getText().trim().equals("")) {
-            try{
-        d = Double.parseDouble(jTextField1.getText());
-        if(d >= 0.0 && d <= 1.0){
-        DeidData.defaceThreshold = jTextField1.getText();
-        }
-            } catch(Exception e){
-            DeidData.defaceThreshold = "0.1";
-            }
-        }
-        
-        defaceImages();
-                   
-        jLabel3.setText("<html><p>Finished. Press Reset<br/> to start another reDefacing.</p></html>");        
-        jProgressBar1.setValue(100);
-        jTableImages.repaint();
-        jTableImages.clearSelection();
-        
-            }
-        //this.jButton3.setEnabled(true);
-        }).start();
-        }
-         
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -378,41 +366,40 @@ public class ReSkullStrippingFrame extends javax.swing.JFrame {
         jLabel3.setText("Press Start to redo skull-stripping");
         this.jButton3.setEnabled(true);
         jProgressBar1.setValue(0);
-        
+
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
         this.setVisible(false);
+        for (NIHImage image : DeidData.imageHandler.getInputFiles()) {
+            image.setNeedRedefaced(false);
+        }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private boolean redoFlag() {
         boolean flag = false;
-    for (int ndx = 0; ndx < DeidData.whetherredoImage.length; ndx++) {
-                if (DeidData.whetherredoImage[ndx] == true) 
-                {
-                    flag = true;
-                    break;
-                }
-                //jTableImages.setValueAt(new Boolean(false), ndx, 0);
+        for (NIHImage image : DeidData.imageHandler.getInputFiles()) {
+            if (image.isNeedRedefaced()) {
+                flag = true;
+                break;
             }
-    return flag;
-    
+            //jTableImages.setValueAt(new Boolean(false), ndx, 0);
+        }
+        return flag;
+
     }
-    
-    private void defaceImages() {
-        Iterator<File> it = DeidData.niftiFiles.iterator();
+
+    private void defaceImages() {    
 
         try {
             ReDefaceTask defaceTask = new ReDefaceTask();
             defaceTask.setProgressBar(jProgressBar1);
-            int ndx = 0;
-            while (it.hasNext() && ndx < DeidData.whetherredoImage.length) {
-                File curImage = it.next();
-                if (DeidData.whetherredoImage[ndx]== true)
-                defaceTask.addInputImage(curImage);
+            for(NIHImage image : DeidData.imageHandler.getInputFiles()) {
                 
-                ndx++;
+                if (image.isNeedRedefaced()) {
+                    defaceTask.addInputImage(image);
+                }
             }
 
             synchronized (defaceTask) {
@@ -427,11 +414,10 @@ public class ReSkullStrippingFrame extends javax.swing.JFrame {
 
             DEIDGUI.log("Defaced images");
         } catch (RuntimeException e) {
-            DEIDGUI.log("Defacing couldn't be started: " + e.getMessage(), 
+            DEIDGUI.log("Defacing couldn't be started: " + e.getMessage(),
                     DEIDGUI.LOG_LEVEL.ERROR);
         }
     }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
