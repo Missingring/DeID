@@ -6,11 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
@@ -19,10 +17,11 @@ import javax.swing.JTextField;
  */
 public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
 
-    private String outputDir = DeidData.outputPath + "betOut/";
-    private JTextField detailText=null;
+    private String fileSeparator=System.getProperty("file.separator");
+    private String outputDir = DeidData.outputPath + "betOut"+fileSeparator;
+    private JTextArea detailText=null;
     private JProgressBar progressBar = null;
-    private Vector<File> inputImages;
+    private Vector<NIHImage> inputImages;
     private String[] command;
 
     public DefaceTaskinWindows() throws RuntimeException{
@@ -43,7 +42,7 @@ public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
         
         inputImages = new Vector<>();        
         command = new String[]{
-            DeidData.unpackedFileLocation.get("robex.zip").getParentFile().getAbsoluteFile()+"\\ROBEX.exe",
+            DeidData.unpackedFileLocation.get("ROBEX.zip").getParentFile().getAbsoluteFile()+"\\runROBEX.bat",
             // Depends on imtest and 
             // Requires fsl config file, change default output to NIFTI
             //Usage: 
@@ -81,10 +80,10 @@ public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
      * images
      */
     public void setInputImages(Vector<NIHImage> files) {
-        //inputImages=files;
+        inputImages=files;
     }
 
-     public void setTextfield(JTextField field)
+     public void setTextfield(JTextArea field)
     {
         detailText=field;
     }
@@ -98,18 +97,20 @@ public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
         for (int ndx = 0; ndx < inputImages.size(); ndx++) {
             // Set input directory for bet
             
-            command[1] = inputImages.get(ndx).getAbsolutePath();
-            String outFilename = FileUtils.getName(inputImages.get(ndx));
-//            if(DeidData.IdTable.containsKey(outFilename)){
-//                outFilename = DeidData.IdTable.get(outFilename);
-//            }
-         //   outFilename = outputDir + outFilename + ".nii";
-            String abParent =  inputImages.get(ndx).getParent();
-            if (!DeidData.parentPath.equals("none"))
-            outFilename = outputDir + abParent.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "").replaceAll("/", "") + outFilename + ".nii" ;
-            else outFilename = outputDir + outFilename + ".nii";
+            command[1] = inputImages.get(ndx).getStoredPotistion().getAbsolutePath();
+            String outFilename = inputImages.get(ndx).getImageFormalName();
+
+            outFilename = outputDir + outFilename+ ".nii";
             System.out.println(outFilename);
-            command[2] = outFilename.replace("/", "\\"); //windows use \ as path seperator
+            command[2] = outFilename;
+            // Overwrites existing files
+            
+            System.out.print("Command "+ndx+" :");
+            for(int i=0;i<command.length;i++)
+            {
+                 System.out.print(command[i]+" ");
+            }
+            System.out.println();
             // Overwrites existing files
             
              System.out.println("Command:");
@@ -122,13 +123,13 @@ public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
             // Capture output of the bet process
             java.lang.ProcessBuilder pb = new ProcessBuilder(command);
             pb.redirectErrorStream(true);
-            pb.directory(DeidData.unpackedFileLocation.get("robex.zip").getParentFile());
+            pb.directory(DeidData.unpackedFileLocation.get("ROBEX.zip").getParentFile());
             
             Process defaceProc = null;
             boolean fileValid = true;
             try {
                 defaceProc = pb.start();
-                detailText.setText(detailText.getText()+"\r\n"+"Begin defacing #"+ndx+ " image:\r\n");
+                detailText.append("Begin defacing #"+ndx+ " image:\n");
             } catch (IOException ex) {
                 DEIDGUI.log("Robex couldn't be started: " + ex.getMessage(), DEIDGUI.LOG_LEVEL.ERROR);
             }
@@ -136,31 +137,24 @@ public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
             String line;
             int lineNumber=0;
             try {
+               
                 while ((line = br.readLine()) != null && !line.isEmpty()) {
-                    detailText.setText(detailText.getText()+"\t"+line+"\r\n");
+                    detailText.append(line+"\n");
                     lineNumber++;
                     float processProgress = (float) (ndx*9+lineNumber) / (float) (inputImages.size()*9);
                     if (progressBar != null) {
                         progressBar.setValue((int) (100 * processProgress));
-                    }
-                    
+                    }                   
                 }
+               
             } catch (IOException ex) {}
             
             if(fileValid){
                 File newFile = new File(outFilename);
-                File defaceSource = inputImages.get(ndx);
+                inputImages.get(ndx).setTempPotision(newFile);
                 
-                // If the image was associated with a dicom, pair the 
-                // new file with that source.
-                if(DeidData.NiftiConversionSourceTable.containsKey(defaceSource)){
-                    DeidData.NiftiConversionSourceTable.put(newFile,
-                            DeidData.NiftiConversionSourceTable.get(defaceSource));
-                    DeidData.NiftiConversionSourceTable.remove(defaceSource);
-                }
-                
-                // Add the image to deientified files list.
-                DeidData.deidentifiedFiles.add(newFile);
+                System.out.println("Deface File:"+newFile.getAbsolutePath());
+                 inputImages.get(ndx).setIsDefaced(true);
             }
            
         }

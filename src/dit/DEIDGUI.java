@@ -41,7 +41,7 @@ public class DEIDGUI extends javax.swing.JFrame {
         if(FileUtils.OS.isMac() || FileUtils.OS.isUnix()){
             DeidData.outputPath = "/tmp/deid_output/";
         } else if(FileUtils.OS.isWindows()){
-            DeidData.outputPath = "\\Temp\\deid_output\\";
+            DeidData.outputPath = "C:\\Temp\\deid_output\\";
         } else if(FileUtils.OS.isUnix()){
             DeidData.outputPath = "/tmp/deid_output/";
         } else {
@@ -181,8 +181,8 @@ public class DEIDGUI extends javax.swing.JFrame {
     
     private void unpackTools() {
         
-         String[] toolNames = new String[]{
-        
+        String fileSeparator=System.getProperty("file.separator");
+         String[] toolNames = new String[]{        
             "bet",
             "bet2",
             "dcm2nii",
@@ -220,15 +220,6 @@ public class DEIDGUI extends javax.swing.JFrame {
             "default.ini"
         };
         
-        /* String[] toolNames = new String[]{
-         * "bet",
-         * "bet2",
-         * "dcm2nii",
-         * "fslchfiletype",
-         * "fslchfiletype_exe",
-         * "imtest",
-         * "remove_ext",};*/
-        
         // Extract only the tools for this platform
         File outputDir;
         String osPrefix, outputPath;
@@ -248,9 +239,9 @@ public class DEIDGUI extends javax.swing.JFrame {
             "remove_ext",
         }; 
         } else if(FileUtils.OS.isWindows()){
-            outputPath = "\\Temp\\";
+            outputPath = "C:"+fileSeparator+"Temp"+fileSeparator;
             osPrefix = "win";
-            toolNames = new String[]{"robex.zip"};
+            toolNames = new String[]{"ROBEX.zip","mricro.exe"};
             // Windows executables work fine without the .exe extension, no
             // need to concatenate it to unpacked files.
         } else if(FileUtils.OS.isUnix()){
@@ -262,9 +253,7 @@ public class DEIDGUI extends javax.swing.JFrame {
             outputPath = "/tmp/";
             osPrefix = "nix";
         }
-        outputDir = new File(outputPath + "dit_tools");
-        
-       
+        outputDir = new File(outputPath + "dit_tools");         
         
         log("Unpacking " + toolNames.length + " " + osPrefix +
                 " tools to " + outputDir);
@@ -279,17 +268,16 @@ public class DEIDGUI extends javax.swing.JFrame {
             if (!oFile.exists()) {
                 // Get the resource from the jar
                 InputStream rStream = getClass().getResourceAsStream(
-                        "tools/" + osPrefix + "_" + toolName);
+                        "tools"+fileSeparator + osPrefix + "_" + toolName);
                 FileOutputStream oStream = null;
                 if (rStream == null) {
-                    DEIDGUI.log("Unable to get ResourceStream for " + "tools/" +
+                    DEIDGUI.log("Unable to get ResourceStream for " + "tools"+fileSeparator +
                             osPrefix + "_" + toolName + ", some deidentificati"
                             + "on tasks may fail", DEIDGUI.LOG_LEVEL.ERROR);
                 } else {
                     try {
                         oFile.createNewFile();
                         oStream = new FileOutputStream(oFile);
-                        
                         // Copy the file from resources to a temp location
                         int size;
                         byte[] buf = new byte[1024];
@@ -340,8 +328,8 @@ public class DEIDGUI extends javax.swing.JFrame {
         String zipfiles[]= new String[]{};
         if(FileUtils.OS.isWindows())
         {
-            gzfiles=new String[]{};
-           //zipfiles= new String[]{DeidData.unpackedFileLocation.get("robex.zip").getParentFile().getAbsolutePath()+"\\robex"};
+           gzfiles=new String[]{};
+           zipfiles= new String[]{DeidData.unpackedFileLocation.get("ROBEX.zip").getAbsolutePath()};
         }
         else
         {
@@ -369,12 +357,12 @@ public class DEIDGUI extends javax.swing.JFrame {
         
         for(String gzfile:zipfiles){
             try {
-                 String destinationname = DeidData.unpackedFileLocation.get("robex.zip").getParentFile().getAbsolutePath()+"\\";
+                 String destinationname = DeidData.unpackedFileLocation.get("ROBEX.zip").getParentFile().getAbsolutePath()+"\\";
                 byte[] buf = new byte[1024];
                 ZipInputStream zipinputstream = null;
                 ZipEntry zipentry;
                 zipinputstream = new ZipInputStream(
-                        new FileInputStream(gzfile+".zip"));
+                        new FileInputStream(gzfile));
                 
                 zipentry = zipinputstream.getNextEntry();
                 while (zipentry != null) {
@@ -382,7 +370,7 @@ public class DEIDGUI extends javax.swing.JFrame {
                     String entryName = destinationname + zipentry.getName();
                     entryName = entryName.replace('/', File.separatorChar);
                     entryName = entryName.replace('\\', File.separatorChar);
-                    System.out.println("entryname " + entryName);
+                    //System.out.println("entryname " + entryName);
                     int n;
                     FileOutputStream fileoutputstream;
                     File newFile = new File(entryName);
@@ -602,6 +590,7 @@ public class DEIDGUI extends javax.swing.JFrame {
     
     private void errlogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_errlogButtonActionPerformed
         // TODO add your handling code here:
+     
         if (!DeidData.errorlog.isEmpty()){
             Iterator vItr = DeidData.errorlog.iterator();
             while(vItr.hasNext())

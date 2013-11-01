@@ -9,6 +9,7 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
@@ -19,7 +20,7 @@ public class DefaceTask implements Runnable, IDefaceTask {
 
     private String outputDir = DeidData.outputPath + "betOut/";
     private JProgressBar progressBar = null;
-    private JTextField detailText=null;
+    private JTextArea detailText=null;
     private Vector<NIHImage> inputImages;
     private String[] command;
 
@@ -72,7 +73,7 @@ public class DefaceTask implements Runnable, IDefaceTask {
         progressBar = bar;
     }
     
-    public void setTextfield(JTextField field)
+    public void setTextfield(JTextArea field)
     {
         detailText=field;
     }
@@ -89,22 +90,15 @@ public class DefaceTask implements Runnable, IDefaceTask {
 
     @Override
     public void run() {
-        ArrayList<File> newFiles = new ArrayList<>();
+       
         String errorPatternStr = "ERROR";
-        Pattern errorPattern = Pattern.compile(errorPatternStr);
-        System.out.println("Here we go"+ inputImages.size());
+        Pattern errorPattern = Pattern.compile(errorPatternStr);    
         for (int ndx = 0; ndx < inputImages.size(); ndx++) {
             // Set input directory for bet
-            
+            detailText.append("Begin defacing #"+ndx+ " image:\n");
             command[1] = inputImages.get(ndx).getStoredPotistion().getAbsolutePath();
             String outFilename = inputImages.get(ndx).getImageFormalName();
-//            if(DeidData.IdTable.containsKey(outFilename)){
-//                outFilename = DeidData.IdTable.get(outFilename);
-//            }
-         //   outFilename = outputDir + outFilename + ".nii";
-            String abParent =  inputImages.get(ndx).getParentPath();
-           // if (!DeidData.parentPath.equals("none"))
-            //outFilename = outputDir + abParent.replaceFirst(DeidData.parentPath, "").replaceFirst(DeidData.anaPath, "").replaceFirst(DeidData.dicomPath, "").replaceAll("/", "") + outFilename + ".nii" ;
+
             outFilename = outputDir + outFilename+ ".nii";
             System.out.println(outFilename);
             command[2] = outFilename;

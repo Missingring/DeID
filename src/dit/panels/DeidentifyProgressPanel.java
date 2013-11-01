@@ -80,6 +80,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                   jLabel2.setText("<html><p>Analysing images header files...</p><p>&nbsp;</p></html>");
                   for(NIHImage image : DeidData.imageHandler.getInputFiles())
                   {
+                     
                       image.initNifti();
                   }
             }
@@ -153,8 +154,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
     private void defaceImages() {
         try {
             IDefaceTask defaceTask = null;
-            if (FileUtils.OS.isWindows()) {
-                System.out.println("Windows Deface:");
+            if (FileUtils.OS.isWindows()) {                
                 defaceTask = new DefaceTaskinWindows();
             } else {
                 defaceTask = new DefaceTask();
@@ -460,26 +460,40 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
 
         jLabel2 = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
-        txtDetail = new javax.swing.JTextField();
+        txtSummary = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtDetail = new javax.swing.JTextArea();
 
         jLabel2.setText("<html><p>Deidentifying image IDs...</p><p>&nbsp;</p></html>");
 
-        txtDetail.setEditable(false);
-        txtDetail.setBackground(new java.awt.Color(255, 255, 255));
-        txtDetail.setText("This process may take several minutes.");
+        txtSummary.setEditable(false);
+        txtSummary.setBackground(new java.awt.Color(255, 255, 255));
+        txtSummary.setText("This process may take several minutes and  may not be responding. \n");
+        txtSummary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSummaryActionPerformed(evt);
+            }
+        });
+
+        txtDetail.setColumns(20);
+        txtDetail.setLineWrap(true);
+        txtDetail.setRows(5);
+        txtDetail.setEnabled(false);
+        jScrollPane1.setViewportView(txtDetail);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(txtDetail)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jProgressBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jProgressBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                    .add(txtSummary, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
                         .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(0, 0, Short.MAX_VALUE)))
+                        .add(0, 0, Short.MAX_VALUE))
+                    .add(jScrollPane1))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -489,15 +503,24 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                 .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jProgressBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
-                .add(txtDetail, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 188, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(txtSummary, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 188, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(18, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void txtSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSummaryActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSummaryActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JLabel jLabel2;
     private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JTextField txtDetail;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea txtDetail;
+    private javax.swing.JTextField txtSummary;
     // End of variables declaration//GEN-END:variables
 
     @Override

@@ -461,8 +461,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
 
     private void imagePanelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_imagePanelMouseReleased
          endPoint=new Point(evt.getX(),evt.getY());
-         System.out.println("Mouse exited at ("+evt.getX()+","+evt.getY()+")");
-         
+              
          float diffX=endPoint.x-startPoint.x;
          float diffY=endPoint.y-startPoint.y;
          

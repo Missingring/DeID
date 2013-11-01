@@ -16,7 +16,7 @@ import javax.swing.JTextField;
  */
 public interface IDefaceTask {
     public void setProgressBar(JProgressBar bar);
-    public void setTextfield(JTextField text);
+    public void setTextfield(JTextArea text);
     public void setInputImages(Vector<NIHImage> file);
     public void run();
     

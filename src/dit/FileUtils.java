@@ -96,6 +96,7 @@ public class FileUtils {
         
            String name = file.getAbsolutePath();
             name=name.replace(System.getProperty("file.separator").toString(), "_");
+             name=name.replace(":", "");
             if (name.endsWith(".nii.gz")) {
                 int j = name.lastIndexOf(".nii.gz");
                 name = name.substring(0, j);
