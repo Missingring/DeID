@@ -221,7 +221,7 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
 
                 if (image.isSeletecInJarFile()) {
 
-                    if (!image.getImageNewName().equals("")) {                                     
+                    if (!image.getImageNewName().equals("")) {
 
                         tm.addFile(image.getTempPotision(), image.getImageNewName() + ".nii");
                         tm.addFile(image.getMontageFile());
@@ -237,7 +237,10 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                     // need to rename here.
 
                 }
-            }           
+            }
+            if (!DeidData.isNoData) {
+                tm.addFile(DeidData.deidentifiedDemoFile);
+            }
             tm.addFile(logFile);
 
 
@@ -256,7 +259,6 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
 
         return true;
     }
-
 
     private boolean gzipfile(String gzfile, String desfile) {
         boolean success = true;
