@@ -35,6 +35,9 @@ public class OpenImagewithMRIcron implements Runnable {
         } else if (FileUtils.OS.isWindows()) {
             command = new String[]{
                 DeidData.unpackedFileLocation.get("mricro.exe").getAbsolutePath() + " ", imageName};
+        } else if (FileUtils.OS.isMac()) {
+            command = new String[]{"/bin/sh",
+                    DeidData.unpackedFileLocation.get("Mango.zip").getParentFile().getAbsolutePath() + "/Mango.sh", imageName};
         } else {
             command = new String[]{
                 DeidData.unpackedFileLocation.get("mricron").getAbsolutePath(),
@@ -55,6 +58,8 @@ public class OpenImagewithMRIcron implements Runnable {
         pb.redirectErrorStream(true);
         if (FileUtils.OS.isWindows()) {
             pb.directory(DeidData.unpackedFileLocation.get("mricro.exe").getParentFile());
+        } else if (FileUtils.OS.isMac()) {
+            pb.directory(DeidData.unpackedFileLocation.get("Mango.zip").getParentFile());
         } else {
             pb.directory(DeidData.unpackedFileLocation.get("mricron").getParentFile());
         }
