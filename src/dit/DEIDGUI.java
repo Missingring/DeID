@@ -231,8 +231,6 @@ public class DEIDGUI extends javax.swing.JFrame {
             "bet",
             "bet2",
             "dcm2nii",
-            "mricron",
-            "mricron_64",
             "fslchfiletype",
             "fslchfiletype_exe",
             "imtest",
