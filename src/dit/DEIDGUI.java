@@ -231,17 +231,16 @@ public class DEIDGUI extends javax.swing.JFrame {
             "bet",
             "bet2",
             "dcm2nii",
-            "mricron",
-            "mricron_64",
             "fslchfiletype",
             "fslchfiletype_exe",
             "imtest",
             "remove_ext",
+            "Mango.zip"
         }; 
         } else if(FileUtils.OS.isWindows()){
             outputPath = "C:"+fileSeparator+"Temp"+fileSeparator;
             osPrefix = "win";
-            toolNames = new String[]{"ROBEX.zip","mricro.exe"};
+            toolNames = new String[]{};
             // Windows executables work fine without the .exe extension, no
             // need to concatenate it to unpacked files.
         } else if(FileUtils.OS.isUnix()){
@@ -329,7 +328,12 @@ public class DEIDGUI extends javax.swing.JFrame {
         if(FileUtils.OS.isWindows())
         {
            gzfiles=new String[]{};
-           zipfiles= new String[]{DeidData.unpackedFileLocation.get("ROBEX.zip").getAbsolutePath()};
+           zipfiles= new String[]{};
+        }
+        if(FileUtils.OS.isMac())
+        {
+            gzfiles=new String[]{};
+            zipfiles= new String[]{DeidData.unpackedFileLocation.get("Mango.zip").getAbsolutePath()};
         }
         else
         {
@@ -351,13 +355,13 @@ public class DEIDGUI extends javax.swing.JFrame {
                 outstream.close();
             } catch(IOException e){
                 
-                System.out.println("failed:"+e);
+              DEIDGUI.log("Failed :"+ e.getMessage(), DEIDGUI.LOG_LEVEL.WARNING);
             }
         }
         
         for(String gzfile:zipfiles){
             try {
-                 String destinationname = DeidData.unpackedFileLocation.get("ROBEX.zip").getParentFile().getAbsolutePath()+"\\";
+                String destinationname = outputPath + "dit_tools"+fileSeparator;
                 byte[] buf = new byte[1024];
                 ZipInputStream zipinputstream = null;
                 ZipEntry zipentry;

@@ -242,7 +242,9 @@ public class TransferProgressPanel extends javax.swing.JPanel implements WizardP
                 tm.addFile(DeidData.deidentifiedDemoFile);
             }
             tm.addFile(logFile);
-
+            if (!DeidData.isNoData) {
+                tm.addFile(DeidData.deidentifiedDemoFile);
+            }
 
             DEIDGUI.log("Successfully created " + tarFile.getAbsolutePath());
             tm.close();
