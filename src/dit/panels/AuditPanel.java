@@ -404,7 +404,7 @@ public class AuditPanel extends javax.swing.JPanel implements WizardPanel {
     }//GEN-LAST:event_sliceBarStateChanged
     
     private void jButtonViewMontageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewMontageActionPerformed
-        File montageFile = new File(DeidData.outputPath + DeidData.imageHandler.getInputFiles().get(imagesTable.getSelectedRow()).getImageNewName()+"_montage.jpg");
+        File montageFile = new File(DeidData.outputPath + "montage.jpg");
         if(montageFile.exists()){
             // Programatically create a JFrame to view the image
             // TODO: place image within a scrollviewer?

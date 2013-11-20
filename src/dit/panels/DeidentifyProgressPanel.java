@@ -56,14 +56,14 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
             @Override
             public void run() {
                 randomizeIds();
-               
+
                 if (doDeface) {
                     jLabel2.setText("<html><p>Defacing images...</p><p>&nbsp;</p></html>");
                     defaceImages();
                 } else {
                     DeidData.imageHandler.moveImages();
                 }
-                 initNiftidataset();
+                initNiftidataset();
                 jLabel2.setText("<html><p>Deidentifying demographic file...</p><p>&nbsp;</p></html>");
                 createDemographicFile();
                 if (DeidData.NiftiConversionSourceTable.size() > 0) {
@@ -71,18 +71,17 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                     createHeaderDataFiles();
                 }
                 DeidData.imageHandler.correctOrientation();
-                 createMontage();
+                createMontage();
 
                 DEIDGUI.advance();
             }
 
             private void initNiftidataset() {
-                  jLabel2.setText("<html><p>Analysing images header files...</p><p>&nbsp;</p></html>");
-                  for(NIHImage image : DeidData.imageHandler.getInputFiles())
-                  {
-                     
-                      image.initNifti();
-                  }
+                jLabel2.setText("<html><p>Analysing images header files...</p><p>&nbsp;</p></html>");
+                for (NIHImage image : DeidData.imageHandler.getInputFiles()) {
+
+                    image.initNifti();
+                }
             }
         }).start();
     }
@@ -154,7 +153,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
     private void defaceImages() {
         try {
             IDefaceTask defaceTask = null;
-            if (FileUtils.OS.isWindows()) {                
+            if (FileUtils.OS.isWindows()) {
                 defaceTask = new DefaceTaskinWindows();
             } else {
                 defaceTask = new DefaceTask();
@@ -327,40 +326,43 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
 
     //need modification in the future
     private void createMontage() {
-        
-        int imageHeight = 64, imageWidth = 64, textHeight = 12,
-                rowHeight = imageHeight*4 + textHeight;
+
+        int cellWidth = 96, textHeight = 12, cellHeight = 96, rowHeight=cellHeight+textHeight;
+
+
+        int montageWidth = DeidData.imageHandler.getInputFilesSize() >= 4 ? cellWidth * 4 : DeidData.imageHandler.getInputFilesSize() * cellWidth;
+        int montageHeight = (DeidData.imageHandler.getInputFilesSize() / 4 +1 ) * rowHeight;
 
         if (DeidData.imageHandler.getInputFiles().isEmpty()) {
             return;
         }
+        BufferedImage i = new BufferedImage(montageWidth, montageHeight, BufferedImage.TYPE_INT_RGB);
+        int rowCounter = 0;
+        int colCounter = 0;
 
-      
         for (NIHImage image : DeidData.imageHandler.getInputFiles()) {
-            
-         BufferedImage i = new BufferedImage(imageWidth * 4, rowHeight, BufferedImage.TYPE_INT_RGB);
+
+
             Nifti1Dataset set = new Nifti1Dataset(image.getTempPotision().getAbsolutePath());
-            for (int idx = 0; idx < 16; idx++) {
-                try {
-                    BufferedImage ii = image.imageAt((float) (idx) / 16.0f, image.getOrientationState());
-                    Graphics2D g = i.createGraphics();
-                    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                    g.drawImage(ii, 64 * (idx%4), textHeight+ (idx/4)*imageHeight, imageWidth, imageHeight, null);
-                } catch (IOException ex) {
-                    Logger.getLogger(DeidentifyProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            // Write image name to the image
-            Font f = new Font(Font.MONOSPACED, Font.PLAIN, 12);
-            Graphics2D g = i.createGraphics();
-            g.setColor(Color.WHITE);
-            g.setFont(f);
-            //System.out.println(DeidData.IdTable.get("12"));
-            g.drawString(image.getImageNewName() + ".nii",0, textHeight);           
-           
 
             try {
-                File targetFile=new File(DeidData.outputPath + image.getImageNewName()+"_montage.jpg");
+                BufferedImage ii = image.imageAt(0.5f, image.getOrientationState());
+                Graphics2D g = i.createGraphics();
+                g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                Font f = new Font(Font.MONOSPACED, Font.PLAIN, 10);
+                g.setColor(Color.WHITE);
+                g.setFont(f);
+                g.drawImage(ii, cellWidth * colCounter, rowCounter / 4 * rowHeight+12, cellWidth, cellHeight, null);
+                g.drawString(image.getImageNewName(), cellWidth * colCounter+2, rowCounter / 4 * cellHeight+textHeight);
+                rowCounter++;
+                colCounter = (colCounter + 1) % 4;
+            } catch (IOException ex) {
+                Logger.getLogger(DeidentifyProgressPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+
+            try {
+                File targetFile = new File(DeidData.outputPath +"montage.jpg");
                 ImageIO.write(i, "jpg", targetFile);
                 image.setMontageFile(targetFile);
             } catch (IOException ex) {
@@ -368,15 +370,6 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
                         DEIDGUI.LOG_LEVEL.ERROR);
             }
         }
-
-        /**
-         * USE OF DCM4CHE HAS RUNTIME DEPENDENCIES ON log4j, slf4j-api,
-         * slf4j-log4j12, and dcm4che-core.
-         *
-         * @param dicomFile source of metadata
-         * @return A two-dimensional String array of metadata elements of the
-         * form [tag, name, data type, value]
-         */
     }
 
     private String[][] readDicomMetadata(File dicomFile, boolean anonymizeFile) {
@@ -514,7 +507,6 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
     private void txtSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSummaryActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSummaryActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JLabel jLabel2;
     private javax.swing.JProgressBar jProgressBar1;

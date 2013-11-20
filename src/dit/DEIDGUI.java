@@ -268,7 +268,7 @@ public class DEIDGUI extends javax.swing.JFrame {
             if (!oFile.exists()) {
                 // Get the resource from the jar
                 InputStream rStream = getClass().getResourceAsStream(
-                        "tools"+fileSeparator + osPrefix + "_" + toolName);
+                        "tools/" + osPrefix + "_" + toolName);
                 FileOutputStream oStream = null;
                 if (rStream == null) {
                     DEIDGUI.log("Unable to get ResourceStream for " + "tools"+fileSeparator +
