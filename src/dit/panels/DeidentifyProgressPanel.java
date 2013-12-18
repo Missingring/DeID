@@ -162,7 +162,7 @@ public class DeidentifyProgressPanel extends javax.swing.JPanel implements Wizar
             defaceTask.setProgressBar(jProgressBar1);
             defaceTask.setTextfield(txtDetail);
             defaceTask.setInputImages(DeidData.imageHandler.getInputFiles());
-
+            System.out.println("Total:" + DeidData.imageHandler.getInputFilesSize());
             synchronized (defaceTask) {
                 new Thread((Runnable) defaceTask).start();
                 try {

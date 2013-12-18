@@ -50,6 +50,12 @@ public class DEIDGUI extends javax.swing.JFrame {
             DeidData.outputPath = "deid_output/";
         }
         
+        File outputDir=new File(DeidData.outputPath);
+        if(!outputDir.exists())
+        {
+           outputDir.mkdirs();      
+        }
+        
         //TODO: remove these
         //        DeidData.UserFullName = "Christian james precott";
         //        DeidData.UserInstitution = "Clemson U";
@@ -226,8 +232,7 @@ public class DEIDGUI extends javax.swing.JFrame {
         if(FileUtils.OS.isMac()){
             outputPath = "/tmp/";
             osPrefix = "osx";
-            toolNames=new String[]{
-        
+            toolNames=new String[]{       
             "bet",
             "bet2",
             "dcm2nii",
@@ -261,7 +266,9 @@ public class DEIDGUI extends javax.swing.JFrame {
         }
         
         int unpackCount = 0, existCount = 0;
+        System.out.println("Your system is:"+ FileUtils.OS.getOS());
         for (String toolName : toolNames) {
+            System.out.println("Unpacking "+ toolName);
             File oFile = new File(outputDir.getAbsolutePath() + File.separator + toolName);
             
             if (!oFile.exists()) {

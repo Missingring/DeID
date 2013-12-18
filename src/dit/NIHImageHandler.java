@@ -201,7 +201,7 @@ public class NIHImageHandler {
 
     public void moveImages() {
         for (NIHImage image : _inputFiles) {
-            if (!image.getImageNewName().equals("")) {
+            if (!image.getImageNewName().equals("")){
                 String newFileDir = DeidData.outputPath + "betOut/";
                 String newFileName = DeidData.outputPath + "betOut/" + image.getImageNewName() + ".nii";
                 File newFile = new File(newFileName);
