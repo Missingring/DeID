@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 /**
  *
  * @author Christian Prescott
+ * This class executed the task that running bet from command line.
  */
 public class DefaceTask implements Runnable, IDefaceTask {
 
@@ -26,15 +27,7 @@ public class DefaceTask implements Runnable, IDefaceTask {
 
     public DefaceTask() throws RuntimeException{
         super();
-        
-        // Establish OS dependent paths
-        /*if(FileUtils.OS.isMac()){
-            //System.out.println("I'm a mac");
-        } else {
-            throw new RuntimeException("Platform (" + FileUtils.OS.getOS() + ") not "
-                    + "supported by bet.");
-        }
-        */
+     
         File outDir = new File(outputDir);
         if(!outDir.exists()){
             outDir.mkdirs();

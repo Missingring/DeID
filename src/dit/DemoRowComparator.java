@@ -5,6 +5,7 @@ import java.util.Comparator;
 /**
  * Comparator for mixed string and int types
  * @author Christian Prescott
+ * for sort
  */
 public class DemoRowComparator implements Comparator{
     @Override

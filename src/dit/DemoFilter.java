@@ -7,6 +7,7 @@ import java.io.File;
 /**
  *
  * @author angelo
+ * 
  */
 public class DemoFilter extends javax.swing.filechooser.FileFilter implements java.io.FileFilter{
      @Override

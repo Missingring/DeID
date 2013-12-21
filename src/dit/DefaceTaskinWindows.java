@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 /**
  *
  * @author Christian Prescott
+ * This is the windows version, but need modification in the future.
  */
 public class DefaceTaskinWindows  implements Runnable, IDefaceTask {
 

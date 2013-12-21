@@ -8,6 +8,7 @@ import javax.swing.table.TableModel;
 /**
  *
  * @author Christian Prescott
+ * GUI class
  */
 public class AuditJTable extends JTable {
 

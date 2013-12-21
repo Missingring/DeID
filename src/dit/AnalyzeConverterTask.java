@@ -12,6 +12,7 @@ import javax.swing.JProgressBar;
 /**
  *
  * @author Christian Prescott
+ * This class is depressed, may not in use any more
  */
 public class AnalyzeConverterTask implements Runnable {
 

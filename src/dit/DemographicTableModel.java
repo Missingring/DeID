@@ -7,6 +7,7 @@ import javax.swing.table.AbstractTableModel;
 /**
  *
  * @author Christian Prescott
+ * GUI class
  */
 public class DemographicTableModel extends AbstractTableModel{
     private String[] columnNames;

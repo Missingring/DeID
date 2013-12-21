@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 /**
  *
  * @author QM
+ * The interface of deface task. Any DefaceTask need to implement from this interface.
  */
 public interface IDefaceTask {
     public void setProgressBar(JProgressBar bar);

@@ -9,6 +9,7 @@ import java.util.Vector;
 /**
  *
  * @author Christian Prescott
+ * A auxiliary class to give some file operations and OS detection.  
  */
 public class FileUtils {
 

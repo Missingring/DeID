@@ -10,6 +10,7 @@ import javax.swing.table.AbstractTableModel;
 /**
  *
  * @author angelo
+ * GUI class
  */
 public class CorrectDemoDataTableModel extends AbstractTableModel{
     private String[]  columnNames;

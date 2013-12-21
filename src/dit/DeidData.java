@@ -8,23 +8,65 @@ import java.util.Vector;
 /**
  *
  * @author Christian Prescott
+ * This class contains all the global variables and methods.
  */
 public class DeidData {
 
-    ///following three are abandoned
-    public static Vector<File> 
-            inputFiles = new Vector<File>(),
+    public static NIHImageHandler imageHandler = new NIHImageHandler();   // all the image related actions are operated by this handler
+    public static Hashtable<String, File> unpackedFileLocation = new Hashtable<String, File>(); //contains all the unpacked tools
+    public static Hashtable<String, String> longitudinalIDs = new Hashtable(); 
+    public static DemographicTableModel demographicData;
+    public static DemographicTableModel demographicDataforBack;
+    public static File deidentifiedDemoFile;
+    public static boolean doDeface = true;
+    public static boolean demoFileModified = false;
+    public static boolean isNoData = false;
+    public static int IdColumn = 0;
+    public static String outputPath = "dit_output/";
+    public static String defaceThreshold = "0.1";
+    public static String tarfilesavedpath = "";
+    public static String UserFullName = "", UserInstitution = "";
+    public static Object[][] data = new Object[0][0];
+
+    public static void addInputFile(Vector<File> files) {
+        for (int i = 0; i < files.size(); i++) {
+            File currentFile = files.get(i);
+
+            imageHandler.addFile(currentFile);
+
+        }
+    }
+
+    public static void addInputFile(File file) {
+        imageHandler.addFile(file);
+    }
+
+    private static boolean isExistInputFile(File file) {
+
+        String fileName = file.getAbsolutePath();
+        if (fileName.endsWith("nii.gz")) {
+            fileName = fileName.replace("nii.gz", "");
+        } else {
+            fileName = fileName.substring(0, fileName.lastIndexOf("."));
+        }
+
+        for (int i = 0; i < inputFiles.size(); i++) {
+            String existFileName = inputFiles.get(i).getAbsolutePath().substring(0, inputFiles.get(i).getAbsolutePath().lastIndexOf("."));;
+            if (existFileName.equals(fileName)) {
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+    //the var below this line could be ignored//
+    public static Vector<File> inputFiles = new Vector<File>(),
             niftiFiles = new Vector<File>(),
             deidentifiedFiles = new Vector<File>();
-    
-    public static NIHImageHandler imageHandler=new NIHImageHandler();
-    
-    public static Hashtable<File, File> 
-            // Nifti result => Dicom source
+    public static Hashtable<File, File> // Nifti result => Dicom source
             NiftiConversionSourceTable = new Hashtable<File, File>(),
             ConvertedDicomHeaderTable = new Hashtable<File, File>();
-    public static Hashtable<String, File> 
-            unpackedFileLocation = new Hashtable<String, File>();
     // This table will map original filenames to their original IDs. Even
     // if the user chooses not to randomize IDs, it will be filled with the
     // correct key->value pairs. How convenient!
@@ -37,33 +79,17 @@ public class DeidData {
     public static String dicomPath = "tmp/deid_output/dcm2niiOut";
     public static Vector<String> multimatchingNamelist;
     public static Hashtable<String, Integer> multinameSol = new Hashtable();
-    public static Hashtable<String,String> multinameSolFile = new Hashtable();;
+    public static Hashtable<String, String> multinameSolFile = new Hashtable();
+    ;
     public static Hashtable<String, String> IdTable;
-    
     //this hashtable is to make sure all the longitudinal images belong to same subject have a same id.
-    public static Hashtable<String,String> longitudinalIDs=new Hashtable();
-    
-    
-    public static String[] 
-            selectedIdentifyingFields, 
+    public static String[] selectedIdentifyingFields,
             deselectedIdentifyingFields;
-    public static DemographicTableModel demographicData;
-    public static DemographicTableModel demographicDataforBack;
-    public static File deidentifiedDemoFile;
-    public static int IdColumn = 0;
     public static Boolean[] includeFileInTar = null;
-    public static Boolean[] whetherredoImage =null;
-    public static String UserFullName = "", UserInstitution = "";
-    public static Object[][] data = new Object[0][0];
+    public static Boolean[] whetherredoImage = null;
     public static int correctflag = 0;
-    public static String defaceThreshold = "0.1";
-    public static boolean doDeface=true;
-    public static boolean demoFileModified=false;
-    public static boolean isNoData=false;
-    public static File demoSourceFile=null;
+    public static File demoSourceFile = null;
     // Data declarations
-    public static String outputPath = "dit_output/";
-    public static String tarfilesavedpath = "";
     public static final String[] dicomVarIds = new String[]{
         "(0008,0070)",
         "(0010,1030)",
@@ -126,48 +152,4 @@ public class DeidData {
         "FrameOfReferenceUid",
         "ImageRows",
         "ImageColumns",};
-    
-    public static void addInputFile(Vector<File> files)
-    {
-        for(int i =0;i<files.size();i++)
-        {
-            File currentFile=files.get(i);
-         
-                imageHandler.addFile(currentFile);
-                       
-        }
-    }
-    
-    public static void addInputFile(File file)
-    {       
-                imageHandler.addFile(file);                       
-    }
-
-    private static boolean isExistInputFile(File file)
-    {
-       
-        
-        String fileName=file.getAbsolutePath();
-        if(fileName.endsWith("nii.gz"))
-        {
-            fileName=fileName.replace("nii.gz", "");
-        }
-        else
-        {
-            fileName=fileName.substring(0,fileName.lastIndexOf("."));
-        }
-        
-        for(int i=0;i<inputFiles.size();i++)
-        {
-            String existFileName=inputFiles.get(i).getAbsolutePath().substring(0,inputFiles.get(i).getAbsolutePath().lastIndexOf("."));;
-            if(existFileName.equals(fileName))
-            {
-                return true;
-            }
-        }
-        
-        return false;
-        
-    }
-    
 }

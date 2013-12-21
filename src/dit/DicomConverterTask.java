@@ -12,6 +12,7 @@ import javax.swing.JProgressBar;
 /**
  *
  * @author Christian Prescott & Angelo
+ * May not in use.
  */
 public class DicomConverterTask implements Runnable {
 
