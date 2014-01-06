@@ -23,6 +23,7 @@ import java.util.Iterator;
  *
  * @author christianprescott
  * Base GUI class
+ * Level:Top
  */
 public class DEIDGUI extends javax.swing.JFrame {
     public static enum LOG_LEVEL {INFO, ERROR, WARNING};

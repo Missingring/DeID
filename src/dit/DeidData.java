@@ -9,6 +9,7 @@ import java.util.Vector;
  *
  * @author Christian Prescott
  * This class contains all the global variables and methods.
+ * Level:Top
  */
 public class DeidData {
 
@@ -60,7 +61,9 @@ public class DeidData {
         return false;
 
     }
+    //
     //the var below this line could be ignored//
+    //
     public static Vector<File> inputFiles = new Vector<File>(),
             niftiFiles = new Vector<File>(),
             deidentifiedFiles = new Vector<File>();

@@ -12,14 +12,16 @@ import niftijlib.Nifti1Dataset;
 
 /**
  *
- * @author brain This class hold a image object, which contains all the
+ * @author QM
+ * brain This class hold a image object, which contains all the
  * attribute of an image.
+ * Level:Top
  */
 public class NIHImage {
 
     private File _storedPotistion; //where images are stored
     private File _tempPotision;   //where images are put during the program
-    private File _montageFile;
+    private File _montageFile;    //Not in use
     private String _imageName;      //images' name without extensiont
     private String _imageNewName;   //new id generated for images
     private String _imageDisplayName;  //name shown in the Matching GUI
